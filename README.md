@@ -1,2 +1,2 @@
-# CubeQuence-framework
-Framework for CubeQuence
+# CubeQuence
+Ultra-Light custom php framework
