@@ -4,17 +4,18 @@ namespace CQ\Routing;
 
 class Route
 {
+    public static $router;
+
     /**
      * Define GET route
      *
-     * @param MiladRahimi\PhpRouter\Router $router
      * @param string $location
      * @param string $controller
      * 
      * @return void
      */
-    public static function get($router, $location, $controller)
+    public static function get($location, $controller)
     {
-        $router->get($location, $controller);
+        self::$router->get($location, $controller);
     }
 }
