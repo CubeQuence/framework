@@ -4,7 +4,7 @@ namespace CQ\Response;
 
 use Zend\Diactoros\Response\HtmlResponse;
 
-class Json
+class Html
 {
     /**
      * Html Response
