@@ -9,17 +9,22 @@ use Zend\Diactoros\Response\RedirectResponse;
 class Router
 {
     private $router;
+    private $route404;
+    private $route500;
 
     /**
      * Create router instance
      *
+     * @param array $config
      * @param string $controllers
      * 
      * @return void
      */
-    public function __construct($controllers = 'App\Controllers')
+    public function __construct($config = [], $controllers = 'App\Controllers')
     {
         $this->router = new RouterClass('', $controllers);
+        $this->route404 = $config['404'] ?: '/';
+        $this->route500 = $config['500'] ?: '/';
     }
 
     /**
@@ -42,9 +47,9 @@ class Router
         try {
             $this->router->dispatch();
         } catch (RouteNotFoundException $e) {
-            $this->router->getPublisher()->publish(new RedirectResponse('/error/404', 404));
+            $this->router->getPublisher()->publish(new RedirectResponse($this->route404, 404));
         } catch (\Throwable $e) {
-            $this->router->getPublisher()->publish(new RedirectResponse("/error/500?e={$e}", 500));
+            $this->router->getPublisher()->publish(new RedirectResponse("{$this->route500}?e={$e}", 500));
         }
     }
 }
