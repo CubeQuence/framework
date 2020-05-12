@@ -1,6 +1,6 @@
 {
-    "name": "cq/response",
-    "description": "The CubeQuence Response package.",
+    "name": "cq/jwt",
+    "description": "The CubeQuence JWT package.",
     "license": "MIT",
     "support": {
         "issues": "https://github.com/Luca-Castelnuovo/CubeQuence/issues",
@@ -14,12 +14,11 @@
     ],
     "require": {
         "php": "^7.2.5",
-        "twig/twig": "^3.0",
-        "miladrahimi/phprouter": "^4.0"
+        "firebase/php-jwt": "^5.1"
     },
     "autoload": {
         "psr-4": {
-            "CQ\\Response\\": ""
+            "CQ\\JWT\\": ""
         }
     },
     "config": {

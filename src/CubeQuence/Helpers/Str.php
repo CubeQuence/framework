@@ -1,6 +1,6 @@
 <?php
 
-namespace CubeQuence\Helpers;
+namespace CQ\Helpers;
 
 class Str
 {

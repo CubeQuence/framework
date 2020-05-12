@@ -1,6 +1,8 @@
 <?php
 
-namespace CubeQuence\Helpers;
+namespace CQ\Helpers;
+
+// TODO: export like jwt
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;

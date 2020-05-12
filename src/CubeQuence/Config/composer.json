@@ -1,6 +1,6 @@
 {
-    "name": "cq/response",
-    "description": "The CubeQuence Response package.",
+    "name": "cq/config",
+    "description": "The CubeQuence Config package.",
     "license": "MIT",
     "support": {
         "issues": "https://github.com/Luca-Castelnuovo/CubeQuence/issues",
@@ -14,12 +14,11 @@
     ],
     "require": {
         "php": "^7.2.5",
-        "twig/twig": "^3.0",
-        "miladrahimi/phprouter": "^4.0"
+        "vlucas/phpdotenv": "^4.1"
     },
     "autoload": {
         "psr-4": {
-            "CQ\\Response\\": ""
+            "CQ\\Config\\": ""
         }
     },
     "config": {

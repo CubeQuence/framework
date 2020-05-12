@@ -1,9 +1,11 @@
 <?php
 
-namespace CubeQuence\Helpers;
+namespace CQ\Helpers;
+
+// TODO: export like jwt
 
 use Exception;
-use CubeQuence\Helpers\JWT;
+use CQ\Helpers\JWT;
 
 class AppsClient
 {
