@@ -1,0 +1,27 @@
+{
+    "name": "cq/apps",
+    "description": "The CubeQuence Apps package.",
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/Luca-Castelnuovo/CubeQuence/issues",
+        "source": "https://github.com/Luca-Castelnuovo/CubeQuence"
+    },
+    "authors": [
+        {
+            "name": "Luca Castelnuovo",
+            "email": "luca@castelnuovo.xyz"
+        }
+    ],
+    "require": {
+        "php": "^7.2.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "CQ\\Apps\\": ""
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev"
+}

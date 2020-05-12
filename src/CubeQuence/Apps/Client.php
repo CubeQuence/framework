@@ -1,13 +1,11 @@
 <?php
 
-namespace CQ\Helpers;
-
-// TODO: export like jwt
+namespace CQ\Apps;
 
 use Exception;
-use CQ\Helpers\JWT;
+use CQ\JWT\JWT;
 
-class AppsClient
+class Client
 {
     private $provider_url;
     private $app_id;

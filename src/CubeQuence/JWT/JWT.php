@@ -3,7 +3,6 @@
 namespace CQ\JWT;
 
 use Exception;
-use phpseclib\Crypt\RSA;
 use Firebase\JWT\JWT as FireBaseJWT;
 use Firebase\JWT\ExpiredException as FireBaseJWTExpiredException;
 
@@ -30,21 +29,6 @@ class JWT
         $this->algorithm = 'RS256';
         $this->private_key = $data['private_key'];
         $this->public_key = $data['public_key'];
-    }
-
-    /**
-     * Generate RSA keypair
-     *
-     * @param string $bits
-     * 
-     * @return array
-     */
-    public static function generateKeys($bits = 2048)
-    {
-        $rsa = new RSA();
-        $keypair = $rsa->createKey(intval($bits));
-
-        return $keypair;
     }
 
     /**
