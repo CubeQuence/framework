@@ -4,18 +4,23 @@ namespace CQ\Response;
 
 use Zend\Diactoros\Response\RedirectResponse;
 
-class Redirect
+class Redirect extends RedirectResponse
 {
     /**
      * Redirect Response
      *
-     * @param string $to
-     * @param string $code
+     * @param array $data
+     * @param string $controller
+     * @param array $headers
      * 
-     * @return RedirectResponse
+     * @return void
      */
-    public function __construct($to, $code)
+    public function __construct($data, $code, $headers = [])
     {
-        return new RedirectResponse($to, $code);
+        parent::__construct(
+            $data,
+            $code,
+            $headers
+        );
     }
 }

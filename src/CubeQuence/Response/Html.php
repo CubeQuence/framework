@@ -4,18 +4,23 @@ namespace CQ\Response;
 
 use Zend\Diactoros\Response\HtmlResponse;
 
-class Html
+class Html extends HtmlResponse
 {
     /**
-     * Html Response
+     * HTML Response
      *
      * @param array $data
      * @param string $controller
+     * @param array $headers
      * 
-     * @return HtmlResponse
+     * @return void
      */
-    public function __construct($data, $code)
+    public function __construct($data, $code, $headers = [])
     {
-        return new HtmlResponse($data, $code);
+        parent::__construct(
+            $data,
+            $code,
+            $headers
+        );
     }
 }
