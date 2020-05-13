@@ -1,0 +1,28 @@
+{
+    "name": "cq/db",
+    "description": "The CubeQuence Database package.",
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/Luca-Castelnuovo/CubeQuence/issues",
+        "source": "https://github.com/Luca-Castelnuovo/CubeQuence"
+    },
+    "authors": [
+        {
+            "name": "Luca Castelnuovo",
+            "email": "luca@castelnuovo.xyz"
+        }
+    ],
+    "require": {
+        "php": "^7.2.5",
+        "catfan/medoo": "^1.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "CQ\\DB\\": ""
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev"
+}
