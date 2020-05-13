@@ -9,7 +9,7 @@ class Seeder
     /**
      * Create faker instance
      */
-    public function create()
+    public static function create()
     {
         return Factory::create();
     }
