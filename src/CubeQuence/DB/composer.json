@@ -14,7 +14,8 @@
     ],
     "require": {
         "php": "^7.2.5",
-        "catfan/medoo": "^1.7"
+        "catfan/medoo": "^1.7",
+        "fzaninotto/faker": "^1.9"
     },
     "autoload": {
         "psr-4": {
