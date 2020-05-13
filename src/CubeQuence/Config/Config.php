@@ -8,7 +8,6 @@ use CQ\Helpers\Arr;
 class Config
 {
     private $dir;
-    private static $config = [];
 
     /**
      * Define project dir
@@ -22,6 +21,8 @@ class Config
         $this->dir = "{$dir}/../";
 
         new Env($this->dir);
+
+        $GLOBALS['cq_config'] = [];
     }
 
     /**
@@ -35,7 +36,7 @@ class Config
     {
         $data = require $this->dir . "config/{$name}.php";
 
-        self::$config = array_merge(self::$config, [$name => $data]);
+        $GLOBALS['cq_config'][$name] = $data;
     }
 
     /**
@@ -48,7 +49,7 @@ class Config
      */
     public static function get($key, $fallback = null)
     {
-        $value = Arr::get(self::$config, $key, $fallback);
+        $value = Arr::get($GLOBALS['cq_config'], $key, $fallback);
 
         if ($value === "true" || $value === "false") {
             return $value === "true" ? true : false;
