@@ -2,6 +2,7 @@
 
 namespace CQ\Routing;
 
+use CQ\Helpers\App;
 use MiladRahimi\PhpRouter\Router as RouterClass;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
 use Zend\Diactoros\Response\RedirectResponse;
@@ -49,7 +50,9 @@ class Router
         } catch (RouteNotFoundException $e) {
             $this->router->getPublisher()->publish(new RedirectResponse($this->route404, 404));
         } catch (\Throwable $e) {
-            $this->router->getPublisher()->publish(new RedirectResponse("{$this->route500}?e={$e}", 500));
+            if (!App::debug()) {
+                $this->router->getPublisher()->publish(new RedirectResponse("{$this->route500}?e={$e}", 500));
+            }
         }
     }
 }
