@@ -4,12 +4,12 @@ namespace CQ\Middleware;
 
 use CQ\Helpers\Auth;
 use CQ\Helpers\Request;
-use CQ\Helpers\Session;
+use CQ\Helpers\Session as SessionHelper;
 use CQ\Response\Json;
 use CQ\Response\Redirect;
 use MiladRahimi\PhpRouter\Middleware;
 
-class SessionMiddleware implements Middleware
+class Session implements Middleware
 {
     /**
      * Validate PHP session.
@@ -22,7 +22,7 @@ class SessionMiddleware implements Middleware
     public function handle($request, $next)
     {
         if (!Auth::valid()) {
-            Session::destroy();
+            SessionHelper::destroy();
 
             if (!Request::isJson($request)) {
                 return new Redirect('/auth/logout', 403);
@@ -38,7 +38,7 @@ class SessionMiddleware implements Middleware
             ], 403);
         }
 
-        Session::set('last_activity', time());
+        SessionHelper::set('last_activity', time());
 
         return $next($request);
     }
