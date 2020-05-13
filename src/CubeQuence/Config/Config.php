@@ -7,25 +7,53 @@ use CQ\Helpers\Arr;
 
 class Config
 {
-    private $config = [];
+    private $dir;
+    private static $config = [];
 
-    public function __construct()
+    /**
+     * Define project dir
+     * 
+     * @param string $dir
+     * 
+     * @return void
+     */
+    public function __construct($dir)
     {
-        new Env(__DIR__ . '/..');
+        $this->dir = "{$dir}/../";
+
+        new Env($this->dir);
     }
 
+    /**
+     * Add config file
+     *
+     * @param string $name
+     * 
+     * @return void
+     */
     public function attach($name)
     {
-        $data = require __DIR__ . "/{$name}.php";
+        $data = require $this->dir . "config/{$name}.php";
 
-        var_dump($data);
-        exit;
-
-        $this->config = array_merge($this->config, $data);
+        self::$config = array_merge(self::$config, [$name => $data]);
     }
 
-    public function get($key, $fallback = null)
+    /**
+     * Get config entry
+     *
+     * @param string $key
+     * @param mixed $fallback
+     * 
+     * @return mixed
+     */
+    public static function get($key, $fallback = null)
     {
-        return Arr::get($this->config, $key, $fallback);
+        $value = Arr::get(self::$config, $key, $fallback);
+
+        if ($value === "true" || $value === "false") {
+            return $value === "true" ? true : false;
+        }
+
+        return $value;
     }
 }
