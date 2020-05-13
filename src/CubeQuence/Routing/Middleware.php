@@ -2,25 +2,14 @@
 
 namespace CQ\Routing;
 
-use CQ\Routing\Route;
-use CQ\Routing\Router;
-
 class Middleware
 {
-    public static $router;
+    public static \MiladRahimi\PhpRouter\Router $router;
 
-    //  TODO: Middleware::create(['prefix' => '/template', 'middleware' => [JSONMiddleware::class, SessionMiddleware::class]]);
-
-    public static function create($config)
+    public static function create($config, $routes)
     {
         $router = self::$router;
 
-        $router->group($config, function (Router $router) {
-            Route::$router = $router;
-
-            Route::get('/', 'GeneralController@index');
-            Route::get('/', 'GeneralController@index');
-            Route::get('/', 'GeneralController@index');
-        });
+        $router->group($config, $routes);
     }
 }

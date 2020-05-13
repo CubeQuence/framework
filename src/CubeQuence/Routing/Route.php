@@ -4,7 +4,7 @@ namespace CQ\Routing;
 
 class Route
 {
-    public static $router;
+    public static \MiladRahimi\PhpRouter\Router $router;
 
     /**
      * Define GET route
