@@ -17,7 +17,7 @@ class App
      */
     public static function environment($check = null)
     {
-        $env = Config::get('app.env');
+        $env = Config::get('app.env', 'production');
         $type = gettype($check);
 
         switch ($type) {
@@ -42,6 +42,6 @@ class App
      */
     public static function debug()
     {
-        return Config::get('app.debug');
+        return Config::get('app.debug', false);
     }
 }
