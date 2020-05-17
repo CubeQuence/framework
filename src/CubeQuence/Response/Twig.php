@@ -18,7 +18,7 @@ class Twig
      */
     public function __construct($cache = true)
     {
-        $loader = new FilesystemLoader('../views');
+        $loader = new FilesystemLoader('../resources/views');
         if ($cache) {
             $this->twig = new Environment($loader, ['cache' => '../storage/views']);
         } else {
