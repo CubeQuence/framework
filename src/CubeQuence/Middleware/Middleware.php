@@ -4,7 +4,9 @@ namespace CQ\Middleware;
 
 use MiladRahimi\PhpRouter\Middleware as MiddlewareBase;
 
-class Middleware extends MiddlewareBase
+class Middleware implements MiddlewareBase
 {
-    // TODO: use base for middleware
+    public function handle($request, $next)
+    {
+    }
 }

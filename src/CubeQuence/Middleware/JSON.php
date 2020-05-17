@@ -4,15 +4,14 @@ namespace CQ\Middleware;
 
 use CQ\Helpers\Request;
 use CQ\Response\Json as JsonResponse;
-use MiladRahimi\PhpRouter\Middleware;
 
-class JSON implements Middleware
+class JSON extends Middleware
 {
     /**
      * If POST,PUT,PATCH requests contains JSON interpret it
      * Also validate that the provided JSON is valid.
      *
-     * @param Request $request
+     * @param object $request
      * @param $next
      *
      * @return mixed

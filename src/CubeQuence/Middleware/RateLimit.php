@@ -3,9 +3,8 @@
 namespace CQ\Middleware;
 
 use CQ\Response\Json;
-use MiladRahimi\PhpRouter\Middleware;
 
-class RateLimit implements Middleware
+class RateLimit extends Middleware
 {
     /**
      * Ratelimit API

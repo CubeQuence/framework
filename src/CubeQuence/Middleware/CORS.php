@@ -4,9 +4,8 @@ namespace CQ\Middleware;
 
 use CQ\Config\Config;
 use CQ\Response\NoContent;
-use MiladRahimi\PhpRouter\Middleware;
 
-class CORS implements Middleware
+class CORS extends Middleware
 {
     /**
      * Add CORS headers to requests

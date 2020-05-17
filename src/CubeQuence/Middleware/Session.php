@@ -7,9 +7,8 @@ use CQ\Helpers\Request;
 use CQ\Helpers\Session as SessionHelper;
 use CQ\Response\Json;
 use CQ\Response\Redirect;
-use MiladRahimi\PhpRouter\Middleware;
 
-class Session implements Middleware
+class Session extends Middleware
 {
     /**
      * Validate PHP session.
