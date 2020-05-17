@@ -10,6 +10,7 @@ class Client
     private $provider_url;
     private $app_id;
     private $app_url;
+    private $debug;
 
     /**
      * Define client variables
@@ -23,6 +24,7 @@ class Client
         $this->provider_url = 'https://apps.lucacastelnuovo.nl';
         $this->app_id = $data['app_id'];
         $this->app_url = $data['app_url'];
+        $this->debug = $data['debug'] ?: false;
     }
 
     /**
@@ -62,6 +64,10 @@ class Client
         ]);
 
         $claims = $provider->valid($code);
+
+        if ($this->debug) {
+            return $claims;
+        }
 
         if ($claims->type !== 'auth') {
             throw new Exception('Token type not valid');
