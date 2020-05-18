@@ -7,13 +7,14 @@ use CQ\Helpers\Request;
 use CQ\Helpers\Session as SessionHelper;
 use CQ\Response\Json;
 use CQ\Response\Redirect;
+use CQ\Middleware\Middleware;
 
 class Session extends Middleware
 {
     /**
      * Validate PHP session.
      *
-     * @param Request $request
+     * @param $request
      * @param $next
      *
      * @return mixed

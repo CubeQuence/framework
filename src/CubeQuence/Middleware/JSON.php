@@ -4,6 +4,7 @@ namespace CQ\Middleware;
 
 use CQ\Helpers\Request;
 use CQ\Response\Json as JsonResponse;
+use CQ\Middleware\Middleware;
 
 class JSON extends Middleware
 {

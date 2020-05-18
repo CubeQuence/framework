@@ -4,13 +4,14 @@ namespace CQ\Middleware;
 
 use CQ\Config\Config;
 use CQ\Response\NoContent;
+use CQ\Middleware\Middleware;
 
 class CORS extends Middleware
 {
     /**
      * Add CORS headers to requests
      *
-     * @param Request $request
+     * @param $request
      * @param $next
      *
      * @return mixed

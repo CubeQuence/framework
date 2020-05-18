@@ -9,7 +9,7 @@ class RateLimit extends Middleware
     /**
      * Ratelimit API
      *
-     * @param Request $request
+     * @param $request
      * @param $next
      *
      * @return mixed
@@ -17,8 +17,9 @@ class RateLimit extends Middleware
     public function handle($request, $next)
     {
         // TODO: 1 request / 1 second / 1 ip
-
+        // use DB
         $ratelimit_exceeded = false;
+
         if ($ratelimit_exceeded) {
             return new Json([
                 'success' => false,
