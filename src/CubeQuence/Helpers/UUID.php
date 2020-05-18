@@ -9,6 +9,7 @@ use Ramsey\Uuid\Provider\Node\StaticNodeProvider;
 class UUID
 {
     private static $namespace = '4addcce9-7218-4fd4-97c8-28fd71b227dd';
+    private static $hex_namespace = '63756265';
 
     /**
      * Return V4 Random UUID
@@ -39,7 +40,8 @@ class UUID
      */
     public static function v6()
     {
-        $nodeProvider = new StaticNodeProvider(new Hexadecimal(self::$namespace));
+        $node = new Hexadecimal(self::$hex_namespace);
+        $nodeProvider = new StaticNodeProvider($node);
 
         return UuidBase::uuid6($nodeProvider->getNode())->toString();
     }
