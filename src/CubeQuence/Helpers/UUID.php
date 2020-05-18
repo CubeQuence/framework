@@ -11,18 +11,6 @@ class UUID
     private static $namespace = '4addcce9-7218-4fd4-97c8-28fd71b227dd';
 
     /**
-     * Return V1 Time-Based UUID
-     * 
-     * @return string
-     */
-    public static function v1()
-    {
-        $nodeProvider = new StaticNodeProvider(new Hexadecimal(self::$namespace));
-
-        return UuidBase::uuid1($nodeProvider->getNode())->toString();
-    }
-
-    /**
      * Return V4 Random UUID
      * 
      * @return string
