@@ -60,7 +60,9 @@ class DB
      */
     public static function create($table, $data)
     {
-        return $GLOBALS['cq_database']->insert($table, $data);
+        $GLOBALS['cq_database']->insert($table, $data);
+
+        return $data;
     }
 
     /**
@@ -75,8 +77,9 @@ class DB
     public static function update($table, $data, $where)
     {
         $data = array_merge($data, ['updated_at' => date('Y-m-d H:i:s')]);
+        $GLOBALS['cq_database']->update($table, $data, $where);
 
-        return $GLOBALS['cq_database']->update($table, $data, $where);
+        return $data;
     }
 
     /**
