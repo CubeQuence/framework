@@ -33,12 +33,11 @@ class RateLimit extends Middleware
     {
         $fingerprint = $this->fingerprintRequest($request);
         $validated_request = $this->validateRequest($fingerprint);
+        $headers = $this->genHeaders($validated_request);
 
         if (!$validated_request['valid']) {
-            return $this->buildResponse($validated_request);
+            return $this->buildResponse($headers);
         }
-
-        $headers = $this->genHeaders($validated_request);
 
         $response = $next($request);
         foreach ($headers as $key => $value) {
@@ -67,17 +66,14 @@ class RateLimit extends Middleware
     /**
      * Create a 'too many requests' response.
      *
-     * @param array $validated_request
+     * @param array $headers
      *
      * @return Json
      */
-    protected function buildResponse($validated_request)
+    protected function buildResponse($headers)
     {
-        $headers = $this->genHeaders($validated_request,);
-
         return new Json([
             'success' => false,
-            'data' => $headers,
             'errors' => [
                 'status' => 429,
                 'title' => 'ratelimit_exceeded',
@@ -98,12 +94,9 @@ class RateLimit extends Middleware
     {
         $headers = [
             'X-RateLimit-Limit' => $this->max_requests,
-            'X-RateLimit-Remaining' => $validated_request['remaining_requests']
+            'X-RateLimit-Remaining' => $validated_request['remaining_requests'],
+            'X-RateLimit-Reset' => $validated_request['reset_time']
         ];
-
-        if (!$validated_request['valid']) {
-            $headers['X-RateLimit-Reset'] = $validated_request['reset_time'];
-        }
 
         return $headers;
     }
@@ -129,15 +122,11 @@ class RateLimit extends Middleware
             ]);
         }
 
-        $counter = $this->incrementRequest(
-            $fingerprint,
-            $request['reset_time'],
-            $request['counter']
-        );
+        $remaining_requests = $this->remainingRequests($fingerprint, $request);
 
         return [
-            'valid' => ($this->max_requests - $counter) > 0,
-            'remaining_requests' => $this->max_requests - $counter,
+            'valid' => $remaining_requests > 0,
+            'remaining_requests' => $remaining_requests,
             'reset_time' => $request['reset_time']
         ];
     }
@@ -146,15 +135,14 @@ class RateLimit extends Middleware
      * Add one or reset request counter
      *
      * @param string $fingerprint
-     * @param int $reset_time
-     * @param int $current_counter
+     * @param array $reset_time
      * 
      * @return int
      */
-    protected function incrementRequest($fingerprint, $reset_time, $current_counter)
+    protected function remainingRequests($fingerprint, $request)
     {
         // reset time in past
-        if (time() > $reset_time) {
+        if (time() > $request['reset_time']) {
             DB::update('cq_ratelimit', [
                 'counter' => 1,
                 'reset_time' => time() + $this->reset_time
@@ -162,11 +150,11 @@ class RateLimit extends Middleware
                 'fingerprint' => $fingerprint
             ]);
 
-            return 1;
+            return $this->max_requests - 1;
         }
 
         // reset time in future
-        if ($current_counter < $this->max_requests) {
+        if ($request['counter'] < $this->max_requests) {
             DB::update('cq_ratelimit', [
                 'counter[+]' => 1
             ], [
@@ -174,6 +162,6 @@ class RateLimit extends Middleware
             ]);
         }
 
-        return $current_counter++;
+        return $this->max_requests - $request['counter'];
     }
 }
