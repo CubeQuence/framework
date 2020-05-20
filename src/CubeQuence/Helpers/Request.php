@@ -17,4 +17,24 @@ class Request
     {
         return Str::contains($request->getHeader('content-type')[0], '/json');
     }
+
+    /**
+     * Get user ip
+     *
+     * @return string
+     */
+    public static function ip()
+    {
+        return $_SERVER['REMOTE_ADDR'];
+    }
+
+    /**
+     * Get user_agent
+     *
+     * @return string
+     */
+    public static function userAgent()
+    {
+        return $_SERVER['HTTP_USER_AGENT'];
+    }
 }

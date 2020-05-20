@@ -2,6 +2,7 @@
 
 namespace CQ\Captcha;
 
+use CQ\Helpers\Request;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 
@@ -25,7 +26,7 @@ class Captcha
                 'form_params' => [
                     'secret' => $secret,
                     'response' => $response,
-                    'remoteip' => $_SERVER['REMOTE_ADDR']
+                    'remoteip' => Request::ip()
                 ],
             ]);
         } catch (RequestException $e) {
