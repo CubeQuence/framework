@@ -1,4 +1,4 @@
-<p align="center"><a href="https://github.com/Luca-Castelnuovo/CubeQuence" target="_blank" rel="noopener"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+<p align="center"><a href="https://github.com/Luca-Castelnuovo/CubeQuence" target="_blank" rel="noopener"><img src="https://i.imgur.com/SxUDZl9.png" width="400"></a></p>
 
 <p align="center">
 <a href="https://packagist.org/packages/cubequence/framework"><img src="https://poser.pugx.org/cubequence/framework/d/total.svg" alt="Total Downloads"></a>
