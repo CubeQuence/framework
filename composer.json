@@ -22,6 +22,7 @@
         "phpseclib/phpseclib": "^2.0",
         "ramsey/uuid": "^4.0",
         "respect/validation": "^2.0",
+        "robmorgan/phinx": "^0.12.1",
         "twig/twig": "^3.0",
         "vlucas/phpdotenv": "^4.1"
     },
