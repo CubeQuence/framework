@@ -4,6 +4,7 @@ namespace CQ\Response;
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
+use Twig\TwigFunction;
 
 class Twig
 {
@@ -24,6 +25,18 @@ class Twig
         } else {
             $this->twig = new Environment($loader);
         }
+
+        $function = new TwigFunction('asset', function ($asset) {
+            $manifest = file_get_contents("asset-manifest.json");
+            $manifest = json_decode($manifest, true);
+
+            if (!isset($manifest[$asset])) {
+                return $asset;
+            };
+
+            return $manifest[$asset];
+        });
+        $this->twig->addFunction($function);
     }
 
     /**
