@@ -4,7 +4,9 @@ namespace CQ\Middleware;
 
 use CQ\DB\DB;
 use CQ\Config\Config;
+use CQ\Helpers\Request;
 use CQ\Response\Json;
+use CQ\Middleware\Middleware;
 
 class RateLimit extends Middleware
 {
@@ -56,10 +58,14 @@ class RateLimit extends Middleware
      */
     protected function fingerprintRequest($request)
     {
+        $path = $request->getUri();
+        $path = strtok($path, '?');
+        $path = strtok($path, '#');
+
         return sha1(
             $request->getMethod() .
-                '|' . $request->getUri() .
-                '|' . $_SERVER['REMOTE_ADDR']
+                '|' . $path .
+                '|' . Request::ip()
         );
     }
 
