@@ -19,24 +19,12 @@ class Twig
      */
     public function __construct($cache = true)
     {
-        $loader = new FilesystemLoader('../resources/views');
+        $loader = new FilesystemLoader('../views');
         if ($cache) {
             $this->twig = new Environment($loader, ['cache' => '../storage/views']);
         } else {
             $this->twig = new Environment($loader);
         }
-
-        $function = new TwigFunction('asset', function ($asset) {
-            $manifest = file_get_contents("asset-manifest.json");
-            $manifest = json_decode($manifest, true);
-
-            if (!isset($manifest[$asset])) {
-                return $asset;
-            };
-
-            return $manifest[$asset];
-        });
-        $this->twig->addFunction($function);
     }
 
     /**
