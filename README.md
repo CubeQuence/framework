@@ -8,7 +8,7 @@
 
 # CubeQuence
 
-> **Note:** This repository contains the core code of the Laravel framework. If you want to build an application using Laravel, visit the main [Laravel repository](https://github.com/Luca-Castelnuovo/CubeQuence).
+> **Note:** This repository contains the core code of the CubeQuence framework. If you want to build an application using CubeQuence, visit the main [CubeQuence repository](https://github.com/Luca-Castelnuovo/CubeQuence).
 
 Ultra-Light custom php framework.
 
