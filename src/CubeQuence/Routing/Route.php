@@ -33,6 +33,19 @@ class Route
     {
         self::$router->post($location, $controller, $middleware);
     }
+    
+     /**
+     * Define PUT route
+     *
+     * @param string $location
+     * @param string $controller
+     * 
+     * @return void
+     */
+    public static function put($location, $controller, $middleware = [])
+    {
+        self::$router->put($location, $controller, $middleware);
+    }
 
     /**
      * Define PATCH route
@@ -45,6 +58,19 @@ class Route
     public static function patch($location, $controller, $middleware = [])
     {
         self::$router->patch($location, $controller, $middleware);
+    }
+    
+    /**
+     * Define OPTIONS route
+     *
+     * @param string $location
+     * @param string $controller
+     * 
+     * @return void
+     */
+    public static function options($location, $controller, $middleware = [])
+    {
+        self::$router->map('OPTIONS', $location, $controller, $middleware);
     }
 
     /**
