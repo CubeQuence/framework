@@ -19,6 +19,22 @@ class Request
     }
 
     /**
+     * Get request path
+     * 
+     * @param object $request
+     * 
+     * @return string
+     */
+    public static function path($request)
+    {
+        $path = $request->getUri();
+        $path = strtok($path, '?');
+        $path = strtok($path, '#');
+
+        return $path;
+    }
+
+    /**
      * Get user ip
      *
      * @return string

@@ -11,17 +11,7 @@ use CQ\Middleware\Middleware;
 class RateLimit extends Middleware
 {
     private $max_requests;
-
-    /**
-     * Define middleware variables
-     * 
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->max_requests = (int) Config::get('ratelimit.max_requests') ?: 60;
-        $this->reset_time = (int) Config::get('ratelimit.reset_time') ?: 60;
-    }
+    private $reset_time;
 
     /**
      * Ratelimit API
@@ -33,6 +23,8 @@ class RateLimit extends Middleware
      */
     public function handle($request, $next)
     {
+        $this->loadConfig($request);
+
         $fingerprint = $this->fingerprintRequest($request);
         $validated_request = $this->validateRequest($fingerprint);
         $headers = $this->genHeaders($validated_request);
@@ -50,6 +42,20 @@ class RateLimit extends Middleware
     }
 
     /**
+     * Get config for specific path
+     *
+     * @param object $request
+     * 
+     * @return array
+     */
+    protected function loadConfig($request)
+    {
+        $path = Request::path($request);
+        $this->max_requests = (int) Config::get("ratelimit.{$path}.max_requests") ?: 60;
+        $this->reset_time = (int) Config::get("ratelimit.{$path}reset_time") ?: 60;
+    }
+
+    /**
      * Resolve request fingerprint.
      *
      * @param object $request
@@ -58,13 +64,9 @@ class RateLimit extends Middleware
      */
     protected function fingerprintRequest($request)
     {
-        $path = $request->getUri();
-        $path = strtok($path, '?');
-        $path = strtok($path, '#');
-
         return sha1(
             $request->getMethod() .
-                '|' . $path .
+                '|' . Request::path($request) .
                 '|' . Request::ip()
         );
     }
