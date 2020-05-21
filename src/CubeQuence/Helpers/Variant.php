@@ -13,7 +13,7 @@ class Variant
      * @param string $type
      * @param string|bool $current_value
      * 
-     * @return bool
+     * @return string|int|bool|array
      */
     public static function check($variant, $type, $current_value = null)
     {
@@ -32,7 +32,7 @@ class Variant
      * @param string $variant
      * @param string $type
      * 
-     * @return string|int|bool
+     * @return string|int|bool|array
      */
     public static function variantValue($variant, $type)
     {
