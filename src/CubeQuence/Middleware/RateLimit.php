@@ -83,11 +83,7 @@ class RateLimit extends Middleware
     {
         return new Json([
             'success' => false,
-            'errors' => [
-                'status' => 429,
-                'title' => 'ratelimit_exceeded',
-                'detail' => 'Too many requests, please slow down!'
-            ]
+            'message' => 'Ratelimit Exceeded'
         ], 429, $headers);
     }
 
