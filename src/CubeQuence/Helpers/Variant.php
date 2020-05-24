@@ -3,39 +3,50 @@
 namespace CQ\Helpers;
 
 use CQ\Config\Config;
+use Exception;
 
 class Variant
 {
+    private string $user;
+    private string $type;
+    private $current_value;
+
     /**
-     * Check if user license is authorized to execute an action
-     *
-     * @param string $variant
-     * @param string $type
-     * @param string|bool $current_value
+     * Define variant variables
      * 
-     * @return string|int|bool|array
+     * @param array $data
+     * 
+     * @return void
      */
-    public static function check($variant, $type, $current_value = null)
+    public function __construct($data)
     {
-        $variant_value = self::variantValue($variant, $type);
-
-        if (is_int($variant) && $current_value) { // If $current_value isn't set return value for type
-            return $current_value < $variant_value;
-        }
-
-        return $variant_value;
+        $this->user = $data['user'];
+        $this->type = $data['type'];
+        $this->current_value = $data['current_value'] ?: null;
+        $this->configured_value = Config::get("variants.{$this->user}.{$this->type}", null);
     }
 
     /**
-     * Return value associated with variant and type
+     * Check if user license limit is reached
      *
-     * @param string $variant
-     * @param string $type
-     * 
-     * @return string|int|bool|array
+     * @return bool
      */
-    public static function variantValue($variant, $type)
+    public function limitReached()
     {
-        return Config::get("variants.{$variant}.{$type}", null);
+        if (!is_int($this->configured_value)) {
+            throw new Exception('Invalid operation on non-number');
+        }
+
+        return $this->current_value < $this->configured_value;
+    }
+
+    /**
+     * Return configured value
+     *
+     * @return mixed
+     */
+    public function configuredValue()
+    {
+        return $this->configured_value;
     }
 }
