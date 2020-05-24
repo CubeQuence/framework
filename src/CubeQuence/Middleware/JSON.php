@@ -23,10 +23,9 @@ class JSON extends Middleware
             if (!Request::isJson($request)) {
                 return new JsonResponse([
                     'success' => false,
-                    'errors' => [
-                        'status' => 415,
-                        'title' => 'invalid_content_type',
-                        'detail' => "Content-Type should be 'application/json'"
+                    'message' => 'Invalid Content-Type',
+                    'data' => [
+                        'details' => "Content-Type should be 'application/json'"
                     ]
                 ], 415);
             }
@@ -36,11 +35,7 @@ class JSON extends Middleware
             if ((JSON_ERROR_NONE !== json_last_error())) {
                 return new JsonResponse([
                     'success' => false,
-                    'errors' => [
-                        'status' => 415,
-                        'title' => 'invalid_json',
-                        'detail' => 'Problems parsing provided JSON'
-                    ]
+                    'message' => 'Problems parsing provided JSON'
                 ], 415);
             }
 

@@ -30,10 +30,9 @@ class Session extends Middleware
 
             return new Json([
                 'success' => false,
-                'errors' => [
-                    'status' => 403,
-                    'title' => 'invalid_session',
-                    'detail' => 'Session expired or IP mismatch'
+                'message' => 'Invalid Session',
+                'data' => [
+                    'redirect' => '/'
                 ]
             ], 403);
         }
