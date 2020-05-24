@@ -24,15 +24,17 @@ class Session extends Middleware
         if (!Auth::valid()) {
             SessionHelper::destroy();
 
+            SessionHelper::set('return_to', Request::path($request));
+
             if (!Request::isJson($request)) {
-                return new Redirect('/auth/logout', 403);
+                return new Redirect('/?msg=logout', 403);
             }
 
             return new Json([
                 'success' => false,
                 'message' => 'Invalid Session',
                 'data' => [
-                    'redirect' => '/'
+                    'redirect' => '/?msg=logout'
                 ]
             ], 403);
         }
