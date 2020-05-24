@@ -2,8 +2,8 @@
 
 namespace CQ\Helpers;
 
-use CQ\Config\Config;
 use Exception;
+use CQ\Config\Config;
 
 class Variant
 {
