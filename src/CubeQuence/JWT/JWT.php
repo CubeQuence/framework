@@ -23,7 +23,6 @@ class JWT
      */
     public function __construct($data)
     {
-        $this->provider_url = 'https://apps.lucacastelnuovo.nl';
         $this->iss = $data['iss'];
         $this->aud = $data['aud'];
         $this->algorithm = 'RS256';
