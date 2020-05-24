@@ -2,6 +2,7 @@
 
 namespace CQ\Response;
 
+use CQ\Helpers\Request;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
 use Twig\Loader\FilesystemLoader;
@@ -49,6 +50,8 @@ class Twig
     {
         $loader = new ArrayLoader(['base.html' => $template]);
         $twig = new Environment($loader);
+        $twig->addGlobal('user_ip', Request::ip());
+        $twig->addGlobal('user_agent', Request::userAgent());
 
         return $twig->render('base.html', $parameters);
     }
