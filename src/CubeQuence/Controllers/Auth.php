@@ -11,7 +11,7 @@ use CQ\Apps\Client;
 use CQ\Config\Config;
 use CQ\Controllers\Controller;
 
-class App extends Controller
+class Auth extends Controller
 {
     private $provider;
 
