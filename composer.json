@@ -19,6 +19,7 @@
         "fzaninotto/faker": "^1.9",
         "guzzlehttp/guzzle": "^6.5",
         "miladrahimi/phprouter": "^4.0",
+        "mnapoli/silly": "^1.7",
         "phpseclib/phpseclib": "^2.0",
         "ramsey/uuid": "^4.0",
         "respect/validation": "^2.0",
