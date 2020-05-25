@@ -16,7 +16,7 @@ class Crypt
      */
     private static function getEncryptionKey()
     {
-        $encKey = Config::get('encryption.key');
+        $encKey = Config::get('app.key');
 
         if (!$encKey) {
             throw new Exception('No encryption key provided');
