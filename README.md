@@ -1,4 +1,4 @@
-<p align="center"><a href="https://github.com/Luca-Castelnuovo/CubeQuence" target="_blank" rel="noopener"><img src="https://i.imgur.com/SxUDZl9.png" width="400"></a></p>
+<p align="center"><a href="https://github.com/CubeQuence/CubeQuence" target="_blank" rel="noopener"><img src="https://raw.githubusercontent.com/CubeQuence/CubeQuence/master/public/assets/images/banner.png"></a></p>
 
 <p align="center">
 <a href="https://packagist.org/packages/cubequence/framework"><img src="https://poser.pugx.org/cubequence/framework/d/total.svg" alt="Total Downloads"></a>
@@ -8,13 +8,13 @@
 
 # CubeQuence
 
-> **Note:** This repository contains the core code of the CubeQuence framework. If you want to build an application using CubeQuence, visit the main [CubeQuence repository](https://github.com/Luca-Castelnuovo/CubeQuence).
+> **Note:** This repository contains the core code of the CubeQuence framework. If you want to build an application using CubeQuence, visit the main [CubeQuence repository](https://github.com/CubeQuence/CubeQuence).
 
 Ultra-Light custom php framework.
 
 ## Security Vulnerabilities
 
-Please review [our security policy](https://github.com/Luca-Castelnuovo/CubeQuence/security/policy) on how to report security vulnerabilities.
+Please review [our security policy](https://github.com/CubeQuence/CubeQuence/security/policy) on how to report security vulnerabilities.
 
 ## License
 
