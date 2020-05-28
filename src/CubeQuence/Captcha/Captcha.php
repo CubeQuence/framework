@@ -33,7 +33,7 @@ class Captcha
             return false;
         }
 
-        $response = json_decode($response->getBody(), true);
+        $response = json_decode($response->getBody());
 
         return $response->success;
     }
