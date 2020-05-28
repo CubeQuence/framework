@@ -12,7 +12,7 @@ class hCaptcha extends Captcha
      * 
      * @return bool
      */
-    protected static function v1($secret, $response)
+    public static function v1($secret, $response)
     {
         return self::validate(
             'https://hcaptcha.com/siteverify',
