@@ -22,7 +22,7 @@ class Captcha
         $guzzle = new Client();
 
         try {
-            $guzzle->request('POST', $url, [
+            $response = $guzzle->request('POST', $url, [
                 'form_params' => [
                     'secret' => $secret,
                     'response' => $response,
@@ -33,6 +33,8 @@ class Captcha
             return false;
         }
 
-        return true;
+        $response = json_decode($response->getBody(), true);
+
+        return $response->success;
     }
 }
