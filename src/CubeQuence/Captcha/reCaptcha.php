@@ -12,7 +12,7 @@ class reCaptcha extends Captcha
      * 
      * @return bool
      */
-    protected static function v2($secret, $response)
+    public static function v2($secret, $response)
     {
         return self::validate(
             'https://www.google.com/recaptcha/api/siteverify',
