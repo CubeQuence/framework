@@ -9,9 +9,9 @@ class State
 {
     /**
      * Set state
-     * 
+     *
      * @param string $custom optional
-     * 
+     *
      * @return string
      */
     public static function set($custom = '')
@@ -26,7 +26,7 @@ class State
      *
      * @param string $provided_state
      * @param bool $unset_state optional
-     * 
+     *
      * @return bool
      */
     public static function valid($provided_state, $unset_state = true)

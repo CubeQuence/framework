@@ -9,9 +9,9 @@ class General extends Controller
 {
     /**
      * Index screen
-     * 
+     *
      * @param object $request
-     * 
+     *
      * @return Html
      */
     public function index($request)
@@ -47,9 +47,9 @@ class General extends Controller
 
     /**
      * Error screen
-     * 
+     *
      * @param string $httpcode
-     * 
+     *
      * @return Html
      */
     public function error($code)

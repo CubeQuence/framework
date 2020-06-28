@@ -11,7 +11,7 @@ class NoContent extends EmptyResponse
      *
      * @param string $controller
      * @param array $headers
-     * 
+     *
      * @return void
      */
     public function __construct($code, $headers = [])

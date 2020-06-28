@@ -14,11 +14,11 @@ class DB
     {
         $GLOBALS['cq_database'] = new Medoo([
             'database_type' => 'mysql',
-            'server'        => Config::get('database.host'),
-            'port'          => Config::get('database.port'),
+            'server' => Config::get('database.host'),
+            'port' => Config::get('database.port'),
             'database_name' => Config::get('database.database'),
-            'username'      => Config::get('database.username'),
-            'password'      => Config::get('database.password')
+            'username' => Config::get('database.username'),
+            'password' => Config::get('database.password')
         ]);
     }
 
@@ -28,7 +28,7 @@ class DB
      * @param string $table
      * @param array $columns
      * @param array $where
-     * 
+     *
      * @return array|null
      */
     public static function select($table, $columns, $where)
@@ -42,7 +42,7 @@ class DB
      * @param string $table
      * @param array $columns
      * @param array|int $where
-     * 
+     *
      * @return array|null
      */
     public static function get($table, $columns, $where)
@@ -55,7 +55,7 @@ class DB
      *
      * @param string $table
      * @param array $data
-     * 
+     *
      * @return array
      */
     public static function create($table, $data)
@@ -71,7 +71,7 @@ class DB
      * @param string $table
      * @param array $data
      * @param array|int $where
-     * 
+     *
      * @return array|null
      */
     public static function update($table, $data, $where)
@@ -87,12 +87,12 @@ class DB
      *
      * @param string $table
      * @param array $where
-     * 
+     *
      * @return array|null
      */
     public static function delete($table, $where)
     {
-        return $GLOBALS['cq_database']->delete($table, ["AND" => $where]);
+        return $GLOBALS['cq_database']->delete($table, ['AND' => $where]);
     }
 
     /**
@@ -100,7 +100,7 @@ class DB
      *
      * @param string $table
      * @param array $where
-     * 
+     *
      * @return array|null
      */
     public static function has($table, $where)
@@ -113,7 +113,7 @@ class DB
      *
      * @param string $table
      * @param array $where
-     * 
+     *
      * @return int|null
      */
     public static function count($table, $where)

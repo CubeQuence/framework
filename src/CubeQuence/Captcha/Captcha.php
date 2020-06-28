@@ -14,7 +14,7 @@ class Captcha
      * @param string $url
      * @param string $secret
      * @param string $response
-     * 
+     *
      * @return bool
      */
     protected static function validate($url, $secret, $response)

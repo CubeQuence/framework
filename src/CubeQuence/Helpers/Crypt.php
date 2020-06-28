@@ -1,6 +1,5 @@
 <?php
 
-
 namespace CQ\Helpers;
 
 use Exception;
@@ -29,7 +28,7 @@ class Crypt
      * Encrypt string
      *
      * @param string $string
-     * 
+     *
      * @return string
      */
     public static function encrypt($string)
@@ -48,7 +47,7 @@ class Crypt
      * Decrypt string
      *
      * @param string $encryptedString
-     * 
+     *
      * @return string
      */
     public static function decrypt($encryptedString)

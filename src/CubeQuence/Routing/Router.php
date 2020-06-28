@@ -18,7 +18,7 @@ class Router
      *
      * @param array $config
      * @param string $controllers
-     * 
+     *
      * @return void
      */
     public function __construct($config = [], $controllers = 'App\Controllers')

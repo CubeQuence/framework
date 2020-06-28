@@ -9,7 +9,7 @@ class hCaptcha extends Captcha
      *
      * @param string $secret
      * @param string $response
-     * 
+     *
      * @return bool
      */
     public static function v1($secret, $response)

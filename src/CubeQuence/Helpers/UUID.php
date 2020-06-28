@@ -13,7 +13,7 @@ class UUID
 
     /**
      * Return V4 Random UUID
-     * 
+     *
      * @return string
      */
     public static function v4()
@@ -23,9 +23,9 @@ class UUID
 
     /**
      * Return V5 Name-Based UUID
-     * 
+     *
      * @param string $name
-     * 
+     *
      * @return string
      */
     public static function v5($name)
@@ -35,7 +35,7 @@ class UUID
 
     /**
      * Return V6 Ordered-Time UUID
-     * 
+     *
      * @return string
      */
     public static function v6()

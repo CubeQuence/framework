@@ -14,7 +14,7 @@ class Mail
      * @param string $access_token
      * @param array $data
      * @param string $origin
-     * 
+     *
      * @throws Exception
      */
     public static function send($access_token, $data, $origin)

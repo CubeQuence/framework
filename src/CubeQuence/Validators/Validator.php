@@ -10,7 +10,7 @@ class Validator
 {
     /**
      * Execute validation
-     * 
+     *
      * @param ValidatorBase $validator
      * @param object $data
      *

@@ -29,7 +29,7 @@ class JWT
      * @param array $data
      * @param int $seconds_valid
      * @param string $aud
-     * 
+     *
      * @return string
      */
     public static function create($data, $seconds_valid, $aud = null)
@@ -44,7 +44,7 @@ class JWT
      *
      * @param string $type
      * @param string $code
-     * 
+     *
      * @return array
      * @throws Exception
      */

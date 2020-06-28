@@ -19,9 +19,9 @@ class CORS extends Middleware
     public function handle($request, $next)
     {
         $headers = [
-            'Access-Control-Allow-Origin'  => implode(", ", Config::get('cors.allow_origins', [])),
-            'Access-Control-Allow-Headers' => implode(", ", Config::get('cors.allow_headers', [])),
-            'Access-Control-Allow-Methods' => implode(", ", Config::get('cors.allow_methods', [])),
+            'Access-Control-Allow-Origin' => implode(', ', Config::get('cors.allow_origins', [])),
+            'Access-Control-Allow-Headers' => implode(', ', Config::get('cors.allow_headers', [])),
+            'Access-Control-Allow-Methods' => implode(', ', Config::get('cors.allow_methods', [])),
         ];
 
         $response = $next($request);

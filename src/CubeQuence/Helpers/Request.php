@@ -8,9 +8,9 @@ class Request
 {
     /**
      * Check if request contains isJSON
-     * 
+     *
      * @param object $request
-     * 
+     *
      * @return bool
      */
     public static function isJSON($request)
@@ -20,9 +20,9 @@ class Request
 
     /**
      * Get request path
-     * 
+     *
      * @param object $request
-     * 
+     *
      * @return string
      */
     public static function path($request)

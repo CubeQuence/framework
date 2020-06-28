@@ -10,7 +10,7 @@ class Utils
      * Generate RSA keypair
      *
      * @param string $bits
-     * 
+     *
      * @return array
      */
     public static function generateKeys($bits = 2048)

@@ -9,7 +9,7 @@ class reCaptcha extends Captcha
      *
      * @param string $secret
      * @param string $response
-     * 
+     *
      * @return bool
      */
     public static function v2($secret, $response)

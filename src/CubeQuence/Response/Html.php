@@ -12,7 +12,7 @@ class Html extends HtmlResponse
      * @param array $data
      * @param string $controller
      * @param array $headers
-     * 
+     *
      * @return void
      */
     public function __construct($data, $code, $headers = [])

@@ -7,12 +7,11 @@ use CQ\Config\Config;
 
 class App
 {
-
     /**
      * Check apps envoirement
      *
      * @param string|array $check optional
-     * 
+     *
      * @return string|bool
      */
     public static function environment($check = null)

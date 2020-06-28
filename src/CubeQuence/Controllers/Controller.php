@@ -16,7 +16,7 @@ class Controller
 
     /**
      * Provide access for child classes
-     * 
+     *
      * @return void
      */
     public function __construct()
@@ -32,7 +32,7 @@ class Controller
      *
      * @param string $to
      * @param integer $code optional
-     * 
+     *
      * @return Redirect
      */
     protected function redirect($to, $code = 302)
@@ -46,7 +46,7 @@ class Controller
      * @param string $view
      * @param array $parameters
      * @param integer $code optional
-     * 
+     *
      * @return Html
      */
     protected function respond($view, $parameters = [], $code = 200)
@@ -62,11 +62,11 @@ class Controller
 
     /**
      * Shorthand JSON response function
-     * 
+     *
      * @param string $message
      * @param array $data optional
      * @param integer $code optional
-     * 
+     *
      * @return JsonResponse
      */
     protected function respondJson($message, $data = [], $code = 200)

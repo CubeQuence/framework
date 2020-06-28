@@ -45,15 +45,15 @@ class RateLimit extends Middleware
      * Get config for specific path
      *
      * @param object $request
-     * 
+     *
      * @return array
      */
     protected function loadConfig($request)
     {
         $path = Request::path($request); // TODO: add path based config support
 
-        $this->max_requests = (int) Config::get("ratelimit.max_requests") ?: 60;
-        $this->reset_time = (int) Config::get("ratelimit.reset_time") ?: 60;
+        $this->max_requests = (int) Config::get('ratelimit.max_requests') ?: 60;
+        $this->reset_time = (int) Config::get('ratelimit.reset_time') ?: 60;
     }
 
     /**
@@ -141,7 +141,7 @@ class RateLimit extends Middleware
      *
      * @param string $fingerprint
      * @param array $reset_time
-     * 
+     *
      * @return int
      */
     protected function remainingRequests($fingerprint, $request)

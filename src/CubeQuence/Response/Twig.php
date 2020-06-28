@@ -15,7 +15,7 @@ class Twig
      * Create twig instance
      *
      * @param bool $cache
-     * 
+     *
      * @return void
      */
     public function __construct($cache = true)
@@ -43,7 +43,7 @@ class Twig
      *
      * @param string $template
      * @param array $parameters
-     * 
+     *
      * @return string
      */
     public static function renderFromText($template, $parameters = [])

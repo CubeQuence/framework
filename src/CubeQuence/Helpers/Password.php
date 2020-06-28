@@ -11,7 +11,7 @@ class Password
      * encrypt hash from string
      *
      * @param string $string
-     * 
+     *
      * @return string
      */
     public static function hash($string)
@@ -27,7 +27,7 @@ class Password
      *
      * @param string $checkAgainst
      * @param string $encryptedHash
-     * 
+     *
      * @return bool
      */
     public static function check($checkAgainst, $encryptedHash)

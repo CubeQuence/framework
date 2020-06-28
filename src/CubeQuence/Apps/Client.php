@@ -14,9 +14,9 @@ class Client
 
     /**
      * Define client variables
-     * 
+     *
      * @param array $data
-     * 
+     *
      * @return void
      */
     public function __construct($data)
@@ -29,7 +29,7 @@ class Client
 
     /**
      * Generate authorization url
-     * 
+     *
      * @return string
      */
     public function getAuthorizationUrl()
@@ -45,7 +45,7 @@ class Client
      * @param string $code
      * @param string $user_ip optional
      * @param string $user_agent optional
-     * 
+     *
      * @return array
      * @throws Exception
      */

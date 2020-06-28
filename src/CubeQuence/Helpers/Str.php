@@ -9,7 +9,7 @@ class Str
      *
      * @param string $haystack
      * @param string $needle
-     * 
+     *
      * @return bool
      */
     public static function contains($haystack, $needle)
@@ -22,7 +22,7 @@ class Str
      *
      * @param string $haystack
      * @param string $start
-     * 
+     *
      * @return bool
      */
     public static function beginsWith($haystack, $start)
@@ -34,7 +34,7 @@ class Str
      * Escape a string
      *
      * @param string $string
-     * 
+     *
      * @return string
      */
     public static function escape($string)
@@ -50,7 +50,7 @@ class Str
      * Generate a more truly "random" alpha-numeric string.
      *
      * @param  int  $length
-     * 
+     *
      * @return string
      */
     public static function random($length = 32)

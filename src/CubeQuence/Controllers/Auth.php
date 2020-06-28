@@ -17,7 +17,7 @@ class Auth extends Controller
 
     /**
      * Initialize the provider
-     * 
+     *
      * @return void
      */
     public function __construct()
@@ -31,7 +31,7 @@ class Auth extends Controller
 
     /**
      * Redirect to authorization portal
-     * 
+     *
      * @return Redirect
      */
     public function request()
@@ -45,7 +45,7 @@ class Auth extends Controller
      * Callback for OAuth
      *
      * @param object $request
-     * 
+     *
      * @return Redirect
      */
     public function callback($request)
@@ -66,7 +66,7 @@ class Auth extends Controller
 
     /**
      * Create session
-     * 
+     *
      * @param string $id
      * @param string $variant
      * @param string $expires
@@ -92,7 +92,7 @@ class Auth extends Controller
 
     /**
      * Destroy session
-     * 
+     *
      * @param string $msg optional
      *
      * @return Redirect

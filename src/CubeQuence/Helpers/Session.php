@@ -9,7 +9,7 @@ class Session
      *
      * @param string $name
      * @param mixed $data
-     * 
+     *
      * @return mixed
      */
     public static function set($name, $data)
@@ -23,7 +23,7 @@ class Session
      * Unset session var
      *
      * @param string $name
-     * 
+     *
      * @return void
      */
     public static function unset($name)
@@ -35,7 +35,7 @@ class Session
      * Get session var
      *
      * @param string $name
-     * 
+     *
      * @return mixed
      */
     public static function get($name)
@@ -45,7 +45,7 @@ class Session
 
     /**
      * Destroy and restart a session
-     * 
+     *
      * @return void
      */
     public static function destroy()

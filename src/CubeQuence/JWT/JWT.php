@@ -16,9 +16,9 @@ class JWT
 
     /**
      * Define client variables
-     * 
+     *
      * @param array $data
-     * 
+     *
      * @return void
      */
     public function __construct($data)
