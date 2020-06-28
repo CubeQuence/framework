@@ -3,6 +3,20 @@ const inputsDisabled = state => document.querySelectorAll('button, input, textar
 const reload = () => window.location.reload();
 const redirect = to => window.location.assign(to);
 
+const copy = str => {
+    const el = document.createElement('textarea');
+
+    el.value = str;
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+};
+
 const api = axios.create({
     baseURL: '/',
     headers: {
@@ -16,7 +30,7 @@ const api = axios.create({
 const formDataToJSON = data => {
     const object = {};
     [...data].map((item) => object[item[0]] = item[1]);
-    
+
     return object;
 }
 
@@ -32,9 +46,9 @@ const apiUse = (method, endpoint, data, form = null) => {
 
         M.toast({html: response.data.message, displayLength: 8000});
         inputsDisabled(false);
-        
+
         const data = response.data.data;
-        
+
         if (data.prompt) {
             prompt(data.prompt.title, data.prompt.data);
         }
@@ -53,7 +67,7 @@ const apiUse = (method, endpoint, data, form = null) => {
 
 const formSubmit = (form, endpoint, captchaRequired = false, method = 'post') => {
     const data = formDataToJSON(new FormData(form));
-    
+
     if (captchaRequired && !data['h-captcha-response']) {
         M.toast({html: 'Please complete captcha'});
         return;
