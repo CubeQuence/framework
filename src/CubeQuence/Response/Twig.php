@@ -12,11 +12,9 @@ class Twig
     private $twig;
 
     /**
-     * Create twig instance
+     * Create twig instance.
      *
      * @param bool $cache
-     *
-     * @return void
      */
     public function __construct($cache = true)
     {
@@ -29,7 +27,7 @@ class Twig
     }
 
     /**
-     * Return twig instance
+     * Return twig instance.
      *
      * @return Environment
      */
@@ -39,10 +37,10 @@ class Twig
     }
 
     /**
-     * Render template in string form
+     * Render template in string form.
      *
      * @param string $template
-     * @param array $parameters
+     * @param array  $parameters
      *
      * @return string
      */

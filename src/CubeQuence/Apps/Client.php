@@ -2,8 +2,8 @@
 
 namespace CQ\Apps;
 
-use Exception;
 use CQ\JWT\JWT;
+use Exception;
 
 class Client
 {
@@ -13,11 +13,9 @@ class Client
     private $debug;
 
     /**
-     * Define client variables
+     * Define client variables.
      *
      * @param array $data
-     *
-     * @return void
      */
     public function __construct($data)
     {
@@ -28,26 +26,25 @@ class Client
     }
 
     /**
-     * Generate authorization url
+     * Generate authorization url.
      *
      * @return string
      */
     public function getAuthorizationUrl()
     {
-        $url = "{$this->provider_url}/launch/{$this->app_id}";
-
-        return $url;
+        return "{$this->provider_url}/launch/{$this->app_id}";
     }
 
     /**
-     * Validate code and return data
+     * Validate code and return data.
      *
      * @param string $code
-     * @param string $user_ip optional
+     * @param string $user_ip    optional
      * @param string $user_agent optional
      *
-     * @return array
      * @throws Exception
+     *
+     * @return array
      */
     public function getData($code, $user_ip = null, $user_agent = null)
     {
@@ -60,7 +57,7 @@ class Client
         $provider = new JWT([
             'iss' => $this->provider_url,
             'aud' => $this->app_url,
-            'public_key' => $config->public_key
+            'public_key' => $config->public_key,
         ]);
 
         $claims = $provider->valid($code);
@@ -69,7 +66,7 @@ class Client
             return $claims;
         }
 
-        if ($claims->type !== 'auth') {
+        if ('auth' !== $claims->type) {
             throw new Exception('Token type not valid');
         }
 
@@ -85,15 +82,14 @@ class Client
     }
 
     /**
-     * Get jwt config from provider
+     * Get jwt config from provider.
      *
      * @return object
      */
     public function getConfig()
     {
         $data = file_get_contents("{$this->provider_url}/jwt");
-        $config = json_decode($data)->data;
 
-        return $config;
+        return json_decode($data)->data;
     }
 }

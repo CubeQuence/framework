@@ -2,35 +2,32 @@
 
 namespace CQ\Controllers;
 
-use Exception;
-use CQ\Helpers\App as AppHelper;
-use CQ\Helpers\Str;
-use CQ\Helpers\Session;
-use CQ\Helpers\Request;
 use CQ\Apps\Client;
 use CQ\Config\Config;
-use CQ\Controllers\Controller;
+use CQ\Helpers\App as AppHelper;
+use CQ\Helpers\Request;
+use CQ\Helpers\Session;
+use CQ\Helpers\Str;
+use Exception;
 
 class Auth extends Controller
 {
     private $provider;
 
     /**
-     * Initialize the provider
-     *
-     * @return void
+     * Initialize the provider.
      */
     public function __construct()
     {
         $this->provider = new Client([
             'app_id' => Config::get('apps.id'),
             'app_url' => Config::get('app.url'),
-            'debug' => AppHelper::debug()
+            'debug' => AppHelper::debug(),
         ]);
     }
 
     /**
-     * Redirect to authorization portal
+     * Redirect to authorization portal.
      *
      * @return Redirect
      */
@@ -42,7 +39,7 @@ class Auth extends Controller
     }
 
     /**
-     * Callback for OAuth
+     * Callback for OAuth.
      *
      * @param object $request
      *
@@ -65,7 +62,7 @@ class Auth extends Controller
     }
 
     /**
-     * Create session
+     * Create session.
      *
      * @param string $id
      * @param string $variant
@@ -91,7 +88,7 @@ class Auth extends Controller
     }
 
     /**
-     * Destroy session
+     * Destroy session.
      *
      * @param string $msg optional
      *

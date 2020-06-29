@@ -2,9 +2,9 @@
 
 namespace CQ\Helpers;
 
-use Ramsey\Uuid\Uuid as UuidBase;
-use Ramsey\Uuid\Type\Hexadecimal;
 use Ramsey\Uuid\Provider\Node\StaticNodeProvider;
+use Ramsey\Uuid\Type\Hexadecimal;
+use Ramsey\Uuid\Uuid as UuidBase;
 
 class UUID
 {
@@ -12,7 +12,7 @@ class UUID
     private static $hex_namespace = '63756265';
 
     /**
-     * Return V4 Random UUID
+     * Return V4 Random UUID.
      *
      * @return string
      */
@@ -22,7 +22,7 @@ class UUID
     }
 
     /**
-     * Return V5 Name-Based UUID
+     * Return V5 Name-Based UUID.
      *
      * @param string $name
      *
@@ -34,7 +34,7 @@ class UUID
     }
 
     /**
-     * Return V6 Ordered-Time UUID
+     * Return V6 Ordered-Time UUID.
      *
      * @return string
      */

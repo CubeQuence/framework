@@ -3,18 +3,17 @@
 namespace CQ\Validators;
 
 use Exception;
-use Respect\Validation\Validator as ValidatorBase;
 use Respect\Validation\Exceptions\NestedValidationException;
+use Respect\Validation\Validator as ValidatorBase;
 
 class Validator
 {
     /**
-     * Execute validation
+     * Execute validation.
      *
      * @param ValidatorBase $validator
-     * @param object $data
+     * @param object        $data
      *
-     * @return void
      * @throws Exception
      */
     protected static function validate(ValidatorBase $validator, $data)

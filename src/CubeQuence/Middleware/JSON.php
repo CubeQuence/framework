@@ -4,7 +4,6 @@ namespace CQ\Middleware;
 
 use CQ\Helpers\Request;
 use CQ\Response\Json as JsonResponse;
-use CQ\Middleware\Middleware;
 
 class JSON extends Middleware
 {
@@ -25,8 +24,8 @@ class JSON extends Middleware
                     'success' => false,
                     'message' => 'Invalid Content-Type',
                     'data' => [
-                        'details' => "Content-Type should be 'application/json'"
-                    ]
+                        'details' => "Content-Type should be 'application/json'",
+                    ],
                 ], 415);
             }
 
@@ -35,7 +34,7 @@ class JSON extends Middleware
             if ((JSON_ERROR_NONE !== json_last_error())) {
                 return new JsonResponse([
                     'success' => false,
-                    'message' => 'Problems parsing provided JSON'
+                    'message' => 'Problems parsing provided JSON',
                 ], 415);
             }
 

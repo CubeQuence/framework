@@ -3,8 +3,8 @@
 namespace CQ\Routing;
 
 use CQ\Helpers\App;
-use MiladRahimi\PhpRouter\Router as RouterBase;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
+use MiladRahimi\PhpRouter\Router as RouterBase;
 use Zend\Diactoros\Response\RedirectResponse;
 
 class Router
@@ -14,12 +14,10 @@ class Router
     private $route500;
 
     /**
-     * Create router instance
+     * Create router instance.
      *
-     * @param array $config
+     * @param array  $config
      * @param string $controllers
-     *
-     * @return void
      */
     public function __construct($config = [], $controllers = 'App\Controllers')
     {
@@ -29,7 +27,7 @@ class Router
     }
 
     /**
-     * Return router instance
+     * Return router instance.
      *
      * @return RouterBase
      */
@@ -39,9 +37,7 @@ class Router
     }
 
     /**
-     * Start the router
-     *
-     * @return void
+     * Start the router.
      */
     public function start()
     {

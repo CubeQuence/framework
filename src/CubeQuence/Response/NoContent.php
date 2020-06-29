@@ -7,12 +7,11 @@ use Zend\Diactoros\Response\EmptyResponse;
 class NoContent extends EmptyResponse
 {
     /**
-     * Empty Response
+     * Empty Response.
      *
      * @param string $controller
-     * @param array $headers
-     *
-     * @return void
+     * @param array  $headers
+     * @param mixed  $code
      */
     public function __construct($code, $headers = [])
     {

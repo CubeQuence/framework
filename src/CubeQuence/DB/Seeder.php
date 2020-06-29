@@ -8,7 +8,7 @@ use Phinx\Seed\AbstractSeed;
 class Seeder extends AbstractSeed
 {
     /**
-     * Create faker instance
+     * Create faker instance.
      */
     public static function faker()
     {

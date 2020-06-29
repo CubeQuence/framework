@@ -5,10 +5,10 @@ namespace CQ\Helpers;
 class Session
 {
     /**
-     * Set session var
+     * Set session var.
      *
      * @param string $name
-     * @param mixed $data
+     * @param mixed  $data
      *
      * @return mixed
      */
@@ -20,11 +20,9 @@ class Session
     }
 
     /**
-     * Unset session var
+     * Unset session var.
      *
      * @param string $name
-     *
-     * @return void
      */
     public static function unset($name)
     {
@@ -32,7 +30,7 @@ class Session
     }
 
     /**
-     * Get session var
+     * Get session var.
      *
      * @param string $name
      *
@@ -44,9 +42,7 @@ class Session
     }
 
     /**
-     * Destroy and restart a session
-     *
-     * @return void
+     * Destroy and restart a session.
      */
     public static function destroy()
     {

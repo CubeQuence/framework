@@ -5,7 +5,7 @@ namespace CQ\Helpers;
 class Str
 {
     /**
-     * Determines if the given string contains the given value
+     * Determines if the given string contains the given value.
      *
      * @param string $haystack
      * @param string $needle
@@ -14,11 +14,11 @@ class Str
      */
     public static function contains($haystack, $needle)
     {
-        return strpos($haystack, $needle) !== false;
+        return false !== strpos($haystack, $needle);
     }
 
     /**
-     * Determines if the given string starts with the given value
+     * Determines if the given string starts with the given value.
      *
      * @param string $haystack
      * @param string $start
@@ -31,7 +31,7 @@ class Str
     }
 
     /**
-     * Escape a string
+     * Escape a string.
      *
      * @param string $string
      *
@@ -41,15 +41,14 @@ class Str
     {
         $string = trim($string);
         $string = htmlspecialchars($string);
-        $string = stripslashes($string);
 
-        return $string;
+        return stripslashes($string);
     }
 
     /**
      * Generate a more truly "random" alpha-numeric string.
      *
-     * @param  int  $length
+     * @param int $length
      *
      * @return string
      */

@@ -7,7 +7,6 @@ use CQ\Helpers\Request;
 use CQ\Helpers\Session as SessionHelper;
 use CQ\Response\Json;
 use CQ\Response\Redirect;
-use CQ\Middleware\Middleware;
 
 class Session extends Middleware
 {
@@ -34,8 +33,8 @@ class Session extends Middleware
                 'success' => false,
                 'message' => 'Invalid Session',
                 'data' => [
-                    'redirect' => '/?msg=logout'
-                ]
+                    'redirect' => '/?msg=logout',
+                ],
             ], 403);
         }
 

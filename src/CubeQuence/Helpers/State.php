@@ -2,13 +2,10 @@
 
 namespace CQ\Helpers;
 
-use CQ\Helpers\Str;
-use CQ\Helpers\Session;
-
 class State
 {
     /**
-     * Set state
+     * Set state.
      *
      * @param string $custom optional
      *
@@ -22,10 +19,10 @@ class State
     }
 
     /**
-     * Validate $provided_state
+     * Validate $provided_state.
      *
      * @param string $provided_state
-     * @param bool $unset_state optional
+     * @param bool   $unset_state    optional
      *
      * @return bool
      */

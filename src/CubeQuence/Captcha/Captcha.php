@@ -9,7 +9,7 @@ use GuzzleHttp\Exception\RequestException;
 class Captcha
 {
     /**
-     * Validate captcha
+     * Validate captcha.
      *
      * @param string $url
      * @param string $secret
@@ -26,7 +26,7 @@ class Captcha
                 'form_params' => [
                     'secret' => $secret,
                     'response' => $response,
-                    'remoteip' => Request::ip()
+                    'remoteip' => Request::ip(),
                 ],
             ]);
         } catch (RequestException $e) {

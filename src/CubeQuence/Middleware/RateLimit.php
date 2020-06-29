@@ -2,11 +2,10 @@
 
 namespace CQ\Middleware;
 
-use CQ\DB\DB;
 use CQ\Config\Config;
+use CQ\DB\DB;
 use CQ\Helpers\Request;
 use CQ\Response\Json;
-use CQ\Middleware\Middleware;
 
 class RateLimit extends Middleware
 {
@@ -14,7 +13,7 @@ class RateLimit extends Middleware
     private $reset_time;
 
     /**
-     * Ratelimit API
+     * Ratelimit API.
      *
      * @param $request
      * @param $next
@@ -42,7 +41,7 @@ class RateLimit extends Middleware
     }
 
     /**
-     * Get config for specific path
+     * Get config for specific path.
      *
      * @param object $request
      *
@@ -66,9 +65,9 @@ class RateLimit extends Middleware
     protected function fingerprintRequest($request)
     {
         return sha1(
-            $request->getMethod() .
-                '|' . Request::path($request) .
-                '|' . Request::ip()
+            $request->getMethod().
+                '|'.Request::path($request).
+                '|'.Request::ip()
         );
     }
 
@@ -83,27 +82,26 @@ class RateLimit extends Middleware
     {
         return new Json([
             'success' => false,
-            'message' => 'Ratelimit Exceeded'
+            'message' => 'Ratelimit Exceeded',
         ], 429, $headers);
     }
 
     /**
      * Add the limit header information to the given response.
      *
-     * @param int $remaining_requests
+     * @param int      $remaining_requests
      * @param int|null $retry_after
+     * @param mixed    $validated_request
      *
      * @return array
      */
     protected function genHeaders($validated_request)
     {
-        $headers = [
+        return [
             'X-RateLimit-Limit' => $this->max_requests,
             'X-RateLimit-Remaining' => $validated_request['remaining_requests'],
-            'X-RateLimit-Reset' => $validated_request['reset_time']
+            'X-RateLimit-Reset' => $validated_request['reset_time'],
         ];
-
-        return $headers;
     }
 
     /**
@@ -116,14 +114,14 @@ class RateLimit extends Middleware
     protected function validateRequest($fingerprint)
     {
         $request = DB::get('cq_ratelimit', ['counter', 'reset_time'], [
-            'fingerprint' => $fingerprint
+            'fingerprint' => $fingerprint,
         ]);
 
         if (!$request) {
             $request = DB::create('cq_ratelimit', [
                 'fingerprint' => $fingerprint,
                 'counter' => 1,
-                'reset_time' => time() + $this->reset_time
+                'reset_time' => time() + $this->reset_time,
             ]);
         }
 
@@ -132,15 +130,16 @@ class RateLimit extends Middleware
         return [
             'valid' => $remaining_requests > 0,
             'remaining_requests' => $remaining_requests,
-            'reset_time' => $request['reset_time']
+            'reset_time' => $request['reset_time'],
         ];
     }
 
     /**
-     * Add one or reset request counter
+     * Add one or reset request counter.
      *
      * @param string $fingerprint
-     * @param array $reset_time
+     * @param array  $reset_time
+     * @param mixed  $request
      *
      * @return int
      */
@@ -150,9 +149,9 @@ class RateLimit extends Middleware
         if (time() > $request['reset_time']) {
             DB::update('cq_ratelimit', [
                 'counter' => 1,
-                'reset_time' => time() + $this->reset_time
+                'reset_time' => time() + $this->reset_time,
             ], [
-                'fingerprint' => $fingerprint
+                'fingerprint' => $fingerprint,
             ]);
 
             return $this->max_requests - 1;
@@ -161,9 +160,9 @@ class RateLimit extends Middleware
         // reset time in future
         if ($request['counter'] < $this->max_requests) {
             DB::update('cq_ratelimit', [
-                'counter[+]' => 1
+                'counter[+]' => 1,
             ], [
-                'fingerprint' => $fingerprint
+                'fingerprint' => $fingerprint,
             ]);
         }
 

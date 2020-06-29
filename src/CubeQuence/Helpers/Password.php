@@ -2,13 +2,10 @@
 
 namespace CQ\Helpers;
 
-use CQ\Helpers\Crypt;
-use CQ\Helpers\Hash;
-
 class Password
 {
     /**
-     * encrypt hash from string
+     * encrypt hash from string.
      *
      * @param string $string
      *
@@ -17,13 +14,12 @@ class Password
     public static function hash($string)
     {
         $hash = Hash::make($string);
-        $encryptedHash = Crypt::encrypt($hash);
 
-        return $encryptedHash;
+        return Crypt::encrypt($hash);
     }
 
     /**
-     * Check plain-text with encrypted hash
+     * Check plain-text with encrypted hash.
      *
      * @param string $checkAgainst
      * @param string $encryptedHash
@@ -33,8 +29,7 @@ class Password
     public static function check($checkAgainst, $encryptedHash)
     {
         $decryptedHash = Crypt::decrypt($encryptedHash);
-        $hashValid = Hash::check($checkAgainst, $decryptedHash);
 
-        return $hashValid;
+        return Hash::check($checkAgainst, $decryptedHash);
     }
 }

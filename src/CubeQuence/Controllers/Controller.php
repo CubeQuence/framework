@@ -2,12 +2,12 @@
 
 namespace CQ\Controllers;
 
-use CQ\Helpers\App;
 use CQ\Config\Config;
-use CQ\Response\Twig;
+use CQ\Helpers\App;
 use CQ\Response\Html;
 use CQ\Response\Json;
 use CQ\Response\Redirect;
+use CQ\Response\Twig;
 
 class Controller
 {
@@ -15,9 +15,7 @@ class Controller
     private $twig;
 
     /**
-     * Provide access for child classes
-     *
-     * @return void
+     * Provide access for child classes.
      */
     public function __construct()
     {
@@ -28,10 +26,10 @@ class Controller
     }
 
     /**
-     * Shorthand redirect function
+     * Shorthand redirect function.
      *
      * @param string $to
-     * @param integer $code optional
+     * @param int    $code optional
      *
      * @return Redirect
      */
@@ -41,11 +39,11 @@ class Controller
     }
 
     /**
-     * Shorthand HTML response function
+     * Shorthand HTML response function.
      *
      * @param string $view
-     * @param array $parameters
-     * @param integer $code optional
+     * @param array  $parameters
+     * @param int    $code       optional
      *
      * @return Html
      */
@@ -61,20 +59,20 @@ class Controller
     }
 
     /**
-     * Shorthand JSON response function
+     * Shorthand JSON response function.
      *
      * @param string $message
-     * @param array $data optional
-     * @param integer $code optional
+     * @param array  $data    optional
+     * @param int    $code    optional
      *
      * @return JsonResponse
      */
     protected function respondJson($message, $data = [], $code = 200)
     {
         return new Json([
-            'success' => $code === 200,
+            'success' => 200 === $code,
             'message' => $message,
-            'data' => $data
+            'data' => $data,
         ], $code);
     }
 }

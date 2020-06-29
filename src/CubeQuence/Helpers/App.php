@@ -2,13 +2,13 @@
 
 namespace CQ\Helpers;
 
-use Exception;
 use CQ\Config\Config;
+use Exception;
 
 class App
 {
     /**
-     * Check apps envoirement
+     * Check apps envoirement.
      *
      * @param string|array $check optional
      *
@@ -35,7 +35,7 @@ class App
     }
 
     /**
-     * Return if debug is enabled
+     * Return if debug is enabled.
      *
      * @return bool
      */

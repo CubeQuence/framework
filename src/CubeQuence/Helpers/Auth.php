@@ -2,13 +2,10 @@
 
 namespace CQ\Helpers;
 
-use CQ\Helpers\Session;
-use CQ\Helpers\Request;
-
 class Auth
 {
     /**
-     * Check if session active
+     * Check if session active.
      *
      * @return bool
      */

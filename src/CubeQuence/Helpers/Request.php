@@ -2,12 +2,10 @@
 
 namespace CQ\Helpers;
 
-use CQ\Helpers\Str;
-
 class Request
 {
     /**
-     * Check if request contains isJSON
+     * Check if request contains isJSON.
      *
      * @param object $request
      *
@@ -19,7 +17,7 @@ class Request
     }
 
     /**
-     * Get request path
+     * Get request path.
      *
      * @param object $request
      *
@@ -29,13 +27,12 @@ class Request
     {
         $path = $request->getUri();
         $path = strtok($path, '?');
-        $path = strtok($path, '#');
 
-        return $path;
+        return strtok($path, '#');
     }
 
     /**
-     * Get user ip
+     * Get user ip.
      *
      * @return string
      */
@@ -45,7 +42,7 @@ class Request
     }
 
     /**
-     * Get user_agent
+     * Get user_agent.
      *
      * @return string
      */

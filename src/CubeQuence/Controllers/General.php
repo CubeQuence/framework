@@ -3,12 +3,11 @@
 namespace CQ\Controllers;
 
 use CQ\Helpers\Auth;
-use CQ\Controllers\Controller;
 
 class General extends Controller
 {
     /**
-     * Index screen
+     * Index screen.
      *
      * @param object $request
      *
@@ -41,14 +40,15 @@ class General extends Controller
 
         return $this->respond('index.twig', [
             'message' => $msg,
-            'logged_in' => Auth::valid()
+            'logged_in' => Auth::valid(),
         ]);
     }
 
     /**
-     * Error screen
+     * Error screen.
      *
      * @param string $httpcode
+     * @param mixed  $code
      *
      * @return Html
      */
@@ -78,7 +78,7 @@ class General extends Controller
         return $this->respond('error.twig', [
             'code' => $code,
             'short_message' => $short_message,
-            'message' => $message
+            'message' => $message,
         ], $code);
     }
 }

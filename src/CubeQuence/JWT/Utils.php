@@ -7,7 +7,7 @@ use phpseclib\Crypt\RSA;
 class Utils
 {
     /**
-     * Generate RSA keypair
+     * Generate RSA keypair.
      *
      * @param string $bits
      *
@@ -16,8 +16,7 @@ class Utils
     public static function generateKeys($bits = 2048)
     {
         $rsa = new RSA();
-        $keypair = $rsa->createKey(intval($bits));
 
-        return $keypair;
+        return $rsa->createKey(intval($bits));
     }
 }

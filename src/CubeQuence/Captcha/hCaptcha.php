@@ -5,7 +5,7 @@ namespace CQ\Captcha;
 class hCaptcha extends Captcha
 {
     /**
-     * Validate reCaptchaV2
+     * Validate reCaptchaV2.
      *
      * @param string $secret
      * @param string $response

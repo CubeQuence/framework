@@ -2,7 +2,6 @@
 
 namespace CQ\Config;
 
-use CQ\Config\Env;
 use CQ\Helpers\Arr;
 
 class Config
@@ -10,11 +9,9 @@ class Config
     private $dir;
 
     /**
-     * Define project dir
+     * Define project dir.
      *
      * @param string $dir
-     *
-     * @return void
      */
     public function __construct($dir)
     {
@@ -26,24 +23,22 @@ class Config
     }
 
     /**
-     * Add config file
+     * Add config file.
      *
      * @param string $name
-     *
-     * @return void
      */
     public function attach($name)
     {
-        $data = require $this->dir . "config/{$name}.php";
+        $data = require $this->dir."config/{$name}.php";
 
         $GLOBALS['cq_config'][$name] = $data;
     }
 
     /**
-     * Get config entry
+     * Get config entry.
      *
      * @param string $key
-     * @param mixed $fallback
+     * @param mixed  $fallback
      *
      * @return mixed
      */
@@ -51,8 +46,8 @@ class Config
     {
         $value = Arr::get($GLOBALS['cq_config'], $key, $fallback);
 
-        if ($value === 'true' || $value === 'false') {
-            return $value === 'true' ? true : false;
+        if ('true' === $value || 'false' === $value) {
+            return 'true' === $value ? true : false;
         }
 
         return $value;

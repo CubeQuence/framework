@@ -8,7 +8,7 @@ use Medoo\Medoo;
 class DB
 {
     /**
-     * Connect to DB
+     * Connect to DB.
      */
     public function connect()
     {
@@ -18,16 +18,16 @@ class DB
             'port' => Config::get('database.port'),
             'database_name' => Config::get('database.database'),
             'username' => Config::get('database.username'),
-            'password' => Config::get('database.password')
+            'password' => Config::get('database.password'),
         ]);
     }
 
     /**
-     * Select data from database
+     * Select data from database.
      *
      * @param string $table
-     * @param array $columns
-     * @param array $where
+     * @param array  $columns
+     * @param array  $where
      *
      * @return array|null
      */
@@ -37,10 +37,10 @@ class DB
     }
 
     /**
-     * Get only one record from table
+     * Get only one record from table.
      *
-     * @param string $table
-     * @param array $columns
+     * @param string    $table
+     * @param array     $columns
      * @param array|int $where
      *
      * @return array|null
@@ -51,10 +51,10 @@ class DB
     }
 
     /**
-     * Insert new records in table
+     * Insert new records in table.
      *
      * @param string $table
-     * @param array $data
+     * @param array  $data
      *
      * @return array
      */
@@ -66,10 +66,10 @@ class DB
     }
 
     /**
-     * Modify data in table
+     * Modify data in table.
      *
-     * @param string $table
-     * @param array $data
+     * @param string    $table
+     * @param array     $data
      * @param array|int $where
      *
      * @return array|null
@@ -83,10 +83,10 @@ class DB
     }
 
     /**
-     * Delete data from table
+     * Delete data from table.
      *
      * @param string $table
-     * @param array $where
+     * @param array  $where
      *
      * @return array|null
      */
@@ -96,10 +96,10 @@ class DB
     }
 
     /**
-     * Determine whether the target data existed
+     * Determine whether the target data existed.
      *
      * @param string $table
-     * @param array $where
+     * @param array  $where
      *
      * @return array|null
      */
@@ -109,10 +109,10 @@ class DB
     }
 
     /**
-     * Counts the number of rows
+     * Counts the number of rows.
      *
      * @param string $table
-     * @param array $where
+     * @param array  $where
      *
      * @return int|null
      */

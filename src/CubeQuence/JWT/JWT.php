@@ -3,8 +3,8 @@
 namespace CQ\JWT;
 
 use Exception;
-use Firebase\JWT\JWT as FireBaseJWT;
 use Firebase\JWT\ExpiredException as FireBaseJWTExpiredException;
+use Firebase\JWT\JWT as FireBaseJWT;
 
 class JWT
 {
@@ -15,11 +15,9 @@ class JWT
     private $public_key;
 
     /**
-     * Define client variables
+     * Define client variables.
      *
      * @param array $data
-     *
-     * @return void
      */
     public function __construct($data)
     {
@@ -34,8 +32,8 @@ class JWT
      * Create JWT.
      *
      * @param array  $data
-     * @param int $seconds_valid
-     * @param string $aud optional
+     * @param int    $seconds_valid
+     * @param string $aud           optional
      *
      * @return string
      */
@@ -45,7 +43,7 @@ class JWT
             'iss' => $this->iss,
             'aud' => $aud ?: $this->aud,
             'iat' => time(),
-            'exp' => time() + $seconds_valid
+            'exp' => time() + $seconds_valid,
         ];
 
         $payload = array_merge($head, $data);

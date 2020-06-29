@@ -5,7 +5,7 @@ namespace CQ\Helpers;
 class Hash
 {
     /**
-     * Hash string
+     * Hash string.
      *
      * @param string $string
      *
@@ -18,20 +18,18 @@ class Hash
         $hash_options = [
             'memory_cost' => $hash_cost * PASSWORD_ARGON2_DEFAULT_MEMORY_COST,
             'time_cost' => $hash_cost * PASSWORD_ARGON2_DEFAULT_TIME_COST,
-            'threads' => $hash_cost * PASSWORD_ARGON2_DEFAULT_THREADS
+            'threads' => $hash_cost * PASSWORD_ARGON2_DEFAULT_THREADS,
         ];
 
-        $hash = password_hash(
+        return password_hash(
             $string,
             $hash_algorithm,
             $hash_options
         );
-
-        return $hash;
     }
 
     /**
-     * Check plain-text with hash
+     * Check plain-text with hash.
      *
      * @param string $checkAgainst
      * @param string $hash

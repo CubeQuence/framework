@@ -7,11 +7,9 @@ use Dotenv\Dotenv;
 class Env
 {
     /**
-     * Create dotenv instance
+     * Create dotenv instance.
      *
      * @param string $path
-     *
-     * @return void
      */
     public function __construct($path)
     {
