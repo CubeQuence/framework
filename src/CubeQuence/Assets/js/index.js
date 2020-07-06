@@ -49,6 +49,10 @@ const apiUse = (method, endpoint, data, form = null) => {
 
         const data = response.data.data;
 
+        if (data.copy) {
+            copy(data.copy);
+        }
+
         if (data.prompt) {
             prompt(data.prompt.title, data.prompt.data);
         }
