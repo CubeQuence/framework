@@ -4,7 +4,7 @@ namespace CQ\Routing;
 
 class Middleware
 {
-    public static \MiladRahimi\PhpRouter\Router $router;
+    public static $router;
 
     public static function create($config, $routes)
     {
