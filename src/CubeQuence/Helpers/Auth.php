@@ -14,20 +14,20 @@ class Auth
     public static function valid()
     {
         $session = Session::get('session');
-        
+
         if (!Session::get('user')) {
             return false;
         }
 
-        if (Config::get('auth.session_timeout') > time() - Session::get('last_activity')) {
+        if (time() - Session::get('last_activity') > Config::get('auth.session_timeout')) {
             return false;
         }
 
-        if (Config::get('auth.session_lifetime') > time() - $session['created_at']) {
+        if (time() - $session['created_at'] > Config::get('auth.session_lifetime')) {
             return false;
         }
 
-        if ($session['expires_at'] > time()) {
+        if (time() > $session['expires_at']) {
             return false;
         }
 
