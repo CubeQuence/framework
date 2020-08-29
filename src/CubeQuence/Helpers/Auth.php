@@ -14,6 +14,10 @@ class Auth
     public static function valid()
     {
         $session = Session::get('session');
+        
+        if (!Session::get('user')) {
+            return false;
+        }
 
         if (Config::get('auth.session_timeout') > time() - Session::get('last_activity')) {
             return false;
