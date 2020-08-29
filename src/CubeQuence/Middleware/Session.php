@@ -31,7 +31,7 @@ class Session extends Middleware
 
             return new Json([
                 'success' => false,
-                'message' => 'Invalid Session',
+                'message' => 'You have been logged out!',
                 'data' => [
                     'redirect' => '/?msg=logout',
                 ],

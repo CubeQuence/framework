@@ -2,6 +2,8 @@
 
 namespace CQ\Helpers;
 
+use CQ\Config\Config;
+
 class Auth
 {
     /**
@@ -11,10 +13,26 @@ class Auth
      */
     public static function valid()
     {
-        $id_not_empty = Session::get('id');
-        $ip_match = Session::get('ip') === Request::ip();
-        $session_valid = Session::get('expires') > time();
+        $session = Session::get('session');
 
-        return $id_not_empty && $ip_match && $session_valid;
+        if (Config::get('auth.session_timeout') > time() - Session::get('last_activity')) {
+            return false;
+        }
+
+        if (Config::get('auth.session_lifetime') > time() - $session['created_at']) {
+            return false;
+        }
+
+        if ($session['expires_at'] > time()) {
+            return false;
+        }
+
+        if ($session['ip'] !== Request::ip() && Config::get('auth.ip_check')) {
+            return false;
+        }
+
+        Session::set('last_activity', time());
+
+        return true;
     }
 }
