@@ -16,11 +16,6 @@ class General extends Controller
     public function index($request)
     {
         $msg = $request->getQueryParams()['msg'] ?: '';
-        $code = $request->getQueryParams()['code'] ?: '';
-
-        if ($code) {
-            return $this->redirect("/auth/callback?code={$code}");
-        }
 
         if ($msg) {
             switch ($msg) {
@@ -28,8 +23,16 @@ class General extends Controller
                     $msg = 'You have been logged out!';
                     break;
 
-                case 'token':
+                case 'state':
+                    $msg = 'Please try again!';
+                    break;
+
+                case 'code':
                     $msg = 'Invalid authentication!';
+                    break;
+
+                case 'code':
+                    $msg = 'Please register for this application!';
                     break;
 
                 default:
