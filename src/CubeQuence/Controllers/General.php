@@ -31,7 +31,7 @@ class General extends Controller
                     $msg = 'Invalid authentication!';
                     break;
 
-                case 'code':
+                case 'not_registered':
                     $msg = 'Please register for this application!';
                     break;
 
