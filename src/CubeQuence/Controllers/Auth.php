@@ -55,7 +55,7 @@ class Auth extends Controller
         $state = $request->getQueryParams()['state'];
 
         if (!State::valid($state)) {
-            return $this->logout('state');
+            return $this->destory('state');
         }
 
         try {
@@ -73,15 +73,15 @@ class Auth extends Controller
                 exit;
             }
 
-            return $this->logout('code');
+            return $this->destory('code');
         }
 
         if ($accessToken->hasExpired()) {
-            return $this->logout('code');
+            return $this->destory('code');
         }
 
         if (!$user['roles']) {
-            return $this->logout('not_registered');
+            return $this->destory('not_registered');
         }
 
         return $this->login($user, $expires_at);
@@ -129,18 +129,26 @@ class Auth extends Controller
     /**
      * Destroy session.
      *
-     * @param string $msg optional
+     * @param string $msg
      *
      * @return Redirect
      */
-    public function logout($msg = 'logout')
+    public function destory($msg)
     {
         Session::destroy();
 
-        if ($msg) {
-            return $this->redirect("/?msg={$msg}");
-        }
+        return $this->redirect("/?msg={$msg}");
+    }
 
-        return $this->redirect('/');
+    /**
+     * Logout session.
+     *
+     * @return Redirect
+     */
+    public function logout()
+    {
+        Session::destroy();
+
+        return $this->redirect('https://auth.castelnuovo.xyz/oauth2/logout?client_id=' . Config::get('auth.id'));
     }
 }
