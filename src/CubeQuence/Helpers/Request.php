@@ -5,7 +5,7 @@ namespace CQ\Helpers;
 class Request
 {
     /**
-     * Check if request contains isJSON.
+     * Check if request is JSON.
      *
      * @param object $request
      *
@@ -14,6 +14,18 @@ class Request
     public static function isJSON($request)
     {
         return Str::contains($request->getHeader('content-type')[0], '/json');
+    }
+
+    /**
+     * Check if request is Form.
+     *
+     * @param object $request
+     *
+     * @return bool
+     */
+    public static function isForm($request)
+    {
+        return $request->getHeader('content-type')[0] == 'application/x-www-form-urlencoded';
     }
 
     /**
