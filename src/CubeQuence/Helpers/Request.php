@@ -62,4 +62,14 @@ class Request
     {
         return $_SERVER['HTTP_USER_AGENT'];
     }
+
+    /**
+     * Get origin.
+     *
+     * @return string
+     */
+    public static function origin()
+    {
+        return $_SERVER['HTTP_ORIGIN'];
+    }
 }
