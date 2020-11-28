@@ -9,24 +9,19 @@ use GuzzleHttp\Exception\RequestException;
 class Mail
 {
     /**
-     * Send mailjs.lucacastelnuovo.nl.
+     * Send form.castelnuovo.xyz.
      *
-     * @param string $access_token
+     * @param string $site_key
      * @param array  $data
-     * @param string $origin
      *
      * @throws Exception
      */
-    public static function send($access_token, $data, $origin)
+    public static function send($site_key, $data)
     {
         $guzzle = new Client();
 
         try {
-            $guzzle->post('https://mailjs.lucacastelnuovo.nl/submit', [
-                'headers' => [
-                    'Authorization' => "Bearer {$access_token}",
-                    'Origin' => $origin,
-                ],
+            $guzzle->post("https://form.castelnuovo.xyz/api/{$site_key}", [
                 'json' => $data,
             ]);
         } catch (RequestException $e) {
