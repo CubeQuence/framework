@@ -11,96 +11,98 @@ class Crypt
      * Encrypt string.
      *
      * @param string $string
+     * @param string $key optional
      *
      * @return string
      */
-    public static function encrypt($string)
+    public static function encrypt($string, $key = null)
     {
+        $key = $key ?: self::getKey();
+
         if (!function_exists('sodium_crypto_secretbox')) {
-            return self::legacy_encrypt($string);
+            return self::legacy_encrypt($string, $key);
         }
 
-        $encKey = self::getEncryptionKey();
-        $encNonce = Str::random(24);
+        $nonce = Str::random(24);
+        $encString = sodium_crypto_secretbox($string, $nonce, $key);
 
-        $encString = sodium_crypto_secretbox($string, $encNonce, $encKey);
-
-        return base64_encode($encNonce.$encString);
+        return base64_encode($encString) . '|' . base64_encode($nonce);
     }
 
     /**
      * Encrypt string if sodium is not supported.
      *
      * @param string $string
+     * @param string $key
      *
      * @return string
      */
-    private static function legacy_encrypt($string)
+    private static function legacy_encrypt($string, $key)
     {
         $encMethod = 'AES-256-CBC';
-        $encKey = self::getEncryptionKey();
 
         $ivLength = openssl_cipher_iv_length($encMethod);
         $iv = openssl_random_pseudo_bytes($ivLength);
 
-        $encryptedString = openssl_encrypt($string, $encMethod, $encKey, OPENSSL_RAW_DATA, $iv);
+        $encString = openssl_encrypt($string, $encMethod, $key, OPENSSL_RAW_DATA, $iv);
 
-        return base64_encode($encryptedString) . '|' . base64_encode($iv);
+        return base64_encode($encString) . '|' . base64_encode($iv);
     }
 
     /**
      * Decrypt string.
      *
      * @param string $encryptedString
+     * @param string $key
      *
      * @return string
      */
-    public static function decrypt($encryptedString)
+    public static function decrypt($encString, $key = null)
     {
+        $key = self::getKey();
+
         if (!function_exists('sodium_crypto_secretbox_open')) {
-            return self::legacy_decrypt($encryptedString);
+            return self::legacy_decrypt($encString, $key);
         }
 
-        $encKey = self::getEncryptionKey();
-        $decodedEncString = base64_decode($encryptedString);
+        list($decodedEncString, $nonce) = explode('|', $encString);
+        $decodedEncString = base64_decode($decodedEncString);
+        $nonce = base64_decode($nonce);
 
-        $encNonce = mb_substr($decodedEncString, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, '8bit');
-        $encString = mb_substr($decodedEncString, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, null, '8bit');
-
-        return sodium_crypto_secretbox_open($encString, $encNonce, $encKey);
+        return sodium_crypto_secretbox_open($decodedEncString, $nonce, $key);
     }
 
     /**
      * Decrypt string if sodium is not supported.
      *
-     * @param string $encryptedString
+     * @param string $encString
+     * @param string $key
      *
      * @return string
      */
-    private static function legacy_decrypt($encryptedString)
+    private static function legacy_decrypt($encString, $key)
     {
         $encMethod = 'AES-256-CBC';
-        $encKey = self::getEncryptionKey();
 
-        list($data, $iv) = explode('|', $encryptedString);
+        list($data, $iv) = explode('|', $encString);
         $iv = base64_decode($iv);
 
-        return openssl_decrypt($data, $encMethod, $encKey, 0, $iv);
+        return openssl_decrypt($data, $encMethod, $key, 0, $iv);
     }
 
     /**
-     * Get enc key from config.
+     * Get key from config.
      *
      * @return string
      */
-    private static function getEncryptionKey()
+    private static function getKey()
     {
-        $encKey = Config::get('app.key');
+        $key = Config::get('app.key');
 
-        if (!$encKey) {
-            throw new Exception('No encryption key provided');
+        if (!$key) {
+            throw new Exception('No key found!');
         }
 
-        return $encKey;
+        return $key;
     }
 }
