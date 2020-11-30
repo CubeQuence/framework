@@ -9,6 +9,12 @@ class File
     private $file;
     private $file_path;
 
+    /**
+     * Open file
+     *
+     * @param string $path
+     * @param bool $new
+     */
     public function __construct($path)
     {
         $this->file = $this->open($path);
@@ -25,10 +31,6 @@ class File
      */
     private function open($path, $mode = 'a+')
     {
-        if (!self::exists($path)) {
-            throw new Exception('File does not exist');
-        }
-
         $handle = fopen($path, $mode);
 
         if (!$handle) {
@@ -112,32 +114,15 @@ class File
     }
 
     /**
-     * Check if file exists
-     *
-     * @param string $file_path
-     *
-     * @return bool
-     */
-    public static function exists($file_path)
-    {
-        return file_exists($file_path);
-    }
-
-    /**
-     * Copy file
+     * Copy original file to opened file
      *
      * @param string $original_file
-     * @param string $new_file
      *
      * @return void
      */
-    public static function copy($original_file, $new_file)
+    public function copy($original_file)
     {
-        if (!self::exists($original_file)) {
-            throw new Exception('File does not exist');
-        }
-
-        if (!copy($original_file, $new_file)) {
+        if (!copy($original_file, $this->file_path)) {
             throw new Exception('Cannot copy file');
         }
     }
@@ -145,20 +130,14 @@ class File
     /**
      * Get mime type
      *
-     * @param string $file_path
-     *
      * @return array
      */
-    public static function getMimeType($file_path)
+    public function getMimeType()
     {
-        if (!self::exists($file_path)) {
-            throw new Exception('File does not exist');
-        }
-
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $data = finfo_file($finfo, $file_path);
+        $mime_type = finfo_file($finfo, $this->file_path);
         finfo_close($finfo);
 
-        return $data;
+        return $mime_type;
     }
 }
