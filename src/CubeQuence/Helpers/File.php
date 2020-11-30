@@ -157,4 +157,14 @@ class File
 
         return $mime_type;
     }
+
+    /**
+     * Get path info
+     *
+     * @return array
+     */
+    public function getPathInfo()
+    {
+        return pathinfo($this->file_path);
+    }
 }
