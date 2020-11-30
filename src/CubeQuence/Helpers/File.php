@@ -10,34 +10,53 @@ class File
     private $file_path;
 
     /**
-     * Open file
+     * Set path
      *
      * @param string $path
      * @param bool $new
      */
     public function __construct($path)
     {
-        $this->file = $this->open($path);
         $this->file_path = $path;
     }
 
     /**
      * Open file with specific mode
      *
-     * @param string $path
      * @param string $mode
-     *
-     * @return resource
      */
-    private function open($path, $mode = 'a+')
+    private function open($mode)
     {
-        $handle = fopen($path, $mode);
+        $handle = fopen($this->file_path, $mode);
 
         if (!$handle) {
             throw new Exception('Cannot open file');
         }
 
-        return $handle;
+        $this->file = $handle;
+    }
+
+    /**
+     * Close file
+     *
+     * @return void
+     */
+    private function close()
+    {
+        if (!fclose($this->file)) {
+            throw new Exception('Cannot close file');
+        }
+    }
+
+    /**
+     * Create file
+     *
+     * @return void
+     */
+    public function create()
+    {
+        $this->open('c');
+        $this->close();
     }
 
     /**
@@ -47,12 +66,16 @@ class File
      */
     public function read()
     {
+        $this->open('r');
+
         $data = fread(
             $this->file,
             filesize($this->file_path)
         );
 
-        if (!$data) {
+        $this->close();
+
+        if ($data === false) {
             throw new Exception('Cannot read file');
         }
 
@@ -68,11 +91,13 @@ class File
      */
     public function write($data)
     {
-        $file = $this->open($this->file_path, 'w');
+        $this->open('w');
 
-        if (!fwrite($file, $data)) {
+        if (!fwrite($this->file, $data)) {
             throw new Exception('Cannot write to file');
         }
+
+        $this->close();
     }
 
     /**
@@ -84,21 +109,13 @@ class File
      */
     public function append($data)
     {
+        $this->open('a');
+
         if (!fwrite($this->file, $data)) {
             throw new Exception('Cannot append to file');
         }
-    }
 
-    /**
-     * Close file
-     *
-     * @return void
-     */
-    public function close()
-    {
-        if (!fclose($this->file)) {
-            throw new Exception('Cannot close file');
-        }
+        $this->close();
     }
 
     /**
@@ -130,7 +147,7 @@ class File
     /**
      * Get mime type
      *
-     * @return array
+     * @return string
      */
     public function getMimeType()
     {
