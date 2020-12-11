@@ -68,15 +68,15 @@ class File
     {
         $this->open('r');
 
-        $data = fread(
-            $this->file,
-            filesize($this->file_path)
-        );
+        try {
+            $data = fread(
+                $this->file,
+                filesize($this->file_path)
+            );
 
-        $this->close();
-
-        if ($data === false) {
-            throw new Exception('Cannot read file');
+            $this->close();
+        } catch (Exception $e) {
+            return "";
         }
 
         return $data;
