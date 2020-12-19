@@ -2,14 +2,14 @@
 
 namespace CQ\CLI;
 
-use CQ\Helpers\App as AppHelper;
-use CQ\Helpers\Str;
+use CQ\Helpers\File;
+use CQ\Crypto\Random;
 use Exception;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class App
+class App extends Template
 {
     /**
      * Generate key command.
@@ -20,14 +20,7 @@ class App
      */
     public function key(InputInterface $input, OutputInterface $output, SymfonyStyle $io)
     {
-        if (AppHelper::environment('production')) {
-            $io->note('Application In Production!');
-            if (!$io->confirm('Do you really wish to run this command?', false)) {
-                $io->note('Command Canceled!');
-
-                return;
-            }
-        }
+        return self::envCheck($input, $output, $io);
 
         try {
             $length = $io->ask('Key length', 64, function ($number) {
@@ -38,8 +31,8 @@ class App
                 return (int) $number;
             });
 
-            $key = Str::random($length);
-            $path = __DIR__.'/../../.env';
+            $key = Random::string($length);
+            $path = __DIR__.'/../../../../../../.env';
 
             if (!file_exists($path)) {
                 $io->warning('.env file not found, please set key manually');
@@ -48,10 +41,11 @@ class App
                 return;
             }
 
-            file_put_contents($path, str_replace(
+            $env_file = new File($path);
+            $env_file->write(str_replace(
                 'APP_KEY="'.env('APP_KEY').'"',
                 'APP_KEY="'.$key.'"',
-                file_get_contents($path)
+                $env_file->read()
             ));
         } catch (Exception $e) {
             $io->error($e->getMessage());

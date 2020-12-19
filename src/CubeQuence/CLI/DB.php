@@ -10,7 +10,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class DB
+class DB extends Template
 {
     /**
      * Migrate command.
@@ -21,14 +21,7 @@ class DB
      */
     public function migrate(InputInterface $input, OutputInterface $output, SymfonyStyle $io)
     {
-        if (App::environment('production')) {
-            $io->note('Application In Production!');
-            if (!$io->confirm('Do you really wish to run this command?', false)) {
-                $io->note('Command Canceled!');
-
-                return;
-            }
-        }
+        return self::envCheck($input, $output, $io);
 
         try {
             $fresh = $input->getOption('fresh');
@@ -59,7 +52,7 @@ class DB
             $arguments = [
                 'command' => 'migrate',
                 '--environment' => App::environment(),
-                '--configuration' => __DIR__.'/../../../../../phinx.php',
+                '--configuration' => __DIR__.'/../../../../../../phinx.php',
             ];
 
             $command->run(new ArrayInput($arguments), $output);
@@ -81,14 +74,7 @@ class DB
      */
     public function seed(InputInterface $input, OutputInterface $output, SymfonyStyle $io)
     {
-        if (App::environment('production')) {
-            $io->note('Application In Production!');
-            if (!$io->confirm('Do you really wish to run this command?', false)) {
-                $io->note('Command Canceled!');
-
-                return;
-            }
-        }
+        return self::envCheck($input, $output, $io);
 
         try {
             $phinx = new PhinxApplication();
@@ -97,7 +83,7 @@ class DB
             $arguments = [
                 'command' => 'seed:run',
                 '--environment' => App::environment(),
-                '--configuration' => __DIR__.'/../../../../../phinx.php',
+                '--configuration' => __DIR__.'/../../../../../../phinx.php',
             ];
 
             $command->run(new ArrayInput($arguments), $output);
