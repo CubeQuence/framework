@@ -15,6 +15,8 @@ class Template
      * @param InputInterface  $input
      * @param OutputInterface $output
      * @param SymfonyStyle    $io
+     *
+     * @return bool
      */
     public static function envCheck(InputInterface $input, OutputInterface $output, SymfonyStyle $io)
     {
@@ -23,8 +25,10 @@ class Template
             if (!$io->confirm('Do you really wish to run this command?', false)) {
                 $io->note('Command Canceled!');
 
-                return;
+                return false;
             }
         }
+
+        return true;
     }
 }

@@ -20,7 +20,9 @@ class App extends Template
      */
     public function key(InputInterface $input, OutputInterface $output, SymfonyStyle $io)
     {
-        return self::envCheck($input, $output, $io);
+        if (!self::envCheck($input, $output, $io)) {
+            return;
+        }
 
         try {
             $length = $io->ask('Key length', 64, function ($number) {

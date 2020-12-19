@@ -21,7 +21,9 @@ class Make extends Template
      */
     public function migration(InputInterface $input, OutputInterface $output, SymfonyStyle $io)
     {
-        return self::envCheck($input, $output, $io);
+        if (!self::envCheck($input, $output, $io)) {
+            return;
+        }
 
         try {
             $name = $input->getArgument('name');
@@ -54,7 +56,9 @@ class Make extends Template
      */
     public function seed(InputInterface $input, OutputInterface $output, SymfonyStyle $io)
     {
-        return self::envCheck($input, $output, $io);
+        if (!self::envCheck($input, $output, $io)) {
+            return;
+        }
 
         try {
             $name = $input->getArgument('name');

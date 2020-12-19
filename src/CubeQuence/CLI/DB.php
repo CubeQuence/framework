@@ -21,7 +21,9 @@ class DB extends Template
      */
     public function migrate(InputInterface $input, OutputInterface $output, SymfonyStyle $io)
     {
-        return self::envCheck($input, $output, $io);
+        if (!self::envCheck($input, $output, $io)) {
+            return;
+        }
 
         try {
             $fresh = $input->getOption('fresh');
@@ -74,7 +76,9 @@ class DB extends Template
      */
     public function seed(InputInterface $input, OutputInterface $output, SymfonyStyle $io)
     {
-        return self::envCheck($input, $output, $io);
+        if (!self::envCheck($input, $output, $io)) {
+            return;
+        }
 
         try {
             $phinx = new PhinxApplication();
