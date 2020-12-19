@@ -2,6 +2,9 @@
 
 namespace CQ\Helpers;
 
+use CQ\Crypto\AES;
+use CQ\Crypto\Hash;
+
 class Password
 {
     /**
@@ -15,7 +18,7 @@ class Password
     {
         $hash = Hash::make($string);
 
-        return Crypt::encrypt($hash);
+        return AES::encrypt($hash);
     }
 
     /**
@@ -28,7 +31,7 @@ class Password
      */
     public static function check($checkAgainst, $encryptedHash)
     {
-        $decryptedHash = Crypt::decrypt($encryptedHash);
+        $decryptedHash = AES::decrypt($encryptedHash);
 
         return Hash::check($checkAgainst, $decryptedHash);
     }
