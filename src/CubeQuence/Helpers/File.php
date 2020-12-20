@@ -3,6 +3,9 @@
 namespace CQ\Helpers;
 
 use Exception;
+use ParagonIE\Halite\File as FileLib;
+use CQ\Crypto\Symmetric;
+use CQ\Crypto\Asymmetric;
 
 class File
 {
@@ -166,5 +169,119 @@ class File
     public function getPathInfo()
     {
         return pathinfo($this->file_path);
+    }
+
+    /**
+     * Get checksum
+     *
+     * @return string
+     */
+    public function getChecksum()
+    {
+        return FileLib::checksum($this->file_path);
+    }
+
+    /**
+     * Encrypt file to output
+     *
+     * @param string $outputLocation
+     * @param string $mode
+     * @param string $key optional
+     *
+     * @return void
+     */
+    public function encrypt($outputLocation, $mode, $key = null)
+    {
+        if ($mode === 'symmetric') {
+            $key = Symmetric::getKey($key, 'encryption');
+
+            return FileLib::encrypt(
+                $this->file_path,
+                $outputLocation,
+                $key
+            );
+        }
+
+        if ($mode === 'asymmetric') {
+            $public_key = Asymmetric::getKey($key, 'encryption', 'public');
+
+            return FileLib::seal(
+                $this->file_path,
+                $outputLocation,
+                $public_key
+            );
+        }
+
+        throw new Exception('Invalid key type!');
+    }
+
+    /**
+     * Decrypt file to output
+     *
+     * @param string $outputLocation
+     * @param string $mode
+     * @param string $key optional
+     *
+     * @return void
+     */
+    public function decrypt($outputLocation, $mode, $key = null)
+    {
+        if ($mode === 'symmetric') {
+            $key = Symmetric::getKey($key, 'encryption');
+
+            return FileLib::decrypt(
+                $this->file_path,
+                $outputLocation,
+                $key
+            );
+        }
+
+        if ($mode === 'asymmetric') {
+            $private_key = Asymmetric::getKey($key, 'encryption', 'private');
+
+            return FileLib::unseal(
+                $this->file_path,
+                $outputLocation,
+                $private_key
+            );
+        }
+
+        throw new Exception('Invalid key type!');
+    }
+
+    /**
+     * Sign file using private key
+     *
+     * @param string $private_key
+     *
+     * @return string
+     */
+    public function sign($private_key)
+    {
+        $private_key = Asymmetric::getKey($private_key, 'authentication', 'private');
+
+        return FileLib::sign(
+            $this->file_path,
+            $private_key
+        );
+    }
+
+    /**
+     * Verify file signature using public key
+     *
+     * @param string $signature
+     * @param string $public_key
+     *
+     * @return bool
+     */
+    public function verify($signature, $public_key)
+    {
+        $public_key = Asymmetric::getKey($public_key, 'authentication', 'public');
+
+        return FileLib::verify(
+            $this->file_path,
+            $public_key,
+            $signature
+        );
     }
 }
