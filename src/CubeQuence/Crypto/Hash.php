@@ -33,14 +33,14 @@ class Hash
     }
 
     /**
-     * Check plain-text with hash.
+     * Verify plain-text with hash.
      *
      * @param string $checkAgainst
      * @param string $hash
      *
      * @return bool
      */
-    public static function check($checkAgainst, $hash)
+    public static function verify($checkAgainst, $hash)
     {
         return password_verify($checkAgainst, $hash);
     }
