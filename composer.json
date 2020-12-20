@@ -21,15 +21,12 @@
         "league/oauth2-client": "^2.5",
         "miladrahimi/phprouter": "^4.0",
         "mnapoli/silly": "^1.7",
-        "phpseclib/phpseclib": "^3.0",
+        "paragonie/halite": "^4",
         "ramsey/uuid": "^4.0",
         "respect/validation": "^2.0",
         "robmorgan/phinx": "^0.12.1",
         "twig/twig": "^3.0",
         "vlucas/phpdotenv": "^5.0"
-    },
-    "replace": {
-        "paragonie/random_compat": "*"
     },
     "config": {
         "sort-packages": true
