@@ -100,7 +100,7 @@ class Asymmetric
         $public_key_receiver = self::getKey($public_key_receiver, 'encryption', 'public');
 
         if ($private_key_sender) {
-            $private_key_sender = self::getKey($public_key_receiver, 'encryption', 'private');
+            $private_key_sender = self::getKey($private_key_sender, 'encryption', 'private');
 
             return Crypto::encrypt(
                 new HiddenString($string),
