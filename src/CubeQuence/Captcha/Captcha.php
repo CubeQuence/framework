@@ -3,8 +3,8 @@
 namespace CQ\Captcha;
 
 use CQ\Helpers\Request;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
+use CQ\Helpers\Guzzle;
+use Exception;
 
 class Captcha
 {
@@ -19,17 +19,15 @@ class Captcha
      */
     protected static function validate($url, $secret, $response)
     {
-        $guzzle = new Client();
-
         try {
-            $response = $guzzle->request('POST', $url, [
+            $response = Guzzle::request('POST', $url, [
                 'form_params' => [
                     'secret' => $secret,
                     'response' => $response,
                     'remoteip' => Request::ip(),
                 ],
             ]);
-        } catch (RequestException $e) {
+        } catch (Exception $e) {
             return false;
         }
 
