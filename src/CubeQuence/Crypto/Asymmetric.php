@@ -90,17 +90,28 @@ class Asymmetric
      * Encrypt string
      *
      * @param string $string
-     * @param string $public_key
+     * @param string $public_key_receiver
+     * @param string $private_key_sender optional
      *
      * @return string
      */
-    public static function encrypt($string, $public_key)
+    public static function encrypt($string, $public_key_receiver, $private_key_sender = null)
     {
-        $public_key = self::getKey($public_key, 'encryption', 'public');
+        $public_key_receiver = self::getKey($public_key_receiver, 'encryption', 'public');
+
+        if ($private_key_sender) {
+            $private_key_sender = self::getKey($public_key_receiver, 'encryption', 'private');
+
+            return Crypto::encrypt(
+                new HiddenString($string),
+                $private_key_sender,
+                $public_key_receiver
+            );
+        }
 
         return Crypto::seal(
             new HiddenString($string),
-            $public_key
+            $public_key_receiver
         );
     }
 
@@ -108,17 +119,28 @@ class Asymmetric
      * Decrypt string
      *
      * @param string $enc_string
-     * @param string $private_key
+     * @param string $private_key_receiver
+     * @param string $public_key_sender optional
      *
      * @return string
      */
-    public static function decrypt($enc_string, $private_key)
+    public static function decrypt($enc_string, $private_key_receiver, $public_key_sender = null)
     {
-        $private_key = self::getKey($private_key, 'encryption', 'private');
+        $private_key_receiver = self::getKey($private_key_receiver, 'encryption', 'private');
+
+        if ($public_key_sender) {
+            $public_key_sender = self::getKey($public_key_sender, 'encryption', 'public');
+
+            return Crypto::decrypt(
+                new HiddenString($enc_string),
+                $private_key_receiver,
+                $public_key_sender
+            )->getString();
+        }
 
         return Crypto::unseal(
             $enc_string,
-            $private_key
+            $private_key_receiver
         )->getString();
     }
 
