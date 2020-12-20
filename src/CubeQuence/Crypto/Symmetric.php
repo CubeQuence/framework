@@ -26,11 +26,12 @@ class Symmetric
     /**
      * Get encryption key
      *
-     * @param string $key optional
+     * @param string $key
+     * @param string $type
      *
      * @return \ParagonIE\Halite\Symmetric\EncryptionKey|\ParagonIE\Halite\Symmetric\AuthenticationKey
      */
-    private static function getKey($key = null)
+    private static function getKey($key, $type)
     {
         $key = $key ?: Config::get('app.key');
 
@@ -38,7 +39,15 @@ class Symmetric
             throw new Exception('No key found!');
         }
 
-        return KeyFactory::importEncryptionKey(new HiddenString($key));
+        if ($type === 'encryption') {
+            return KeyFactory::importEncryptionKey(new HiddenString($key));
+        }
+
+        if ($type === 'authentication') {
+            return KeyFactory::importAuthenticationKey(new HiddenString($key));
+        }
+
+        throw new Exception('Invalid key type!');
     }
 
     /**
@@ -51,7 +60,7 @@ class Symmetric
      */
     public static function encrypt($string, $key = null)
     {
-        $key = self::getKey($key);
+        $key = self::getKey($key, 'encryption');
 
         return Crypto::encrypt(
             new HiddenString($string),
@@ -69,12 +78,12 @@ class Symmetric
      */
     public static function decrypt($enc_string, $key = null)
     {
-        $key = self::getKey($key);
+        $key = self::getKey($key, 'encryption');
 
         return Crypto::decrypt(
             $enc_string,
             $key
-        );
+        )->getString();
     }
 
     /**
@@ -87,7 +96,7 @@ class Symmetric
      */
     public static function sign($message, $key = null)
     {
-        $key = self::getKey($key);
+        $key = self::getKey($key, 'authentication');
 
         return Crypto::authenticate(
             $message,
@@ -106,7 +115,7 @@ class Symmetric
      */
     public static function verify($message, $signature, $key = null)
     {
-        $key = self::getKey($key);
+        $key = self::getKey($key, 'authentication');
 
         return Crypto::verify(
             $message,
