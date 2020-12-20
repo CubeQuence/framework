@@ -2,32 +2,13 @@
 
 namespace CQ\Crypto;
 
-use CQ\Config\Config;
-use ParagonIE\Halite\KeyFactory;
+use CQ\Crypto\Hash;
+use CQ\Crypto\Symmetric;
 use ParagonIE\HiddenString\HiddenString;
 use ParagonIE\Halite\Password as PasswordLib;
-use Exception;
 
 class Password
 {
-    /**
-     * Get encryption key
-     *
-     * @param string $key
-     *
-     * @return \ParagonIE\Halite\Symmetric\EncryptionKey
-     */
-    private static function getKey($key)
-    {
-        $key = $key ?: Config::get('app.key');
-
-        if (!$key) {
-            throw new Exception('No key found!');
-        }
-
-        return KeyFactory::importEncryptionKey(new HiddenString($key));
-    }
-
     /**
      * Hash and encrypt password
      *
@@ -38,29 +19,40 @@ class Password
      */
     public static function hash($plaintext_password, $key = null)
     {
-        $key = self::getKey($key);
+        if (!defined('PASSWORD_ARGON2ID')) {
+            $hash = Hash::make($plaintext_password);
 
-        return PasswordLib::hash(new HiddenString($plaintext_password), $key);
+            return Symmetric::encrypt($hash, $key);
+        }
+
+        return PasswordLib::hash(
+            new HiddenString($plaintext_password),
+            Symmetric::getKey($key, 'encryption')
+        );
     }
 
     /**
      * Verify password
      *
      * @param HiddenString $plaintext_password
-     * @param string $stored_hash
+     * @param string $encrypted_hash
      * @param string $key optional
      *
      * @return bool
      */
-    public static function verify($plaintext_password, $stored_hash, $key = null)
+    public static function verify($plaintext_password, $encrypted_hash, $key = null)
     {
-        $key = self::getKey($key);
+        if (!defined('PASSWORD_ARGON2ID')) {
+            $hash = Symmetric::decrypt($encrypted_hash, $key);
+
+            return Hash::verify($plaintext_password, $hash);
+        }
 
         try {
             return PasswordLib::verify(
                 $plaintext_password,
-                $stored_hash,
-                $key
+                $encrypted_hash,
+                Symmetric::getKey($key, 'encryption')
             );
         } catch (\ParagonIE\Halite\Alerts\InvalidMessage $ex) {
             return false;
