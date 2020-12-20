@@ -203,12 +203,12 @@ class File
         }
 
         if ($mode === 'asymmetric') {
-            $public_key = Asymmetric::getKey($key, 'encryption', 'public');
+            $enc_public_key = Asymmetric::getKey($key, 'encryption', 'public');
 
             return FileLib::seal(
                 $this->file_path,
                 $outputLocation,
-                $public_key
+                $enc_public_key
             );
         }
 
@@ -237,12 +237,12 @@ class File
         }
 
         if ($mode === 'asymmetric') {
-            $private_key = Asymmetric::getKey($key, 'encryption', 'private');
+            $enc_private_key = Asymmetric::getKey($key, 'encryption', 'private');
 
             return FileLib::unseal(
                 $this->file_path,
                 $outputLocation,
-                $private_key
+                $enc_private_key
             );
         }
 
@@ -256,13 +256,13 @@ class File
      *
      * @return string
      */
-    public function sign($private_key)
+    public function sign($auth_private_key)
     {
-        $private_key = Asymmetric::getKey($private_key, 'authentication', 'private');
+        $auth_private_key = Asymmetric::getKey($auth_private_key, 'authentication', 'private');
 
         return FileLib::sign(
             $this->file_path,
-            $private_key
+            $auth_private_key
         );
     }
 
@@ -274,13 +274,13 @@ class File
      *
      * @return bool
      */
-    public function verify($signature, $public_key)
+    public function verify($signature, $auth_public_key)
     {
-        $public_key = Asymmetric::getKey($public_key, 'authentication', 'public');
+        $auth_public_key = Asymmetric::getKey($auth_public_key, 'authentication', 'public');
 
         return FileLib::verify(
             $this->file_path,
-            $public_key,
+            $auth_public_key,
             $signature
         );
     }

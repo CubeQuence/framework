@@ -16,30 +16,25 @@ class Asymmetric
     /**
      * Generate encryption keypair
      *
-     * @param string $type
-     *
-     * @return array
+     * @return object
      */
-    public static function genKey($type)
+    public static function genKey()
     {
-        if ($type === 'encryption') {
-            $keypair = KeyFactory::generateEncryptionKeyPair();
-        }
+        $auth_keypair = KeyFactory::generateSignatureKeyPair();
+        $auth_keys = [
+            'private' => sodium_bin2hex($auth_keypair->getSecretKey()->getRawKeyMaterial()),
+            'public' => sodium_bin2hex($auth_keypair->getPublicKey()->getRawKeyMaterial()),
+        ];
 
-        if ($type === 'authentication') {
-            $keypair = KeyFactory::generateSignatureKeyPair();
-        }
+        $enc_keypair = KeyFactory::generateEncryptionKeyPair();
+        $enc_keys = [
+            'private' => sodium_bin2hex($enc_keypair->getSecretKey()->getRawKeyMaterial()),
+            'public' => sodium_bin2hex($enc_keypair->getPublicKey()->getRawKeyMaterial()),
+        ];
 
-        if (!$keypair) {
-            throw new Exception('Invalid key type!');
-        }
-
-        $private_key = $keypair->getSecretKey()->getRawKeyMaterial();
-        $public_key = $keypair->getPublicKey()->getRawKeyMaterial();
-
-        return [
-            'private_key' => sodium_bin2hex($private_key),
-            'public_key' => sodium_bin2hex($public_key),
+        return (object) [
+            'auth' => $auth_keys,
+            'enc' => $enc_keys,
         ];
     }
 
@@ -89,28 +84,28 @@ class Asymmetric
      * Encrypt string
      *
      * @param string $string
-     * @param string $public_key_receiver
-     * @param string $private_key_sender optional
+     * @param string $enc_public_key_receiver
+     * @param string $enc_private_key_sender optional
      *
      * @return string
      */
-    public static function encrypt($string, $public_key_receiver, $private_key_sender = null)
+    public static function encrypt($string, $enc_public_key_receiver, $enc_private_key_sender = null)
     {
-        $public_key_receiver = self::getKey($public_key_receiver, 'encryption', 'public');
+        $enc_public_key_receiver = self::getKey($enc_public_key_receiver, 'encryption', 'public');
 
-        if ($private_key_sender) {
-            $private_key_sender = self::getKey($private_key_sender, 'encryption', 'private');
+        if ($enc_private_key_sender) {
+            $enc_private_key_sender = self::getKey($enc_private_key_sender, 'encryption', 'private');
 
             return Crypto::encrypt(
                 new HiddenString($string),
-                $private_key_sender,
-                $public_key_receiver
+                $enc_private_key_sender,
+                $enc_public_key_receiver
             );
         }
 
         return Crypto::seal(
             new HiddenString($string),
-            $public_key_receiver
+            $enc_public_key_receiver
         );
     }
 
@@ -118,28 +113,28 @@ class Asymmetric
      * Decrypt string
      *
      * @param string $enc_string
-     * @param string $private_key_receiver
-     * @param string $public_key_sender optional
+     * @param string $enc_private_key_receiver
+     * @param string $enc_public_key_sender optional
      *
      * @return string
      */
-    public static function decrypt($enc_string, $private_key_receiver, $public_key_sender = null)
+    public static function decrypt($enc_string, $enc_private_key_receiver, $enc_public_key_sender = null)
     {
-        $private_key_receiver = self::getKey($private_key_receiver, 'encryption', 'private');
+        $enc_private_key_receiver = self::getKey($enc_private_key_receiver, 'encryption', 'private');
 
-        if ($public_key_sender) {
-            $public_key_sender = self::getKey($public_key_sender, 'encryption', 'public');
+        if ($enc_public_key_sender) {
+            $enc_public_key_sender = self::getKey($enc_public_key_sender, 'encryption', 'public');
 
             return Crypto::decrypt(
                 new HiddenString($enc_string),
-                $private_key_receiver,
-                $public_key_sender
+                $enc_private_key_receiver,
+                $enc_public_key_sender
             )->getString();
         }
 
         return Crypto::unseal(
             $enc_string,
-            $private_key_receiver
+            $enc_private_key_receiver
         )->getString();
     }
 
@@ -147,17 +142,17 @@ class Asymmetric
      * Sign string
      *
      * @param string $message
-     * @param string $private_key
+     * @param string $auth_private_key
      *
      * @return string
      */
-    public static function sign($message, $private_key)
+    public static function sign($message, $auth_private_key)
     {
-        $private_key = self::getKey($private_key, 'authentication', 'private');
+        $auth_private_key = self::getKey($auth_private_key, 'authentication', 'private');
 
         return Crypto::sign(
             $message,
-            $private_key
+            $auth_private_key
         );
     }
 
@@ -166,17 +161,17 @@ class Asymmetric
      *
      * @param string $message
      * @param string $signature
-     * @param string $public_key
+     * @param string $auth_public_key
      *
      * @return bool
      */
-    public static function verify($message, $signature, $public_key)
+    public static function verify($message, $signature, $auth_public_key)
     {
-        $public_key = self::getKey($public_key, 'authentication', 'public');
+        $auth_public_key = self::getKey($auth_public_key, 'authentication', 'public');
 
         return Crypto::verify(
             $message,
-            $public_key,
+            $auth_public_key,
             $signature
         );
     }
