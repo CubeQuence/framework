@@ -16,11 +16,24 @@ class Asymmetric
     /**
      * Generate encryption keypair
      *
+     * @param string $type
+     *
      * @return array
      */
-    public static function genKey()
+    public static function genKey($type)
     {
-        $keypair = KeyFactory::generateEncryptionKeyPair();
+        if ($type === 'encryption') {
+            $keypair = KeyFactory::generateEncryptionKeyPair();
+        }
+
+        if ($type === 'authentication') {
+            $keypair = KeyFactory::generateSignatureKeyPair();
+        }
+
+        if (!$keypair) {
+            throw new Exception('Invalid key type!');
+        }
+
         $private_key = $keypair->getSecretKey()->getRawKeyMaterial();
         $public_key = $keypair->getPublicKey()->getRawKeyMaterial();
 
@@ -57,13 +70,13 @@ class Asymmetric
 
         if ($type === 'authentication') {
             if ($scope === 'private') {
-                return new EncryptionSecretKey(
+                return new SignatureSecretKey(
                     new HiddenString(sodium_hex2bin($key))
                 );
             }
 
             if ($scope === 'public') {
-                return new EncryptionPublicKey(
+                return new SignaturePublicKey(
                     new HiddenString(sodium_hex2bin($key))
                 );
             }
