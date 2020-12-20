@@ -3,7 +3,7 @@
 namespace CQ\CLI;
 
 use CQ\Helpers\File;
-use CQ\Crypto\Random;
+use CQ\Crypto\Symmetric;
 use Exception;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -25,15 +25,7 @@ class App extends Template
         }
 
         try {
-            $length = $io->ask('Key length', 64, function ($number) {
-                if (!is_numeric($number)) {
-                    throw new \RuntimeException('You must type a number.');
-                }
-
-                return (int) $number;
-            });
-
-            $key = Random::string($length);
+            $key = Symmetric::genKey();
             $path = __DIR__.'/../../../../../../.env';
 
             if (!file_exists($path)) {
