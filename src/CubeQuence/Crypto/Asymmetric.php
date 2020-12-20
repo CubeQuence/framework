@@ -52,7 +52,7 @@ class Asymmetric
      *
      * @return EncryptionSecretKey|EncryptionPublicKey|SignatureSecretKey|SignaturePublicKey
      */
-    private static function getKey($key, $type, $scope)
+    public static function getKey($key, $type, $scope)
     {
         if ($type === 'encryption') {
             if ($scope === 'private') {
@@ -81,7 +81,6 @@ class Asymmetric
                 );
             }
         }
-
 
         throw new Exception('Invalid key type!');
     }

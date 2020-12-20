@@ -31,7 +31,7 @@ class Symmetric
      *
      * @return \ParagonIE\Halite\Symmetric\EncryptionKey|\ParagonIE\Halite\Symmetric\AuthenticationKey
      */
-    private static function getKey($key, $type)
+    public static function getKey($key, $type)
     {
         $key = $key ?: Config::get('app.key');
 
