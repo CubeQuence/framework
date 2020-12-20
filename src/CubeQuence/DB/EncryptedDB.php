@@ -2,28 +2,11 @@
 
 namespace CQ\DB;
 
-use CQ\Config\Config;
-use Medoo\Medoo;
-
 // TODO: encrypt all values except ID
+use CQ\Crypto\Symmetric;
 
-class EncryptedDB
+class EncryptedDB extends DB
 {
-    /**
-     * Connect to DB.
-     */
-    public function connect()
-    {
-        $GLOBALS['cq_database'] = new Medoo([
-            'database_type' => 'mysql',
-            'server' => Config::get('database.host'),
-            'port' => Config::get('database.port'),
-            'database_name' => Config::get('database.database'),
-            'username' => Config::get('database.username'),
-            'password' => Config::get('database.password'),
-        ]);
-    }
-
     /**
      * Select data from database.
      *
