@@ -9,13 +9,14 @@ use ParagonIE\Halite\Asymmetric\EncryptionSecretKey;
 use ParagonIE\Halite\Asymmetric\EncryptionPublicKey;
 use ParagonIE\Halite\Asymmetric\SignatureSecretKey;
 use ParagonIE\Halite\Asymmetric\SignaturePublicKey;
+use Exception;
 
 class Asymmetric
 {
     /**
      * Generate encryption keypair
      *
-     * @return string
+     * @return array
      */
     public static function genKey()
     {
@@ -32,21 +33,44 @@ class Asymmetric
     /**
      * Load encryption key
      *
-     * @param string $key optional
+     * @param string $key
+     * @param string $type
+     * @param string $scope
      *
      * @return EncryptionSecretKey|EncryptionPublicKey|SignatureSecretKey|SignaturePublicKey
      */
-    private static function getKey($key, $private = true)
+    private static function getKey($key, $type, $scope)
     {
-        if ($private) {
-            return new EncryptionSecretKey(
-                new HiddenString(sodium_hex2bin($key))
-            );
+        if ($type === 'encryption') {
+            if ($scope === 'private') {
+                return new EncryptionSecretKey(
+                    new HiddenString(sodium_hex2bin($key))
+                );
+            }
+
+            if ($scope === 'public') {
+                return new EncryptionPublicKey(
+                    new HiddenString(sodium_hex2bin($key))
+                );
+            }
         }
 
-        return new EncryptionPublicKey(
-            new HiddenString(sodium_hex2bin($key))
-        );
+        if ($type === 'authentication') {
+            if ($scope === 'private') {
+                return new EncryptionSecretKey(
+                    new HiddenString(sodium_hex2bin($key))
+                );
+            }
+
+            if ($scope === 'public') {
+                return new EncryptionPublicKey(
+                    new HiddenString(sodium_hex2bin($key))
+                );
+            }
+        }
+
+
+        throw new Exception('Invalid key type!');
     }
 
     /**
@@ -59,7 +83,7 @@ class Asymmetric
      */
     public static function encrypt($string, $public_key)
     {
-        $public_key = self::getKey($public_key, false);
+        $public_key = self::getKey($public_key, 'encryption', 'public');
 
         return Crypto::seal(
             new HiddenString($string),
@@ -77,12 +101,12 @@ class Asymmetric
      */
     public static function decrypt($enc_string, $private_key)
     {
-        $private_key = self::getKey($private_key, true);
+        $private_key = self::getKey($private_key, 'encryption', 'private');
 
         return Crypto::unseal(
             $enc_string,
             $private_key
-        );
+        )->getString();
     }
 
     /**
@@ -95,7 +119,7 @@ class Asymmetric
      */
     public static function sign($message, $private_key)
     {
-        $private_key = self::getKey($private_key, true);
+        $private_key = self::getKey($private_key, 'authentication', 'private');
 
         return Crypto::sign(
             $message,
@@ -114,7 +138,7 @@ class Asymmetric
      */
     public static function verify($message, $signature, $public_key)
     {
-        $public_key = self::getKey($public_key, false);
+        $public_key = self::getKey($public_key, 'authentication', 'public');
 
         return Crypto::verify(
             $message,
