@@ -2,6 +2,8 @@
 
 namespace CQ\Helpers;
 
+use Exception;
+
 class Str
 {
     /**
@@ -49,10 +51,11 @@ class Str
      * Generate a more truly "random" alpha-numeric string.
      *
      * @param int $length
+     * @param bool $alphaOnly
      *
      * @return string
      */
-    public static function random($length = 32)
+    public static function random($length = 32, $alphaOnly = false)
     {
         $string = '';
 
@@ -61,7 +64,11 @@ class Str
 
             $bytes = random_bytes($size);
 
-            $string .= substr(str_replace(['/', '+', '='], '', base64_encode($bytes)), 0, $size);
+            if ($alphaOnly) {
+                $string .= substr(str_replace(['/', '+', '=', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'], '', base64_encode($bytes)), 0, $size);
+            } else {
+                $string .= substr(str_replace(['/', '+', '='], '', base64_encode($bytes)), 0, $size);
+            }
         }
 
         return $string;
@@ -118,22 +125,28 @@ class Str
      */
     public static function insertZeroWidth($string, $secret)
     {
+        if (!ctype_alpha($secret) || strlen($secret) > 8) {
+            throw new Exception('Secret must be alfabetical and shorter than 9 chars');
+        }
+
         $binary = self::toBinary($secret);
-        $characters = explode('', $binary);
+        $characters = str_split($binary);
 
         $output = array_map(function ($character) {
-            if ($character === 1) {
-                return '​';
+            if ($character == 1) {
+                return "​";
             }
 
-            if ($character === 0) {
-                return '‌';
+            if ($character == 0) {
+                return "‌";
             }
 
-            return '‍';
+            return "‍";
         }, $characters);
 
-        return $string . implode('﻿', $output);
+        array_unshift($output, $string);
+
+        return implode("﻿", $output);
     }
 
     /**
@@ -146,24 +159,20 @@ class Str
      */
     public static function extractZeroWidth($string)
     {
-        $clean_string = str_replace("&#8203;", '', $string);
-        $clean_string = str_replace("&#8204;", '', $clean_string);
-        $clean_string = str_replace("&#8205;", '', $clean_string);
-        $clean_string = str_replace("&#65279;", '', $clean_string);
-
-        $input = str_replace($clean_string, '', $string);
+        $characters = explode("﻿", $string);
+        array_shift($characters);
 
         $output = array_map(function ($character) {
-            if ($character === '​') {
+            if ($character == "​") {
                 return 1;
             }
 
-            if ($character === '‌') {
+            if ($character == "‌") {
                 return 0;
             }
 
             return ' ';
-        }, $input);
+        }, $characters);
 
         $binary = implode('', $output);
 
