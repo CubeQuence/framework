@@ -34,8 +34,8 @@ class Secrets extends Template
 
             if (!file_exists($path)) {
                 $io->warning('.env file not found, please set manually');
-                $io->text("SECRETS_ID=\"{$store->data->id}\"");
-                $io->text("SECRETS_KEY=\"{$store->data->key}\"");
+                $io->text("SECRETS_ID=\"{$store->id}\"");
+                $io->text("SECRETS_KEY=\"{$store->key}\"");
 
                 return;
             }
@@ -44,12 +44,12 @@ class Secrets extends Template
 
             $env_content = str_replace(
                 'SECRETS_ID="'.Config::get('secrets.id').'"',
-                'SECRETS_ID="'.$store->data->id.'"',
+                'SECRETS_ID="'.$store->id.'"',
                 $env_file->read()
             );
             $env_content = str_replace(
                 'SECRETS_KEY="'.Config::get('secrets.key').'"',
-                'SECRETS_KEY="'.$store->data->key.'"',
+                'SECRETS_KEY="'.$store->key.'"',
                 $env_content
             );
 
@@ -60,7 +60,7 @@ class Secrets extends Template
             return;
         }
 
-        $io->success('Store created: ' . $store->data->id);
+        $io->success('Store created: ' . $store->id);
     }
 
     /**
