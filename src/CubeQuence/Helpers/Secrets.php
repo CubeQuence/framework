@@ -16,14 +16,11 @@ class Secrets
      */
     public static function listStores()
     {
-        try {
-            $response = Guzzle::request('GET', 'https://api.castelnuovo.xyz/secrets', [
-                'headers' => [
-                    'X-Api-Key' => Config::get('api.key'),
-            ], ]);
-        } catch (\Throwable $e) {
-            return [];
-        }
+        $response = Guzzle::request('GET', 'https://api.castelnuovo.xyz/secrets', [
+            'headers' => [
+                'X-Api-Key' => Config::get('api.key'),
+            ],
+        ]);
 
         $response = json_decode($response->getBody());
 
@@ -39,19 +36,15 @@ class Secrets
      */
     public static function createStore($name, $data)
     {
-        try {
-            $response = Guzzle::request('POST', 'https://api.castelnuovo.xyz/secrets', [
-                'headers' => [
-                    'X-Api-Key' => Config::get('api.key'),
-                ],
-                'json' => [
-                    'name' => $name,
-                    'data' => $data,
-                ],
-            ]);
-        } catch (\Throwable $e) {
-            return [];
-        }
+        $response = Guzzle::request('POST', 'https://api.castelnuovo.xyz/secrets', [
+            'headers' => [
+                'X-Api-Key' => Config::get('api.key'),
+            ],
+            'json' => [
+                'name' => $name,
+                'data' => $data,
+            ],
+        ]);
 
         $response = json_decode($response->getBody());
 
@@ -73,18 +66,14 @@ class Secrets
         $id = $id ?: Config::get('secrets.id');
         $key = $key ?: Config::get('secrets.key');
 
-        try {
-            $response = Guzzle::request('POST', "https://api.castelnuovo.xyz/secrets/{$id}", [
-                'headers' => [
-                    'X-Api-Key' => Config::get('api.key'),
-                ],
-                'json' => [
-                    'key' => $key,
-                ],
-            ]);
-        } catch (\Throwable $e) {
-            return [];
-        }
+        $response = Guzzle::request('POST', "https://api.castelnuovo.xyz/secrets/{$id}", [
+            'headers' => [
+                'X-Api-Key' => Config::get('api.key'),
+            ],
+            'json' => [
+                'key' => $key,
+            ],
+        ]);
 
         $response = json_decode($response->getBody());
 
@@ -108,19 +97,15 @@ class Secrets
         $id = $id ?: Config::get('secrets.id');
         $key = $key ?: Config::get('secrets.key');
 
-        try {
-            $response = Guzzle::request('PUT', "https://api.castelnuovo.xyz/secrets/{$id}", [
-                'headers' => [
-                    'X-Api-Key' => Config::get('api.key'),
-                ],
-                'json' => [
-                    'key' => $key,
-                    'data' => $data,
-                ],
-            ]);
-        } catch (\Throwable $e) {
-            return [];
-        }
+        $response = Guzzle::request('PUT', "https://api.castelnuovo.xyz/secrets/{$id}", [
+            'headers' => [
+                'X-Api-Key' => Config::get('api.key'),
+            ],
+            'json' => [
+                'key' => $key,
+                'data' => $data,
+            ],
+        ]);
 
         $response = json_decode($response->getBody());
 
@@ -140,15 +125,11 @@ class Secrets
     {
         $id = $id ?: Config::get('secrets.id');
 
-        try {
-            $response = Guzzle::request('DELETE', "https://api.castelnuovo.xyz/secrets/{$id}", [
-                'headers' => [
-                    'X-Api-Key' => Config::get('api.key'),
-                ],
-            ]);
-        } catch (\Throwable $e) {
-            return [];
-        }
+        $response = Guzzle::request('DELETE', "https://api.castelnuovo.xyz/secrets/{$id}", [
+            'headers' => [
+                'X-Api-Key' => Config::get('api.key'),
+            ],
+        ]);
 
         $response = json_decode($response->getBody());
 

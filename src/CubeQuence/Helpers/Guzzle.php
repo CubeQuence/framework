@@ -4,7 +4,6 @@ namespace CQ\Helpers;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use Exception;
 
 class Guzzle
 {
@@ -26,7 +25,7 @@ class Guzzle
         } catch (RequestException $e) {
             $response = json_decode($e->getResponse()->getBody(true));
 
-            throw new Exception(json_encode($response->errors));
+            throw new \Throwable(json_encode($response->errors));
         }
     }
 }

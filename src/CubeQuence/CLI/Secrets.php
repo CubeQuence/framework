@@ -34,32 +34,33 @@ class Secrets extends Template
 
             if (!file_exists($path)) {
                 $io->warning('.env file not found, please set manually');
-                $io->text("SECRETS_ID=\"{$store->id}\"");
-                $io->text("SECRETS_KEY=\"{$store->key}\"");
+                $io->text("SECRETS_ID=\"{$store->data->id}\"");
+                $io->text("SECRETS_KEY=\"{$store->data->key}\"");
 
                 return;
             }
 
             $env_file = new File($path);
 
-            $env_file->write(str_replace(
-                'SECRETS_ID="'.env('SECRETS_ID').'"',
-                'SECRETS_ID="'.$store->id.'"',
+            $env_content = str_replace(
+                'SECRETS_ID="'.Config::get('secrets.id').'"',
+                'SECRETS_ID="'.$store->data->id.'"',
                 $env_file->read()
-            ));
+            );
+            $env_content = str_replace(
+                'SECRETS_KEY="'.Config::get('secrets.key').'"',
+                'SECRETS_KEY="'.$store->data->key.'"',
+                $env_content
+            );
 
-            $env_file->write(str_replace(
-                'SECRETS_KEY="'.env('SECRETS_KEY').'"',
-                'SECRETS_KEY="'.$store->key.'"',
-                $env_file->read()
-            ));
+            $env_file->write($env_content);
         } catch (\Throwable $th) {
-            $io->error($th->getMessage());
+            $io->error('Check API key');
 
             return;
         }
 
-        $io->success('Store created');
+        $io->success('Store created: ' . $store->data->id);
     }
 
     /**
@@ -90,19 +91,20 @@ class Secrets extends Template
 
             $env_file = new File($path);
 
-            $env_file->write(str_replace(
-                'SECRETS_ID="'.env('SECRETS_ID').'"',
+            $env_content = str_replace(
+                'SECRETS_ID="'.Config::get('secrets.id').'"',
                 'SECRETS_ID=""',
                 $env_file->read()
-            ));
-
-            $env_file->write(str_replace(
-                'SECRETS_KEY="'.env('SECRETS_KEY').'"',
+            );
+            $env_content = str_replace(
+                'SECRETS_KEY="'.Config::get('secrets.key').'"',
                 'SECRETS_KEY=""',
-                $env_file->read()
-            ));
+                $env_content
+            );
+
+            $env_file->write($env_content);
         } catch (\Throwable $th) {
-            $io->error($th->getMessage());
+            $io->error('Check API key');
 
             return;
         }
