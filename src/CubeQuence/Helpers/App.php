@@ -3,7 +3,6 @@
 namespace CQ\Helpers;
 
 use CQ\Config\Config;
-use Exception;
 
 class App
 {
@@ -30,7 +29,7 @@ class App
                 return in_array($check, $env);
 
             default:
-                throw new Exception('invalid variable type');
+                throw new \Throwable('invalid variable type');
         }
     }
 

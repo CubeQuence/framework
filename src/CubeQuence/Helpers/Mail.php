@@ -3,7 +3,6 @@
 namespace CQ\Helpers;
 
 use CQ\Helpers\Guzzle;
-use Exception;
 
 class Mail
 {
@@ -13,7 +12,7 @@ class Mail
      * @param string $site_key
      * @param array  $data
      *
-     * @throws Exception
+     * @throws \Throwable
      */
     public static function send($site_key, $data)
     {

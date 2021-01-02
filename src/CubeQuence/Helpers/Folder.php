@@ -2,8 +2,6 @@
 
 namespace CQ\Helpers;
 
-use Exception;
-
 class Folder
 {
     /**
@@ -20,7 +18,7 @@ class Folder
         }
 
         if (!mkdir($directory, $mode, $recursive)) {
-            throw new Exception('Folder could not be created');
+            throw new \Throwable('Folder could not be created');
         }
     }
 
@@ -49,7 +47,7 @@ class Folder
         }
 
         if (!rmdir($directory)) {
-            throw new Exception('Folder could not be deleted');
+            throw new \Throwable('Folder could not be deleted');
         }
     }
 

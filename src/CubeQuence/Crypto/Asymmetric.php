@@ -9,7 +9,6 @@ use ParagonIE\Halite\Asymmetric\EncryptionSecretKey;
 use ParagonIE\Halite\Asymmetric\EncryptionPublicKey;
 use ParagonIE\Halite\Asymmetric\SignatureSecretKey;
 use ParagonIE\Halite\Asymmetric\SignaturePublicKey;
-use Exception;
 
 class Asymmetric
 {
@@ -77,7 +76,7 @@ class Asymmetric
             }
         }
 
-        throw new Exception('Invalid key type!');
+        throw new \Throwable('Invalid key type!');
     }
 
     /**

@@ -6,7 +6,6 @@ use CQ\Config\Config;
 use ParagonIE\Halite\KeyFactory;
 use ParagonIE\HiddenString\HiddenString;
 use ParagonIE\Halite\Symmetric\Crypto;
-use Exception;
 
 class Symmetric
 {
@@ -36,7 +35,7 @@ class Symmetric
         $key = $key ?: Config::get('app.key');
 
         if (!$key) {
-            throw new Exception('No key found!');
+            throw new \Throwable('No key found!');
         }
 
         if ($type === 'encryption') {
@@ -47,7 +46,7 @@ class Symmetric
             return KeyFactory::importAuthenticationKey(new HiddenString($key));
         }
 
-        throw new Exception('Invalid key type!');
+        throw new \Throwable('Invalid key type!');
     }
 
     /**

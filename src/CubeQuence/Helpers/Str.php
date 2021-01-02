@@ -2,8 +2,6 @@
 
 namespace CQ\Helpers;
 
-use Exception;
-
 class Str
 {
     /**
@@ -126,7 +124,7 @@ class Str
     public static function insertZeroWidth($string, $secret)
     {
         if (!ctype_alpha($secret) || strlen($secret) > 8) {
-            throw new Exception('Secret must be alfabetical and shorter than 9 chars');
+            throw new \Throwable('Secret must be alfabetical and shorter than 9 chars');
         }
 
         $binary = self::toBinary($secret);

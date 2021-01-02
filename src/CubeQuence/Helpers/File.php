@@ -2,7 +2,6 @@
 
 namespace CQ\Helpers;
 
-use Exception;
 use ParagonIE\Halite\File as FileLib;
 use CQ\Crypto\Symmetric;
 use CQ\Crypto\Asymmetric;
@@ -33,7 +32,7 @@ class File
         $handle = fopen($this->file_path, $mode);
 
         if (!$handle) {
-            throw new Exception('Cannot open file');
+            throw new \Throwable('Cannot open file');
         }
 
         $this->file = $handle;
@@ -47,7 +46,7 @@ class File
     private function close()
     {
         if (!fclose($this->file)) {
-            throw new Exception('Cannot close file');
+            throw new \Throwable('Cannot close file');
         }
     }
 
@@ -78,7 +77,7 @@ class File
             );
 
             $this->close();
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return "";
         }
 
@@ -97,7 +96,7 @@ class File
         $this->open('w');
 
         if (!fwrite($this->file, $data)) {
-            throw new Exception('Cannot write to file');
+            throw new \Throwable('Cannot write to file');
         }
 
         $this->close();
@@ -115,7 +114,7 @@ class File
         $this->open('a');
 
         if (!fwrite($this->file, $data)) {
-            throw new Exception('Cannot append to file');
+            throw new \Throwable('Cannot append to file');
         }
 
         $this->close();
@@ -129,7 +128,7 @@ class File
     public function delete()
     {
         if (!unlink($this->file_path)) {
-            throw new Exception('Cannot delete file');
+            throw new \Throwable('Cannot delete file');
         }
     }
 
@@ -143,7 +142,7 @@ class File
     public function copy($original_file)
     {
         if (!copy($original_file, $this->file_path)) {
-            throw new Exception('Cannot copy file');
+            throw new \Throwable('Cannot copy file');
         }
     }
 
@@ -212,7 +211,7 @@ class File
             );
         }
 
-        throw new Exception('Invalid key type!');
+        throw new \Throwable('Invalid key type!');
     }
 
     /**
@@ -246,7 +245,7 @@ class File
             );
         }
 
-        throw new Exception('Invalid key type!');
+        throw new \Throwable('Invalid key type!');
     }
 
     /**

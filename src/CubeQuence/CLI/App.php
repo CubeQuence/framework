@@ -4,7 +4,6 @@ namespace CQ\CLI;
 
 use CQ\Helpers\File;
 use CQ\Crypto\Symmetric;
-use Exception;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -41,8 +40,8 @@ class App extends Template
                 'APP_KEY="'.$key.'"',
                 $env_file->read()
             ));
-        } catch (Exception $e) {
-            $io->error($e->getMessage());
+        } catch (\Throwable $th) {
+            $io->error($th->getMessage());
 
             return;
         }

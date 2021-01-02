@@ -4,7 +4,6 @@ namespace CQ\Captcha;
 
 use CQ\Helpers\Request;
 use CQ\Helpers\Guzzle;
-use Exception;
 
 class Captcha
 {
@@ -27,7 +26,7 @@ class Captcha
                     'remoteip' => Request::ip(),
                 ],
             ]);
-        } catch (Exception $e) {
+        } catch (\Throwable $th) {
             return false;
         }
 

@@ -2,8 +2,6 @@
 
 namespace CQ\CLI;
 
-use CQ\Helpers\App;
-use Exception;
 use Phinx\Console\PhinxApplication;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
@@ -38,8 +36,8 @@ class Make extends Template
             ];
 
             $command->run(new ArrayInput($arguments), $output);
-        } catch (Exception $e) {
-            $io->error($e->getMessage());
+        } catch (\Throwable $th) {
+            $io->error($th->getMessage());
 
             return;
         }
@@ -72,8 +70,8 @@ class Make extends Template
             ];
 
             $command->run(new ArrayInput($arguments), $output);
-        } catch (Exception $e) {
-            $io->error($e->getMessage());
+        } catch (\Throwable $th) {
+            $io->error($th->getMessage());
 
             return;
         }
