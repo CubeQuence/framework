@@ -19,7 +19,7 @@ class Captcha
     protected static function validate($url, $secret, $response)
     {
         try {
-            $response = Guzzle::request('POST', $url, [
+            $guzzle = Guzzle::request('POST', $url, [
                 'form_params' => [
                     'secret' => $secret,
                     'response' => $response,
@@ -30,8 +30,6 @@ class Captcha
             return false;
         }
 
-        $response = json_decode($response->getBody());
-
-        return $response->success;
+        return $guzzle->data->success;
     }
 }

@@ -14,14 +14,20 @@ class Guzzle
      * @param string $url
      * @param array $data optional
      *
-     * @return mixed
+     * @return object
      */
     public static function request($method, $url, $data = [])
     {
         $guzzle = new Client();
 
         try {
-            return $guzzle->request($method, $url, $data);
+            $response = $guzzle->request($method, $url, $data);
+            $data = json_decode($response->getBody());
+
+            return (object) [
+                'response' => $response,
+                'data' => $data,
+            ];
         } catch (RequestException $e) {
             $response = json_decode($e->getResponse()->getBody(true));
 
