@@ -76,7 +76,7 @@ class Asymmetric
             }
         }
 
-        throw new \Throwable('Invalid key type!');
+        throw new \Exception('Invalid key type!');
     }
 
     /**

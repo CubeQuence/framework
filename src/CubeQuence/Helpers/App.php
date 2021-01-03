@@ -29,7 +29,7 @@ class App
                 return in_array($check, $env);
 
             default:
-                throw new \Throwable('invalid variable type');
+                throw new \Exception('invalid variable type');
         }
     }
 

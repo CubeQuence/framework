@@ -35,7 +35,7 @@ class Symmetric
         $key = $key ?: Config::get('app.key');
 
         if (!$key) {
-            throw new \Throwable('No key found!');
+            throw new \Exception('No key found!');
         }
 
         if ($type === 'encryption') {
@@ -46,7 +46,7 @@ class Symmetric
             return KeyFactory::importAuthenticationKey(new HiddenString($key));
         }
 
-        throw new \Throwable('Invalid key type!');
+        throw new \Exception('Invalid key type!');
     }
 
     /**

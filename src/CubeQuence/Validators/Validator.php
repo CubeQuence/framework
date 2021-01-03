@@ -20,7 +20,7 @@ class Validator
         try {
             $validator->assert($data);
         } catch (NestedValidationException $e) {
-            throw new \Throwable(
+            throw new \Exception(
                 json_encode($e->getMessages())
             );
         }
