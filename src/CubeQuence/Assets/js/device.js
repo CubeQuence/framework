@@ -1,5 +1,5 @@
 const callbackTimer = setInterval(() => {
-    apiUse2('post', '/auth/callback/device', {})
+    apiUse('post', '/auth/callback/device', {})
         .then(data => {
             if (data.message !== "") {
                 clearInterval(callbackTimer);
