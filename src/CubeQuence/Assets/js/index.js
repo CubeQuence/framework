@@ -43,11 +43,16 @@ const apiUse = (method, endpoint, data, form = null) => {
                 M.Modal.getInstance(form).close();
             } catch (e) {/* not an modal */}
         }
-
-        M.toast({html: response.data.message, displayLength: 8000});
-        inputsDisabled(false);
-
         const data = response.data.data;
+
+        if (response.data.message) {
+            M.toast({html: response.data.message, displayLength: 8000});
+        }
+
+        inputsDisabled(false); // TODO: remove legacy code
+        if (data.inputsDisabled !== null) {
+            inputsDisabled(data.inputsDisabled);
+        }
 
         if (data.copy) {
             copy(data.copy);
