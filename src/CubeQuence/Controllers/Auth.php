@@ -100,7 +100,9 @@ class Auth extends Controller
             return $this->destroy('not_registered');
         }
 
-        return $this->login($user, $expires_at);
+        $url = $this->login($user, $expires_at);
+
+        return $this->redirect($url);
     }
 
     /**
@@ -135,84 +137,49 @@ class Auth extends Controller
         $config = self::getConfig();
 
         try {
-            $accessToken = Guzzle::request('POST', $config->urlAccessToken, [
+            $authorization = Guzzle::request('POST', $config->urlAccessToken, [
                 'query' => [
                     'client_id' => $config->clientId,
                     'client_secret' => $config->clientSecret,
                     'device_code' => Session::get('device_code'),
                     'grant_type' => 'urn:ietf:params:oauth:grant-type:device_code',
                 ],
-            ])->data->access_token;
+            ])->data;
 
             $user = Guzzle::request('GET', $config->urlUserDetails, [
                 'headers' => [
-                    'Authorization' => "Bearer {$accessToken}",
+                    'Authorization' => "Bearer {$authorization->access_token}",
                 ],
             ])->data;
 
-            $expires_at = null;
-
-            return $this->respondJson($user);
+            $expires_at = time() + $authorization->expires_in;
         } catch (Throwable $th) {
-            if (AppHelper::debug()) {
-                return $this->respondJson($th->getMessage(), [], 400);
+            $error = json_decode($th->getMessage())->error;
+
+            switch ($error) {
+                case 'authorization_pending':
+                    return $this->respondJson('', []);
+
+                case 'expired_token':
+                    Session::destroy();
+                    return $this->respondJson('The request has expired', [], 400);
+
+                default:
+                    Session::destroy();
+                    return $this->respondJson('Invalid Request', [], 400);
             }
-
-            /* TODO: read errors and give appropiate response
-
-                {
-                   "error": "authorization_pending",
-                   "error_description": "The authorization request is still pending"
-                }
-                return $this->respondJson('Pending');
-
-                {
-                    "error": "expired_token",
-                   "error_description": "The device_code has expired, and the device authorization session has concluded."
-                }
-                Session::destroy();
-
-                return $this->respondJson('Request expired!', [], 400);
-
-                {
-                    "error": "invalid_request",
-                   "error_reason": "invalid_device_code",
-                   "error_description": "The request has an invalid parameter: device_code"
-                }
-
-                Session::destroy();
-
-                return $this->respondJson('Request invalid!', [], 400);
-
-            */
-
-            return $this->respondJson('Pending');
         }
 
-        if ($accessToken->hasExpired()) {
-            Session::destroy();
-
-            return $this->respondJson('Token invalid!', [], 400);
-        }
-
-        if (!$user['roles']) {
+        if (!$user->roles) {
             Session::destroy();
 
             return $this->respondJson('Please register for this application!', [], 400);
         }
 
-        $return_to = Session::get('return_to');
+        $url = $this->login($user, $expires_at);
 
-        $this->login($user, $expires_at);
-
-        if ($return_to) {
-            return $this->respondJson('Sucess', [
-                'redirect' => $return_to,
-            ]);
-        }
-
-        return $this->respondJson('Sucess', [
-            'redirect' => '/dashboard',
+        return $this->respondJson('You are logged in!', [
+            'redirect' => $url,
         ]);
     }
 
@@ -222,7 +189,7 @@ class Auth extends Controller
      * @param object $user
      * @param string $expires_at
      *
-     * @return Redirect
+     * @return string
      */
     public function login($user, $expires_at)
     {
@@ -249,10 +216,10 @@ class Auth extends Controller
         Session::set('last_activity', time());
 
         if ($return_to) {
-            return $this->redirect($return_to);
+            return $return_to;
         }
 
-        return $this->redirect('/dashboard');
+        return '/dashboard';
     }
 
     /**
