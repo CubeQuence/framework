@@ -162,11 +162,11 @@ class Auth extends Controller
 
                 case 'expired_token':
                     Session::destroy();
-                    return $this->respondJson('The request has expired', [], 400);
+                    return $this->respondJson('The request has expired!', [], 400);
 
                 default:
                     Session::destroy();
-                    return $this->respondJson('Invalid Request', [], 400);
+                    return $this->respondJson('Invalid request!', [], 400);
             }
         }
 
