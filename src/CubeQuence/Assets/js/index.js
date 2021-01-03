@@ -43,7 +43,12 @@ const apiUse = (method, endpoint, data, form = null) => {
                 M.Modal.getInstance(form).close();
             } catch (e) {/* not an modal */}
         }
+
         const data = response.data.data;
+
+        if (!data) {
+            return;
+        }
 
         if (response.data.message) {
             M.toast({html: response.data.message, displayLength: 8000});
