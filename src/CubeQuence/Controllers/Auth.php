@@ -8,7 +8,6 @@ use CQ\Helpers\State;
 use CQ\Helpers\Request;
 use CQ\Helpers\Session;
 use CQ\Helpers\Guzzle;
-use Throwable;
 
 class Auth extends Controller
 {
@@ -20,16 +19,17 @@ class Auth extends Controller
     private static function getConfig()
     {
         return (object) [
-            'clientId'              => Config::get('auth.id'),
-            'clientSecret'          => Config::get('auth.secret'),
+            'clientId'      => Config::get('auth.id'),
+            'clientSecret'  => Config::get('auth.secret'),
 
-            'urlAuthorize'          => 'https://auth.castelnuovo.xyz/oauth2/authorize',
-            'urlAuthorizeDevice'    => 'https://auth.castelnuovo.xyz/oauth2/device_authorize',
-            'urlAccessToken'        => 'https://auth.castelnuovo.xyz/oauth2/token',
-            'urlUserDetails'        => 'https://auth.castelnuovo.xyz/oauth2/userinfo',
+            'authorize'     => 'https://auth.castelnuovo.xyz/oauth2/authorize',
+            'authDevice'    => 'https://auth.castelnuovo.xyz/oauth2/device_authorize',
+            'accessToken'   => 'https://auth.castelnuovo.xyz/oauth2/token',
+            'userDetails'   => 'https://auth.castelnuovo.xyz/oauth2/userinfo',
+            'logout'        => 'https://auth.castelnuovo.xyz/oauth2/logout',
 
-            'urlRedirect'           => urlencode(Config::get('app.url') . '/auth/callback'),
-            'genQrCode'             => 'https://api.castelnuovo.xyz/qr?data=',
+            'redirect'      => Config::get('app.url') . '/auth/callback',
+            'qrCode'        => 'https://api.castelnuovo.xyz/qr?data=',
         ];
     }
 
@@ -43,10 +43,10 @@ class Auth extends Controller
         $config = self::getConfig();
         $state = State::set();
 
-        $authRequest = "{$config->urlAuthorize}";
+        $authRequest = "{$config->authorize}";
         $authRequest .= "?client_id={$config->clientId}";
         $authRequest .= "&response_type=code&approval_prompt=auto";
-        $authRequest .= "&redirect_uri={$config->urlRedirect}";
+        $authRequest .= "&redirect_uri=" . urlencode($config->redirect);
         $authRequest .= "&state={$state}";
 
         return $this->redirect($authRequest);
@@ -71,17 +71,17 @@ class Auth extends Controller
         try {
             $config = self::getConfig();
 
-            $authorization = Guzzle::request('POST', $config->urlAccessToken, [
+            $authorization = Guzzle::request('POST', $config->accessToken, [
                 'query' => [
                     'client_id' => $config->clientId,
                     'client_secret' => $config->clientSecret,
                     'code' => $code,
                     'grant_type' => 'authorization_code',
-                    'redirect_uri' => urldecode($config->urlRedirect),
+                    'redirect_uri' => $config->redirect,
                 ],
             ])->data;
 
-            $user = Guzzle::request('GET', $config->urlUserDetails, [
+            $user = Guzzle::request('GET', $config->userDetails, [
                 'headers' => [
                     'Authorization' => "Bearer {$authorization->access_token}",
                 ],
@@ -114,7 +114,7 @@ class Auth extends Controller
     {
         $config = self::getConfig();
 
-        $authRequest = Guzzle::request('POST', $config->urlAuthorizeDevice, [
+        $authRequest = Guzzle::request('POST', $config->authDevice, [
             'query' => [
                 'client_id' =>$config->clientId,
             ],
@@ -123,7 +123,7 @@ class Auth extends Controller
         Session::set('device_code', $authRequest->device_code);
 
         return $this->respond('partials/device.twig', [
-            'qr' => $config->genQrCode . urlencode($authRequest->verification_uri_complete),
+            'qr' => $config->qrCode . urlencode($authRequest->verification_uri_complete),
         ]);
     }
 
@@ -137,7 +137,7 @@ class Auth extends Controller
         $config = self::getConfig();
 
         try {
-            $authorization = Guzzle::request('POST', $config->urlAccessToken, [
+            $authorization = Guzzle::request('POST', $config->accessToken, [
                 'query' => [
                     'client_id' => $config->clientId,
                     'client_secret' => $config->clientSecret,
@@ -146,14 +146,14 @@ class Auth extends Controller
                 ],
             ])->data;
 
-            $user = Guzzle::request('GET', $config->urlUserDetails, [
+            $user = Guzzle::request('GET', $config->userDetails, [
                 'headers' => [
                     'Authorization' => "Bearer {$authorization->access_token}",
                 ],
             ])->data;
 
             $expires_at = time() + $authorization->expires_in;
-        } catch (Throwable $th) {
+        } catch (\Throwable $th) {
             $error = json_decode($th->getMessage())->error;
 
             switch ($error) {
@@ -243,8 +243,9 @@ class Auth extends Controller
      */
     public function logout()
     {
+        $config = self::getConfig();
         Session::destroy();
 
-        return $this->redirect('https://auth.castelnuovo.xyz/oauth2/logout?client_id=' . Config::get('auth.id'));
+        return $this->redirect("{$config->logout}?client_id=" . Config::get('auth.id'));
     }
 }
