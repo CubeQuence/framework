@@ -15,6 +15,8 @@ class Guzzle
      * @param array $data optional
      *
      * @return object
+     *
+     * @throws Exception
      */
     public static function request($method, $url, $data = [])
     {
@@ -29,9 +31,7 @@ class Guzzle
                 'data' => $data,
             ];
         } catch (RequestException $e) {
-            $response = json_decode($e->getResponse()->getBody(true));
-
-            throw new \Throwable(json_encode($response->errors));
+            throw new \Exception($e->getResponse()->getBody(true));
         }
     }
 }
