@@ -77,7 +77,7 @@ const apiUse = (method, endpoint, data, form = null) => {
             reload();
         }
 
-        return data;
+        return response.data;
     });
 }
 
