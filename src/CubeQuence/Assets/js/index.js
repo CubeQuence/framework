@@ -37,7 +37,7 @@ const formDataToJSON = data => {
 const apiUse = (method, endpoint, data, form = null) => {
     inputsDisabled(true);
 
-    api[method](endpoint, data).then(async response => {
+    return api[method](endpoint, data).then(async response => {
         if (response.data.success) {
             try {
                 M.Modal.getInstance(form).close();
@@ -66,6 +66,8 @@ const apiUse = (method, endpoint, data, form = null) => {
             await delay(750);
             reload();
         }
+
+        return data;
     });
 }
 
