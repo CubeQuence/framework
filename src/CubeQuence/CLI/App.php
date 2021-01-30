@@ -57,17 +57,18 @@ class App extends Template
      * @param OutputInterface $output
      * @param SymfonyStyle    $io
      */
-    public function derivedKey(InputInterface $input, OutputInterface $output, SymfonyStyle $io)
+    public function contextKey(InputInterface $input, OutputInterface $output, SymfonyStyle $io)
     {
         try {
             $plaintext_key = Symmetric::getKey(null, 'encryption');
-            $derivedKey = Password::hash($plaintext_key, $input->getArgument('context'));
+            $contextKey = Password::hash($plaintext_key, $input->getArgument('context'));
         } catch (\Throwable $th) {
             $io->error($th->getMessage());
 
             return;
         }
 
-        $io->success('Derived key: ' . $derivedKey);
+        $io->success('Context key created successfully');
+        $io->text($contextKey);
     }
 }
