@@ -22,7 +22,10 @@ class Password
         if (!defined('PASSWORD_ARGON2ID')) {
             $hash = Hash::make($plaintext_password);
 
-            return Symmetric::encrypt($hash, $key);
+            return Symmetric::encrypt(
+                $hash,
+                Symmetric::getKey($key, 'encryption')
+            );
         }
 
         return PasswordLib::hash(
@@ -43,7 +46,10 @@ class Password
     public static function verify($plaintext_password, $encrypted_hash, $key = null)
     {
         if (!defined('PASSWORD_ARGON2ID')) {
-            $hash = Symmetric::decrypt($encrypted_hash, $key);
+            $hash = Symmetric::decrypt(
+                $encrypted_hash,
+                Symmetric::getKey($key, 'encryption')
+            );
 
             return Hash::verify($plaintext_password, $hash);
         }
