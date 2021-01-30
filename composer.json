@@ -17,7 +17,7 @@
         "catfan/medoo": "^1.7",
         "fzaninotto/faker": "^1.9",
         "guzzlehttp/guzzle": "^7.0",
-        "miladrahimi/phprouter": "^4.0",
+        "miladrahimi/phprouter": "^5.0",
         "mnapoli/silly": "^1.7",
         "paragonie/halite": "^4",
         "ramsey/uuid": "^4.0",
