@@ -3,6 +3,7 @@
 namespace CQ\CLI;
 
 use CQ\Helpers\File;
+use CQ\Crypto\Password;
 use CQ\Crypto\Symmetric;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -47,5 +48,26 @@ class App extends Template
         }
 
         $io->success('Key set successfully');
+    }
+
+    /**
+     * Generate derived key command.
+     *
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     * @param SymfonyStyle    $io
+     */
+    public function derivedKey(InputInterface $input, OutputInterface $output, SymfonyStyle $io)
+    {
+        try {
+            $plaintext_key = Symmetric::getKey(null, 'encryption');
+            $derivedKey = Password::hash($plaintext_key, $input->getArgument('context'));
+        } catch (\Throwable $th) {
+            $io->error($th->getMessage());
+
+            return;
+        }
+
+        $io->success('Derived key: ' . $derivedKey);
     }
 }
