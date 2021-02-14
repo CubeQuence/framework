@@ -2,7 +2,10 @@
 
 namespace CQ\Middleware;
 
+use Closure;
+
 use CQ\Config\Config;
+use CQ\Response\Json;
 use CQ\Response\NoContent;
 
 class CORS extends Middleware
@@ -10,27 +13,38 @@ class CORS extends Middleware
     /**
      * Add CORS headers to requests.
      *
-     * @param $request
-     * @param $next
+     * @param Closure $next
      *
-     * @return mixed
+     * @return Closure|Json
      */
-    public function handle($request, $next)
+    public function handleChild(Closure $next) : Closure|Json
     {
         $headers = [
-            'Access-Control-Allow-Origin' => implode(', ', Config::get('cors.allow_origins', [])),
-            'Access-Control-Allow-Headers' => implode(', ', Config::get('cors.allow_headers', [])),
-            'Access-Control-Allow-Methods' => implode(', ', Config::get('cors.allow_methods', [])),
+            'Access-Control-Allow-Origin' => implode(
+                glue:', ',
+                pieces: Config::get(key: 'cors.allow_origins', fallback: [])
+            ),
+            'Access-Control-Allow-Headers' => implode(
+                glue:', ',
+                pieces: Config::get(key: 'cors.allow_headers', fallback: [])
+            ),
+            'Access-Control-Allow-Methods' => implode(
+                glue:', ',
+                pieces: Config::get(key: 'cors.allow_methods', fallback: [])
+            ),
         ];
 
-        $response = $next($request);
+        $response = $next($this->request);
 
         foreach ($headers as $key => $value) {
             $response = $response->withHeader($key, $value);
         }
 
-        if ('POST' !== $request->getMethod()) {
-            return new NoContent(204, $headers);
+        if ($this->request->getMethod() === 'OPTIONS') {
+            return new NoContent(
+                code: 204,
+                headers: $headers
+            );
         }
 
         return $response;

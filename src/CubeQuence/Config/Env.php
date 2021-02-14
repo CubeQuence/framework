@@ -11,9 +11,9 @@ class Env
      *
      * @param string $path
      */
-    public function __construct($path)
+    public function __construct(string $path)
     {
-        $dotenv = Dotenv::createImmutable($path);
+        $dotenv = Dotenv::createImmutable(paths: $path);
         $dotenv->load();
     }
 }

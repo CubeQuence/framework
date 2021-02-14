@@ -16,7 +16,7 @@ class UUID
      *
      * @return string
      */
-    public static function v4()
+    public static function v4() : string
     {
         return UuidBase::uuid4()->toString();
     }
@@ -28,9 +28,12 @@ class UUID
      *
      * @return string
      */
-    public static function v5($name)
+    public static function v5(string $name) : string
     {
-        return UuidBase::uuid5(self::$namespace, $name)->toString();
+        return UuidBase::uuid5(
+            ns: self::$namespace,
+            name: $name
+        )->toString();
     }
 
     /**
@@ -38,11 +41,13 @@ class UUID
      *
      * @return string
      */
-    public static function v6()
+    public static function v6() : string
     {
-        $node = new Hexadecimal(self::$hex_namespace);
-        $nodeProvider = new StaticNodeProvider($node);
+        $node = new Hexadecimal(value: self::$hex_namespace);
+        $nodeProvider = new StaticNodeProvider(node: $node);
 
-        return UuidBase::uuid6($nodeProvider->getNode())->toString();
+        return UuidBase::uuid6(
+            node: $nodeProvider->getNode()
+        )->toString();
     }
 }

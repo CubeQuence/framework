@@ -2,12 +2,14 @@
 
 namespace CQ\CLI;
 
-use CQ\Helpers\File;
-use CQ\Crypto\Password;
-use CQ\Crypto\Symmetric;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+
+use CQ\Helpers\App as AppHelper;
+use CQ\Helpers\File;
+use CQ\Crypto\Password;
+use CQ\Crypto\Symmetric;
 
 class App extends Template
 {
@@ -17,37 +19,41 @@ class App extends Template
      * @param InputInterface  $input
      * @param OutputInterface $output
      * @param SymfonyStyle    $io
+     *
+     * @return void
      */
-    public function key(InputInterface $input, OutputInterface $output, SymfonyStyle $io)
+    public function key(InputInterface $input, OutputInterface $output, SymfonyStyle $io) : void
     {
-        if (!self::envCheck($input, $output, $io)) {
+        if (!self::envCheck(input: $input, output: $output, io: $io)) {
             return;
         }
 
         try {
             $key = Symmetric::genKey();
-            $path = __DIR__.'/../../../../../../.env';
+            $path = AppHelper::getRootPath() .'/.env';
 
-            if (!file_exists($path)) {
-                $io->warning('.env file not found, please set key manually');
-                $io->text("APP_KEY=\"{$key}\"");
+            if (!file_exists(filename: $path)) {
+                $io->warning(message: '.env file not found, please set key manually');
+                $io->text(message: "APP_KEY=\"{$key}\"");
 
                 return;
             }
 
-            $env_file = new File($path);
-            $env_file->write(str_replace(
-                'APP_KEY="'.env('APP_KEY').'"',
-                'APP_KEY="'.$key.'"',
-                $env_file->read()
-            ));
+            $env_file = new File(path: $path);
+            $env_file->write(
+                data: str_replace(
+                    search: 'APP_KEY="' . env(key: 'APP_KEY') . '"',
+                    replace: 'APP_KEY="' . $key . '"',
+                    subject: $env_file->read()
+                )
+            );
         } catch (\Throwable $th) {
-            $io->error($th->getMessage());
+            $io->error(message: $th->getMessage());
 
             return;
         }
 
-        $io->success('Key set successfully');
+        $io->success(message: 'Key set successfully');
     }
 
     /**
@@ -56,19 +62,24 @@ class App extends Template
      * @param InputInterface  $input
      * @param OutputInterface $output
      * @param SymfonyStyle    $io
+     *
+     * @return void
      */
-    public function contextKey(InputInterface $input, OutputInterface $output, SymfonyStyle $io)
+    public function contextKey(InputInterface $input, OutputInterface $output, SymfonyStyle $io) : void
     {
         try {
-            $plaintext_key = Symmetric::getKey(null, 'encryption');
-            $contextKey = Password::hash($plaintext_key, $input->getArgument('context'));
+            $plaintext_key = Symmetric::getKey(type: 'encryption');
+            $context_key = Password::hash(
+                plaintext_password: $plaintext_key,
+                context: $input->getArgument(name: 'context')
+            );
         } catch (\Throwable $th) {
-            $io->error($th->getMessage());
+            $io->error(message: $th->getMessage());
 
             return;
         }
 
-        $io->success('Context key created successfully');
-        $io->text($contextKey);
+        $io->success(message: 'Context key created successfully');
+        $io->text(message: $context_key);
     }
 }

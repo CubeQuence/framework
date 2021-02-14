@@ -2,10 +2,12 @@
 
 namespace CQ\Middleware;
 
+use Closure;
+
 use CQ\Helpers\Auth;
+use CQ\Response\Json;
 use CQ\Helpers\Request;
 use CQ\Helpers\Session as SessionHelper;
-use CQ\Response\Json;
 use CQ\Response\Redirect;
 
 class Session extends Middleware
@@ -13,33 +15,41 @@ class Session extends Middleware
     /**
      * Validate PHP session.
      *
-     * @param $request
-     * @param $next
+     * @param Closure $next
      *
-     * @return mixed
+     * @return Closure|Json
      */
-    public function handle($request, $next)
+    public function handleChild(Closure $next) : Closure|Json|Redirect
     {
         if (!Auth::valid()) {
             SessionHelper::destroy();
 
-            if (!Request::isJson($request)) {
-                SessionHelper::set('return_to', Request::path($request));
+            if (!Request::isJson(request: $this->request)) {
+                SessionHelper::set(
+                    name: 'return_to',
+                    data: Request::path(request: $this->request)
+                );
 
-                return new Redirect('/?msg=logout', 403);
+                return $this->respond->redirect(
+                    url: '/?msg=logout',
+                    code: 403
+                );
             }
 
-            return new Json([
-                'success' => false,
-                'message' => 'You have been logged out!',
-                'data' => [
+            return $this->respond->prettyJson(
+                message: 'You have been logged out!',
+                data: [
                     'redirect' => '/?msg=logout',
                 ],
-            ], 403);
+                code: 403
+            );
         }
 
-        SessionHelper::set('last_activity', time());
+        SessionHelper::set(
+            name: 'last_activity',
+            data:time()
+        );
 
-        return $next($request);
+        return $next($this->request);
     }
 }

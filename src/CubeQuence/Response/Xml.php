@@ -2,23 +2,21 @@
 
 namespace CQ\Response;
 
-use Zend\Diactoros\Response\XmlResponse;
-
-class Xml extends XmlResponse
+class Xml extends \Laminas\Diactoros\Response\XmlResponse
 {
     /**
-     * XML Response.
+     * XML response
      *
-     * @param array  $data
-     * @param array  $headers
-     * @param mixed  $code
+     * @param string $data
+     * @param int $code
+     * @param array $headers
      */
-    public function __construct($data, $code, $headers = [])
+    public function __construct(string $data, int $code, array $headers)
     {
         parent::__construct(
-            $data,
-            $code,
-            $headers
+            xml: $data,
+            status: $code,
+            headers: $headers
         );
     }
 }

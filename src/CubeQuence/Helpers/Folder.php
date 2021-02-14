@@ -10,6 +10,7 @@ class Folder
      * @param string $directory
      *
      * @return void
+     * @throws \Exception
      */
     public static function create($directory, $mode = 0770, $recursive = true)
     {
@@ -18,7 +19,7 @@ class Folder
         }
 
         if (!mkdir($directory, $mode, $recursive)) {
-            throw new \Exception('Folder could not be created');
+            throw new \Exception(message: 'Folder could not be created');
         }
     }
 
@@ -29,6 +30,7 @@ class Folder
      * @param bool $recursive false
      *
      * @return void
+     * @throws \Exception
      */
     public static function delete($directory, $recursive = false)
     {
@@ -47,7 +49,7 @@ class Folder
         }
 
         if (!rmdir($directory)) {
-            throw new \Exception('Folder could not be deleted');
+            throw new \Exception(message: 'Folder could not be deleted');
         }
     }
 

@@ -2,10 +2,13 @@
 
 namespace CQ\Crypto;
 
-use CQ\Config\Config;
 use ParagonIE\Halite\KeyFactory;
 use ParagonIE\HiddenString\HiddenString;
 use ParagonIE\Halite\Symmetric\Crypto;
+use ParagonIE\Halite\Symmetric\EncryptionKey;
+use ParagonIE\Halite\Symmetric\AuthenticationKey;
+
+use CQ\Config\Config;
 
 class Symmetric
 {
@@ -14,10 +17,10 @@ class Symmetric
      *
      * @return string
      */
-    public static function genKey()
+    public static function genKey() : string
     {
         $key = KeyFactory::generateEncryptionKey();
-        $key_hex = KeyFactory::export($key)->getString();
+        $key_hex = KeyFactory::export(key: $key)->getString();
 
         return $key_hex;
     }
@@ -25,28 +28,33 @@ class Symmetric
     /**
      * Get encryption key
      *
-     * @param string $key
      * @param string $type
+     * @param string $key optional
      *
-     * @return \ParagonIE\Halite\Symmetric\EncryptionKey|\ParagonIE\Halite\Symmetric\AuthenticationKey
+     * @return EncryptionKey|AuthenticationKey
+     * @throws \Exception
      */
-    public static function getKey($key, $type)
+    public static function getKey(string $type, ?string $key = null) : EncryptionKey|AuthenticationKey
     {
-        $key = $key ?: Config::get('app.key');
+        $key = $key ?: Config::get(key: 'app.key');
 
         if (!$key) {
-            throw new \Exception('No key found!');
+            throw new \Exception(message: 'No key found!');
         }
 
-        if ($type === 'encryption') {
-            return KeyFactory::importEncryptionKey(new HiddenString($key));
+        if ($type === 'encryption') { // TODO: use map instead of if statements
+            return KeyFactory::importEncryptionKey(
+                keyData: new HiddenString(value: $key)
+            );
         }
 
         if ($type === 'authentication') {
-            return KeyFactory::importAuthenticationKey(new HiddenString($key));
+            return KeyFactory::importAuthenticationKey(
+                keyData: new HiddenString(value: $key)
+            );
         }
 
-        throw new \Exception('Invalid key type!');
+        throw new \Exception(message: 'Invalid key type!');
     }
 
     /**
@@ -57,13 +65,16 @@ class Symmetric
      *
      * @return string
      */
-    public static function encrypt($string, $key = null)
+    public static function encrypt(string $string, ?string $key = null) : string
     {
-        $key = self::getKey($key, 'encryption');
+        $key = self::getKey(
+            type: 'encryption',
+            key: $key
+        );
 
         return Crypto::encrypt(
-            new HiddenString($string),
-            $key
+            plaintext: new HiddenString(value: $string),
+            secretKey: $key
         );
     }
 
@@ -75,13 +86,16 @@ class Symmetric
      *
      * @return string
      */
-    public static function decrypt($enc_string, $key = null)
+    public static function decrypt(string $enc_string, ?string $key = null) : string
     {
-        $key = self::getKey($key, 'encryption');
+        $key = self::getKey(
+            type: 'encryption',
+            key: $key
+        );
 
         return Crypto::decrypt(
-            $enc_string,
-            $key
+            ciphertext: $enc_string,
+            secretKey: $key
         )->getString();
     }
 
@@ -89,17 +103,20 @@ class Symmetric
      * Sign string
      *
      * @param string $message
-     * @param string $key
+     * @param string $key optional
      *
      * @return string
      */
-    public static function sign($message, $key = null)
+    public static function sign(string $message, ?string $key = null) : string
     {
-        $key = self::getKey($key, 'authentication');
+        $key = self::getKey(
+            type: 'authentication',
+            key: $key
+        );
 
         return Crypto::authenticate(
-            $message,
-            $key
+            message: $message,
+            secretKey: $key
         );
     }
 
@@ -108,18 +125,21 @@ class Symmetric
      *
      * @param string $message
      * @param string $signature
-     * @param string $key
+     * @param string $key optional
      *
      * @return bool
      */
-    public static function verify($message, $signature, $key = null)
+    public static function verify(string $message, string $signature, ?string $key = null) : bool
     {
-        $key = self::getKey($key, 'authentication');
+        $key = self::getKey(
+            type: 'authentication',
+            key: $key
+        );
 
         return Crypto::verify(
-            $message,
-            $key,
-            $signature
+            message: $message,
+            secretKey: $key,
+            mac: $signature
         );
     }
 }

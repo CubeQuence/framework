@@ -13,10 +13,13 @@ class Hash
      *
      * @return string
      */
-    public static function make($string)
+    public static function make(string $string) : string
     {
-        if (!defined('PASSWORD_ARGON2ID')) {
-            return password_hash($string, PASSWORD_BCRYPT);
+        if (!defined(name: 'PASSWORD_ARGON2ID')) {
+            return password_hash(
+                password: $string,
+                algo: PASSWORD_BCRYPT
+            );
         }
 
         $hash_options = [
@@ -26,22 +29,25 @@ class Hash
         ];
 
         return password_hash(
-            $string,
-            PASSWORD_ARGON2ID,
-            $hash_options
+            password: $string,
+            algo: PASSWORD_ARGON2ID,
+            options: $hash_options
         );
     }
 
     /**
      * Verify plain-text with hash.
      *
-     * @param string $checkAgainst
+     * @param string $check_against
      * @param string $hash
      *
      * @return bool
      */
-    public static function verify($checkAgainst, $hash)
+    public static function verify(string $check_against, string $hash) : bool
     {
-        return password_verify($checkAgainst, $hash);
+        return password_verify(
+            password: $check_against,
+            hash: $hash
+        );
     }
 }

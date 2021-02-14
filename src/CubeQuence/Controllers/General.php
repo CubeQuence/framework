@@ -3,61 +3,61 @@
 namespace CQ\Controllers;
 
 use CQ\Helpers\Auth;
+use CQ\Response\Html;
+use CQ\Controllers\Controller;
 
 class General extends Controller
 {
     /**
      * Index screen.
      *
-     * @param object $request
-     *
      * @return Html
      */
-    public function index($request)
+    public function index() : Html
     {
-        $msg = $request->getQueryParams()['msg'] ?: '';
+        $msg = $this->request->getQueryParams()['msg'] ?? null;
 
-        if ($msg) {
-            switch ($msg) {
-                case 'logout':
-                    $msg = 'You have been logged out!';
-                    break;
+        switch ($msg) { // TODO: replace with map
+            case 'logout':
+                $msg = 'You have been logged out!';
+                break;
 
-                case 'state':
-                    $msg = 'Please try again!';
-                    break;
+            case 'state':
+                $msg = 'Please try again!';
+                break;
 
-                case 'code':
-                    $msg = 'Invalid authentication!';
-                    break;
+            case 'code':
+                $msg = 'Invalid authentication!';
+                break;
 
-                case 'not_registered':
-                    $msg = 'Please register for this application!';
-                    break;
+            case 'not_registered':
+                $msg = 'Please register for this application!';
+                break;
 
-                default:
-                    $msg = '';
-                    break;
-            }
+            default:
+                $msg = '';
+                break;
         }
 
-        return $this->respond('index.twig', [
-            'message' => $msg,
-            'logged_in' => Auth::valid(),
-        ]);
+        return $this->respond->twig(
+            view: 'index.twig',
+            parameters: [
+                'message' => $msg,
+                'logged_in' => Auth::valid(),
+            ]
+        );
     }
 
     /**
      * Error screen.
      *
-     * @param string $httpcode
-     * @param mixed  $code
+     * @param string $code
      *
      * @return Html
      */
-    public function error($code)
+    public function error(string $code) : Html
     {
-        switch ($code) {
+        switch ($code) { // TODO: replace met map
             case '403':
                 $short_message = 'Oops! Access denied';
                 $message = 'Access to this page is forbidden';
@@ -78,10 +78,14 @@ class General extends Controller
                 break;
         }
 
-        return $this->respond('error.twig', [
-            'code' => $code,
-            'short_message' => $short_message,
-            'message' => $message,
-        ], $code);
+        return $this->respond->twig(
+            view: 'error.twig',
+            parameters: [
+                'code' => $code,
+                'short_message' => $short_message,
+                'message' => $message,
+            ],
+            code: $code
+        );
     }
 }

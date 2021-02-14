@@ -2,34 +2,53 @@
 
 namespace CQ\Config;
 
+use CQ\Helpers\App;
 use CQ\Helpers\Arr;
 
 class Config
 {
-    private $dir;
-
     /**
      * Define project dir.
-     *
-     * @param string $dir
      */
-    public function __construct($dir)
+    public function __construct()
     {
-        $this->dir = "{$dir}/../";
-
-        new Env($this->dir);
+        new Env(
+            path: App::getRootPath() . '/'
+        );
 
         $GLOBALS['cq_config'] = [];
+
+        $config_dir = App::getRootPath() . '/config';
+        $config_files = scandir(
+            directory: App::getRootPath() . '/config'
+        );
+
+        unset($config_files[0]); // Removes . entry
+        unset($config_files[1]); // Removes .. entry
+
+        foreach ($config_files as $config_file) {
+            $name = str_replace(
+                search: '.php',
+                replace: null,
+                subject: $config_file
+            );
+
+            $this->attach(
+                config_dir: $config_dir,
+                name: $name
+            );
+        }
     }
 
     /**
      * Add config file.
      *
+     * @param string $config_dir
      * @param string $name
      */
-    public function attach($name)
+    private function attach(string $config_dir, string $name) : void
     {
-        $data = require $this->dir."config/{$name}.php";
+        $data = require "{$config_dir}/{$name}.php";
 
         $GLOBALS['cq_config'][$name] = $data;
     }
@@ -38,13 +57,17 @@ class Config
      * Get config entry.
      *
      * @param string $key
-     * @param mixed  $fallback
+     * @param mixed $fallback
      *
      * @return mixed
      */
-    public static function get($key, $fallback = null)
+    public static function get(string $key, $fallback = null) : mixed
     {
-        $value = Arr::get($GLOBALS['cq_config'], $key, $fallback);
+        $value = Arr::get(
+            array: $GLOBALS['cq_config'],
+            key: $key,
+            default: $fallback
+        );
 
         if ('true' === $value || 'false' === $value) {
             return 'true' === $value ? true : false;

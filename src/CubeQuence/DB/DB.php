@@ -2,23 +2,24 @@
 
 namespace CQ\DB;
 
-use CQ\Config\Config;
 use Medoo\Medoo;
+
+use CQ\Config\Config;
 
 class DB
 {
     /**
      * Connect to DB.
      */
-    public function connect()
+    public function __construct()
     {
         $GLOBALS['cq_database'] = new Medoo([
             'database_type' => 'mysql',
-            'server' => Config::get('database.host'),
-            'port' => Config::get('database.port'),
-            'database_name' => Config::get('database.database'),
-            'username' => Config::get('database.username'),
-            'password' => Config::get('database.password'),
+            'server' => Config::get(key: 'database.host'),
+            'port' => Config::get(key: 'database.port'),
+            'database_name' => Config::get(key: 'database.database'),
+            'username' => Config::get(key: 'database.username'),
+            'password' => Config::get(key: 'database.password'),
         ]);
     }
 
@@ -31,7 +32,7 @@ class DB
      *
      * @return array|null
      */
-    public static function select($table, $columns, $where)
+    public static function select(string $table, array $columns, array $where) : array|null
     {
         return $GLOBALS['cq_database']->select($table, $columns, $where);
     }
@@ -45,7 +46,7 @@ class DB
      *
      * @return array|null
      */
-    public static function get($table, $columns, $where)
+    public static function get(string $table, array $columns, array|int $where) : array|null
     {
         return $GLOBALS['cq_database']->get($table, $columns, $where);
     }
@@ -58,7 +59,7 @@ class DB
      *
      * @return array
      */
-    public static function create($table, $data)
+    public static function create(string $table, array $data) : array
     {
         $GLOBALS['cq_database']->insert($table, $data);
 
@@ -74,9 +75,9 @@ class DB
      *
      * @return array|null
      */
-    public static function update($table, $data, $where)
+    public static function update(string $table, array $data, array|int $where) : array|null
     {
-        $data = array_merge($data, ['updated_at' => date('Y-m-d H:i:s')]);
+        $data = array_merge($data, ['updated_at' => date(format: 'Y-m-d H:i:s')]);
         $GLOBALS['cq_database']->update($table, $data, $where);
 
         return $data;
@@ -90,7 +91,7 @@ class DB
      *
      * @return array|null
      */
-    public static function delete($table, $where)
+    public static function delete(string $table, array $where) : array|null
     {
         return $GLOBALS['cq_database']->delete($table, ['AND' => $where]);
     }
@@ -99,11 +100,11 @@ class DB
      * Determine whether the target data existed.
      *
      * @param string $table
-     * @param array  $where
+     * @param array $where
      *
      * @return array|null
      */
-    public static function has($table, $where)
+    public static function has(string $table, array $where) : array|null
     {
         return $GLOBALS['cq_database']->has($table, $where);
     }
@@ -112,11 +113,11 @@ class DB
      * Counts the number of rows.
      *
      * @param string $table
-     * @param array  $where
+     * @param array $where
      *
      * @return int|null
      */
-    public static function count($table, $where)
+    public static function count(string $table, array $where) : int|null
     {
         return $GLOBALS['cq_database']->count($table, $where);
     }

@@ -11,27 +11,30 @@ class State
      *
      * @return string
      */
-    public static function set($custom = '')
+    public static function set(string $custom = '') : string
     {
         $state = $custom ?: Str::random();
 
-        return Session::set('state', $state);
+        return Session::set(
+            name: 'state',
+            data: $state
+        );
     }
 
     /**
      * Validate $provided_state.
      *
      * @param string $provided_state
-     * @param bool   $unset_state    optional
+     * @param bool   $unset_state optional
      *
      * @return bool
      */
-    public static function valid($provided_state, $unset_state = true)
+    public static function valid(string $provided_state, bool $unset_state = true) : bool
     {
-        $known_state = Session::get('state');
+        $known_state = Session::get(name: 'state');
 
         if ($unset_state) {
-            Session::unset('state');
+            Session::unset(name: 'state');
         }
 
         if (!$provided_state) {

@@ -16,20 +16,24 @@ class Captcha
      *
      * @return bool
      */
-    protected static function validate($url, $secret, $response)
+    protected static function validate(string $url, string $secret, string $response) : bool
     {
         try {
-            $guzzle = Guzzle::request('POST', $url, [
-                'form_params' => [
-                    'secret' => $secret,
-                    'response' => $response,
-                    'remoteip' => Request::ip(),
-                ],
-            ]);
-        } catch (\Throwable $th) {
+            $guzzle = Guzzle::request(
+                method: 'POST',
+                url: $url,
+                data: [
+                   'form_params' => [
+                        'secret' => $secret,
+                        'response' => $response,
+                        'remoteip' => Request::ip(),
+                    ],
+                ]
+            );
+        } catch (\Throwable) {
             return false;
         }
 
-        return $guzzle->data->success;
+        return $guzzle?->data?->success ?: false;
     }
 }

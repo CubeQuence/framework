@@ -10,41 +10,41 @@ class User
     /**
      * Get user id
      *
-     * @return string
+     * @return string|null
      */
-    public static function getId()
+    public static function getId() : string|null
     {
-        return Session::get('user')['id'];
+        return Session::get(name: 'user')['id'] ?? null;
     }
 
     /**
      * Get user name
      *
-     * @return string
+     * @return string|null
      */
-    public static function getName()
+    public static function getName() : string|null
     {
-        return Session::get('user')['name'];
+        return Session::get('user')['name'] ?? null;
     }
 
     /**
      * Get user email
      *
-     * @return string
+     * @return string|null
      */
-    public static function getEmail()
+    public static function getEmail() : string|null
     {
-        return Session::get('user')['email'];
+        return Session::get('user')['email'] ?? null;
     }
 
     /**
      * Get user roles
      *
-     * @return array
+     * @return array|null
      */
-    public static function getRoles()
+    public static function getRoles() : array|null
     {
-        return Session::get('user')['roles'];
+        return Session::get('user')['roles'] ?? null;
     }
 
     /**
@@ -54,11 +54,14 @@ class User
      *
      * @return bool
      */
-    public static function hasRole($role)
+    public static function hasRole(string $role) : bool
     {
         $roles = self::getRoles();
 
-        return in_array($role, $roles);
+        return in_array(
+            needle: $role,
+            haystack: $roles
+        );
     }
 
     /**
@@ -68,10 +71,13 @@ class User
      *
      * @return mixed
      */
-    public static function valueRole($key)
+    public static function valueRole(string $key) : mixed
     {
-        $userRole = User::getRoles()[0];
+        $userRole = self::getRoles()[0];
 
-        return Config::get("roles.{$userRole}.{$key}", null);
+        return Config::get(
+            key: "roles.{$userRole}.{$key}",
+            fallback: null
+        );
     }
 }

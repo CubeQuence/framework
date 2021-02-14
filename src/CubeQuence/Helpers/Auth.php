@@ -11,19 +11,19 @@ class Auth
      *
      * @return bool
      */
-    public static function valid()
+    public static function valid() : bool
     {
-        $session = Session::get('session');
+        $session = Session::get(name: 'session');
 
-        if (!Session::get('user')) {
+        if (!Session::get(name: 'user')) {
             return false;
         }
 
-        if (time() - Session::get('last_activity') > Config::get('auth.session_timeout')) {
+        if (time() - Session::get(name: 'last_activity') > Config::get(key: 'auth.session_timeout')) {
             return false;
         }
 
-        if (time() - $session['created_at'] > Config::get('auth.session_lifetime')) {
+        if (time() - $session['created_at'] > Config::get(key: 'auth.session_lifetime')) {
             return false;
         }
 
@@ -31,11 +31,14 @@ class Auth
             return false;
         }
 
-        if ($session['ip'] !== Request::ip() && Config::get('auth.ip_check')) {
+        if ($session['ip'] !== Request::ip() && Config::get(key: 'auth.ip_check')) {
             return false;
         }
 
-        Session::set('last_activity', time());
+        Session::set(
+            name: 'last_activity',
+            data: time()
+        );
 
         return true;
     }

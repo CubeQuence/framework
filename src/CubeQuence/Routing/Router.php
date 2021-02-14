@@ -2,53 +2,93 @@
 
 namespace CQ\Routing;
 
-use CQ\Helpers\App;
-use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
 use MiladRahimi\PhpRouter\Router as RouterBase;
-use Zend\Diactoros\Response\RedirectResponse;
+use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
+
+use CQ\Routing\Route;
+use CQ\Response\Redirect;
+use CQ\Routing\Middleware;
 
 class Router
 {
-    private $router;
-    private $route404;
-    private $route500;
+    private RouterBase $router;
 
     /**
-     * Create router instance.
+     * Create router instance
      *
-     * @param array  $config
-     * @param string $controllers
+     * @param string $route_404 optional
+     * @param string $route_500 optional
+     *
+     * @return void
      */
-    public function __construct($config = [], $controllers = 'App\Controllers')
-    {
-        $this->router = new RouterBase('', $controllers);
-        $this->route404 = $config['404'] ?: '/';
-        $this->route500 = $config['500'] ?: '/';
+    public function __construct(
+        public string $route_404 = '/',
+        public string $route_500 = '/'
+    ) {
+        $this->router = RouterBase::create();
     }
 
     /**
-     * Return router instance.
+     * Set container
      *
-     * @return RouterBase
+     * @param mixed $id TODO: set correct type
+     * @param mixed $concrete
+     *
+     * @return void
      */
-    public function get()
+    public function setContainer($id, $concrete) : void
     {
-        return $this->router;
+        $this->router->getContainer()->singleton(
+            id: $id,
+            concrete: $concrete
+        );
     }
 
     /**
-     * Start the router.
+     * Return route instance
+     *
+     * @return Route
      */
-    public function start()
+    public function getRoute() : Route
+    {
+        return new Route($this->router);
+    }
+
+    /**
+     * Return middleware instance
+     *
+     * @return Middleware
+     */
+    public function getMiddleware() : Middleware
+    {
+        return new Middleware($this->router);
+    }
+
+    /**
+     * Start the router
+     *
+     * @return void
+     */
+    public function start() : void
     {
         try {
             $this->router->dispatch();
-        } catch (RouteNotFoundException $e) {
-            $this->router->getPublisher()->publish(new RedirectResponse($this->route404, 404));
-        } catch (\Throwable $e) {
-            if (!App::debug()) {
-                $this->router->getPublisher()->publish(new RedirectResponse("{$this->route500}?e={$e}", 500));
+        } catch (RouteNotFoundException) {
+            $this->router->getPublisher()->publish(
+                new Redirect(
+                    url: $this->route_404,
+                    code: 404,
+                    headers: []
+                )
+            );
+        } /*catch (\Throwable $e) { // TODO: if you enable this route the debug window doesn't work
+            if (App::debug()) {
+                return throw new \Exception($e);
             }
-        }
+
+            $this->router->getPublisher()->publish(
+                new Redirect($this->route_500, 500, [])
+            );
+        }*/
     }
 }

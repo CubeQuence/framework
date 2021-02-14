@@ -12,14 +12,17 @@ class Mail
      * @param string $site_key
      * @param array  $data
      *
+     * @return void
      * @throws \Throwable
      */
-    public static function send($site_key, $data)
+    public static function send(string $site_key, array $data) : void
     {
         Guzzle::request(
-            'POST',
-            "https://form.castelnuovo.xyz/api/{$site_key}",
-            ['json' => $data]
+            method: 'POST',
+            url: "https://form.castelnuovo.xyz/api/{$site_key}",
+            data: [
+                'json' => $data,
+            ]
         );
     }
 }

@@ -13,7 +13,7 @@
         }
     ],
     "require": {
-        "php": ">=5.3.0",
+        "php": ">=8.0",
         "catfan/medoo": "^1.7",
         "fzaninotto/faker": "^1.9",
         "guzzlehttp/guzzle": "^7.0",
@@ -39,5 +39,8 @@
     "support": {
         "issues": "https://github.com/CubeQuence/CubeQuence/issues",
         "source": "https://github.com/CubeQuence/CubeQuence"
+    },
+    "require-dev": {
+        "nunomaduro/phpinsights": "dev-master"
     }
 }

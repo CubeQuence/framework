@@ -2,10 +2,11 @@
 
 namespace CQ\Crypto;
 
-use CQ\Crypto\Hash;
-use CQ\Crypto\Symmetric;
 use ParagonIE\HiddenString\HiddenString;
 use ParagonIE\Halite\Password as PasswordLib;
+
+use CQ\Crypto\Hash;
+use CQ\Crypto\Symmetric;
 
 class Password
 {
@@ -18,22 +19,28 @@ class Password
      *
      * @return string
      */
-    public static function hash($plaintext_password, $context = null, $key = null)
+    public static function hash(string $plaintext_password, ?string $context = null, ?string $key = null) : string
     {
         $plaintext_password_with_context = $plaintext_password . $context;
 
-        if (!defined('PASSWORD_ARGON2ID')) {
-            $hash = Hash::make($plaintext_password_with_context);
+        if (!defined(name: 'PASSWORD_ARGON2ID')) {
+            $hash = Hash::make(string: $plaintext_password_with_context);
 
             return Symmetric::encrypt(
-                $hash,
-                Symmetric::getKey($key, 'encryption')
+                string: $hash,
+                key: Symmetric::getKey(
+                    type: 'encryption',
+                    key: $key
+                )
             );
         }
 
         return PasswordLib::hash(
-            new HiddenString($plaintext_password_with_context),
-            Symmetric::getKey($key, 'encryption')
+            password: new HiddenString(value: $plaintext_password_with_context),
+            secretKey: Symmetric::getKey(
+                type: 'encryption',
+                key: $key
+            )
         );
     }
 
@@ -47,24 +54,37 @@ class Password
      *
      * @return bool
      */
-    public static function verify($plaintext_password, $encrypted_hash, $context = null, $key = null)
-    {
-        $plaintext_password_with_context = new HiddenString($plaintext_password . $context);
+    public static function verify(
+        string $plaintext_password,
+        string $encrypted_hash,
+        ?string $context = null,
+        ?string $key = null
+    ) : bool {
+        $plaintext_password_with_context = new HiddenString(value: $plaintext_password . $context);
 
-        if (!defined('PASSWORD_ARGON2ID')) {
+        if (!defined(name: 'PASSWORD_ARGON2ID')) {
             $hash = Symmetric::decrypt(
-                $encrypted_hash,
-                Symmetric::getKey($key, 'encryption')
+                enc_string: $encrypted_hash,
+                key: Symmetric::getKey(
+                    type: 'encryption',
+                    key: $key
+                )
             );
 
-            return Hash::verify($plaintext_password_with_context, $hash);
+            return Hash::verify(
+                check_against: $plaintext_password_with_context,
+                hash: $hash
+            );
         }
 
         try {
             return PasswordLib::verify(
-                $plaintext_password_with_context,
-                $encrypted_hash,
-                Symmetric::getKey($key, 'encryption')
+                password: $plaintext_password_with_context,
+                stored: $encrypted_hash,
+                secretKey: Symmetric::getKey(
+                    type: 'encryption',
+                    key: $key
+                )
             );
         } catch (\ParagonIE\Halite\Alerts\InvalidMessage $ex) {
             return false;

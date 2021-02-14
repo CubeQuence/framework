@@ -2,24 +2,21 @@
 
 namespace CQ\Response;
 
-use Zend\Diactoros\Response\JsonResponse;
-
-class Json extends JsonResponse
+class Json extends \Laminas\Diactoros\Response\JsonResponse
 {
     /**
-     * JSON Response.
+     * JSON response
      *
-     * @param array  $data
-     * @param string $controller
-     * @param array  $headers
-     * @param mixed  $code
+     * @param mixed $data
+     * @param int $code
+     * @param array $headers
      */
-    public function __construct($data, $code, $headers = [])
+    public function __construct($data, int $code, array $headers)
     {
         parent::__construct(
-            $data,
-            $code,
-            $headers
+            data: $data,
+            status: $code,
+            headers: $headers
         );
     }
 }

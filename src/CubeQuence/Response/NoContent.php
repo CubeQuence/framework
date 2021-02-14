@@ -2,22 +2,19 @@
 
 namespace CQ\Response;
 
-use Zend\Diactoros\Response\EmptyResponse;
-
-class NoContent extends EmptyResponse
+class NoContent extends \Laminas\Diactoros\Response\EmptyResponse
 {
     /**
-     * Empty Response.
+     * NoContent response
      *
-     * @param string $controller
-     * @param array  $headers
-     * @param mixed  $code
+     * @param int $code
+     * @param array $headers
      */
-    public function __construct($code, $headers = [])
+    public function __construct(int $code, array $headers)
     {
         parent::__construct(
-            $code,
-            $headers
+            status: $code,
+            headers: $headers
         );
     }
 }

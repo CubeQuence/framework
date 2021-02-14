@@ -2,10 +2,11 @@
 
 namespace CQ\CLI;
 
-use CQ\Helpers\App;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+
+use CQ\Helpers\App;
 
 class Template
 {
@@ -18,12 +19,15 @@ class Template
      *
      * @return bool
      */
-    public static function envCheck(InputInterface $input, OutputInterface $output, SymfonyStyle $io)
+    public static function envCheck(InputInterface $input, OutputInterface $output, SymfonyStyle $io) : bool
     {
-        if (App::environment('production')) {
-            $io->note('Application In Production!');
-            if (!$io->confirm('Do you really wish to run this command?', false)) {
-                $io->note('Command Canceled!');
+        if (App::environment(check: 'production')) {
+            $io->note(message: 'Application In Production!');
+            if (!$io->confirm(
+                question: 'Do you really wish to run this command?',
+                default: false
+            )) {
+                $io->note(message: 'Command Canceled!');
 
                 return false;
             }

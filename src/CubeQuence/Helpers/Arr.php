@@ -13,7 +13,7 @@ class Arr
      *
      * @return bool
      */
-    public static function accessible($value)
+    public static function accessible($value) : bool
     {
         return is_array($value) || $value instanceof ArrayAccess;
     }
@@ -26,10 +26,12 @@ class Arr
      *
      * @return bool
      */
-    public static function exists($array, $key)
-    {
+    public static function exists(
+        ArrayAccess|array $array,
+        string|int $key
+    ) : bool {
         if ($array instanceof ArrayAccess) {
-            return $array->offsetExists($key);
+            return $array->offsetExists(offset: $key);
         }
 
         return array_key_exists($key, $array);
@@ -44,9 +46,12 @@ class Arr
      *
      * @return mixed
      */
-    public static function get($array, $key, $default = null)
-    {
-        if (!static::accessible($array)) {
+    public static function get(
+        ArrayAccess|array $array,
+        string|int|null $key,
+        $default = null
+    ) : mixed {
+        if (!self::accessible(value: $array)) {
             return $default;
         }
 
@@ -54,16 +59,19 @@ class Arr
             return $array;
         }
 
-        if (static::exists($array, $key)) {
+        if (self::exists(
+            array: $array,
+            key: $key
+        )) {
             return $array[$key];
         }
 
-        if (false === strpos($key, '.')) {
+        if (false === strpos(haystack: $key, needle: '.')) {
             return $array[$key] ?? $default;
         }
 
         foreach (explode('.', $key) as $segment) {
-            if (static::accessible($array) && static::exists($array, $segment)) {
+            if (self::accessible(value: $array) && self::exists(array: $array, key: $segment)) {
                 $array = $array[$segment];
             } else {
                 return $default;

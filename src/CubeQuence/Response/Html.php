@@ -2,24 +2,21 @@
 
 namespace CQ\Response;
 
-use Zend\Diactoros\Response\HtmlResponse;
-
-class Html extends HtmlResponse
+class Html extends \Laminas\Diactoros\Response\HtmlResponse
 {
     /**
-     * HTML Response.
+     * HTML response
      *
-     * @param array  $data
-     * @param string $controller
-     * @param array  $headers
-     * @param mixed  $code
+     * @param string $data
+     * @param int $code
+     * @param array $headers
      */
-    public function __construct($data, $code, $headers = [])
+    public function __construct(string $data, int $code, array $headers)
     {
         parent::__construct(
-            $data,
-            $code,
-            $headers
+            html: $data,
+            status: $code,
+            headers: $headers
         );
     }
 }

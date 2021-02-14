@@ -15,23 +15,29 @@ class Guzzle
      * @param array $data optional
      *
      * @return object
-     *
-     * @throws Exception
+     * @throws \Exception
      */
-    public static function request($method, $url, $data = [])
+    public static function request(string $method, string $url, array $data = []) : object
     {
         $guzzle = new Client();
 
         try {
-            $response = $guzzle->request($method, $url, $data);
-            $data = json_decode($response->getBody());
+            $response = $guzzle->request(
+                method: $method,
+                uri: $url,
+                options: $data
+            );
+
+            $data = json_decode(json: $response->getBody());
 
             return (object) [
                 'response' => $response,
                 'data' => $data,
             ];
         } catch (RequestException $e) {
-            throw new \Exception($e->getResponse()->getBody(true));
+            throw new \Exception(
+                message: $e->getResponse()->getBody(true) // TODO: check if (true) is neccessary
+            );
         }
     }
 }

@@ -9,13 +9,32 @@ class Request
     /**
      * Check if request is JSON.
      *
+     * @param object $request // TODO: set correct ServerRequest data type
+     * @param string $name
+     *
+     * @return string
+     */
+    public static function getHeader(object $request, string $name) : string
+    {
+        return $request->getHeaderLine($name);
+    }
+
+    /**
+     * Check if request is JSON.
+     *
      * @param object $request
      *
      * @return bool
      */
-    public static function isJSON($request)
+    public static function isJSON(object $request) : bool
     {
-        return Str::contains($request->getHeader('content-type')[0], '/json');
+        return str_contains(
+            haystack: self::getHeader(
+                request: $request,
+                name: 'content-type'
+            ),
+            needle: '/json'
+        );
     }
 
     /**
@@ -25,9 +44,12 @@ class Request
      *
      * @return bool
      */
-    public static function isForm($request)
+    public static function isForm(object $request) : bool
     {
-        return $request->getHeader('content-type')[0] == 'application/x-www-form-urlencoded';
+        return self::getHeader(
+            request: $request,
+            name: 'content-type'
+        ) === 'application/x-www-form-urlencoded';
     }
 
     /**
@@ -37,12 +59,14 @@ class Request
      *
      * @return string
      */
-    public static function path($request)
+    // TODO: use new request method $route->path() or smth
+    public static function path(object $request) : string
     {
         $path = $request->getUri();
-        $path = strtok($path, '?');
+        $path = strtok(str: $path, token: '?');
+        $path =  strtok(str: $path, token: '#');
 
-        return strtok($path, '#');
+        return $path;
     }
 
     /**
@@ -50,7 +74,7 @@ class Request
      *
      * @return string
      */
-    public static function ip()
+    public static function ip() : string
     {
         if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
             $cf_ip_ranges = [
@@ -71,33 +95,17 @@ class Request
             ];
 
             foreach ($cf_ip_ranges as $range) {
-                if (IP::inRange($range, $_SERVER['REMOTE_ADDR'])) {
+                if (IP::inRange(
+                    range: $range,
+                    ip: $_SERVER['REMOTE_ADDR']
+                )) {
                     $_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_CF_CONNECTING_IP'];
+
                     break;
                 }
             }
         }
 
         return $_SERVER['REMOTE_ADDR'];
-    }
-
-    /**
-     * Get user_agent.
-     *
-     * @return string
-     */
-    public static function userAgent()
-    {
-        return $_SERVER['HTTP_USER_AGENT'];
-    }
-
-    /**
-     * Get origin.
-     *
-     * @return string
-     */
-    public static function origin()
-    {
-        return $_SERVER['HTTP_ORIGIN'];
     }
 }

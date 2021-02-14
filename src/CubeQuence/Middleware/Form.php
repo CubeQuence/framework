@@ -2,38 +2,37 @@
 
 namespace CQ\Middleware;
 
-use CQ\Middleware\Middleware;
+use Closure;
+
 use CQ\Helpers\Request;
-use CQ\Response\Json as JsonResponse;
+use CQ\Response\Json;
+use CQ\Middleware\Middleware;
 
 class Form extends Middleware
 {
     /**
-     * If POST,PUT,PATCH,DELETE requests contains FormData interpret it
+     * Interpret FormData
      *
-     * @param object $request
-     * @param $next
+     * @param Closure $next
      *
-     * @return mixed
+     * @return Closure|Json
      */
-    public function handle($request, $next)
+    public function handleChild(Closure $next) : Closure|Json
     {
-        if (in_array($request->getMethod(), ['POST', 'PUT', 'PATCH', 'DELETE'])) {
-            if (!Request::isForm($request)) {
-                return new JsonResponse([
-                    'success' => false,
-                    'message' => 'Invalid Content-Type',
-                    'data' => [
-                        'details' => "Content-Type should be 'application/x-www-form-urlencoded'",
-                    ],
-                ], 415);
-            }
-
-            $data = (object) $request->getParsedBody();
-
-            $request->data = $data;
+        if (!Request::isForm(request: $this->request)) {
+            return $this->respond->prettyJson(
+                message: 'Invalid Content-Type',
+                data: [
+                    'details' => "Content-Type should be 'application/x-www-form-urlencoded'",
+                ],
+                code: 415
+            );
         }
 
-        return $next($request);
+        $data = (object) $this->request->getParsedBody();
+
+        $this->request->data = $data;
+
+        return $next($this->request);
     }
 }

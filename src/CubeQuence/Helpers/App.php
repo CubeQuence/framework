@@ -12,13 +12,17 @@ class App
      * @param string|array $check optional
      *
      * @return string|bool
+     * @throws \Exception
      */
-    public static function environment($check = null)
+    public static function environment(string|array|null $check = null) : string|bool// TODO: change to isEnvoirement
     {
-        $env = Config::get('app.env', 'production');
-        $type = gettype($check);
+        $env = Config::get(
+            key: 'app.env',
+            fallback: 'production'
+        );
+        $type = gettype(var: $check);
 
-        switch ($type) {
+        switch ($type) { // TODO: use match if better
             case 'NULL':
                 return $env;
 
@@ -26,10 +30,13 @@ class App
                 return $env === $check;
 
             case 'array':
-                return in_array($check, $env);
+                return in_array(
+                    needle: $check,
+                    haystack: $env
+                );
 
             default:
-                throw new \Exception('invalid variable type');
+                throw new \Exception(message: 'invalid variable type');
         }
     }
 
@@ -38,8 +45,30 @@ class App
      *
      * @return bool
      */
-    public static function debug()
+    public static function debug() : bool // TODO: change to isDebug
     {
-        return Config::get('app.debug', false);
+        return Config::get(
+            key: 'app.debug',
+            fallback: false
+        );
+    }
+
+    /**
+     * Get project root string
+     *
+     * @return string
+     */
+    public static function getRootPath() : string
+    {
+        list($path) = get_included_files();
+
+        $path = dirname(path: $path);
+        $path = str_replace(
+            search: "/public",
+            replace: null,
+            subject: $path
+        );
+
+        return $path;
     }
 }

@@ -26,13 +26,14 @@ class File
      * Open file with specific mode
      *
      * @param string $mode
+     * @throws \Exception
      */
     private function open($mode)
     {
         $handle = fopen($this->file_path, $mode);
 
         if (!$handle) {
-            throw new \Exception('Cannot open file');
+            throw new \Exception(message: 'Cannot open file');
         }
 
         $this->file = $handle;
@@ -42,11 +43,12 @@ class File
      * Close file
      *
      * @return void
+     * @throws \Exception
      */
     private function close()
     {
         if (!fclose($this->file)) {
-            throw new \Exception('Cannot close file');
+            throw new \Exception(message: 'Cannot close file');
         }
     }
 
@@ -90,13 +92,14 @@ class File
      * @param string $data
      *
      * @return void
+     * @throws \Exception
      */
     public function write($data)
     {
         $this->open('w');
 
         if (!fwrite($this->file, $data)) {
-            throw new \Exception('Cannot write to file');
+            throw new \Exception(message: 'Cannot write to file');
         }
 
         $this->close();
@@ -108,13 +111,14 @@ class File
      * @param string $data
      *
      * @return void
+     * @throws \Exception
      */
     public function append($data)
     {
         $this->open('a');
 
         if (!fwrite($this->file, $data)) {
-            throw new \Exception('Cannot append to file');
+            throw new \Exception(message: 'Cannot append to file');
         }
 
         $this->close();
@@ -124,11 +128,12 @@ class File
      * Delete file
      *
      * @return void
+     * @throws \Exception
      */
     public function delete()
     {
         if (!unlink($this->file_path)) {
-            throw new \Exception('Cannot delete file');
+            throw new \Exception(message: 'Cannot delete file');
         }
     }
 
@@ -138,11 +143,12 @@ class File
      * @param string $original_file
      *
      * @return void
+     * @throws \Exception
      */
     public function copy($original_file)
     {
         if (!copy($original_file, $this->file_path)) {
-            throw new \Exception('Cannot copy file');
+            throw new \Exception(message: 'Cannot copy file');
         }
     }
 
@@ -188,6 +194,7 @@ class File
      * @param string $key optional
      *
      * @return void
+     * @throws \Exception
      */
     public function encrypt($outputLocation, $mode, $key = null)
     {
@@ -211,7 +218,7 @@ class File
             );
         }
 
-        throw new \Exception('Invalid key type!');
+        throw new \Exception(message: 'Invalid key type!');
     }
 
     /**
@@ -222,6 +229,7 @@ class File
      * @param string $key optional
      *
      * @return void
+     * @throws \Exception
      */
     public function decrypt($outputLocation, $mode, $key = null)
     {
@@ -245,7 +253,7 @@ class File
             );
         }
 
-        throw new \Exception('Invalid key type!');
+        throw new \Exception(message: 'Invalid key type!');
     }
 
     /**
