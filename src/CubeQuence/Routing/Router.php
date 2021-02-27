@@ -1,13 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Routing;
 
-use MiladRahimi\PhpRouter\Router as RouterBase;
-use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
-
-use CQ\Routing\Route;
 use CQ\Response\Redirect;
-use CQ\Routing\Middleware;
+use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
+use MiladRahimi\PhpRouter\Router as RouterBase;
 
 class Router
 {
@@ -29,47 +28,25 @@ class Router
     }
 
     /**
-     * Set container
-     *
-     * @param mixed $id TODO: set correct type
-     * @param mixed $concrete
-     *
-     * @return void
-     */
-    public function setContainer($id, $concrete) : void
-    {
-        $this->router->getContainer()->singleton(
-            id: $id,
-            concrete: $concrete
-        );
-    }
-
-    /**
      * Return route instance
-     *
-     * @return Route
      */
-    public function getRoute() : Route
+    public function getRoute(): Route
     {
         return new Route($this->router);
     }
 
     /**
      * Return middleware instance
-     *
-     * @return Middleware
      */
-    public function getMiddleware() : Middleware
+    public function getMiddleware(): Middleware
     {
         return new Middleware($this->router);
     }
 
     /**
      * Start the router
-     *
-     * @return void
      */
-    public function start() : void
+    public function start(): void
     {
         try {
             $this->router->dispatch();

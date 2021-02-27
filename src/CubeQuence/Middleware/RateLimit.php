@@ -1,13 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Middleware;
 
 use Closure;
-
-use CQ\DB\DB;
-use CQ\Response\Json;
 use CQ\Config\Config;
+use CQ\DB\DB;
 use CQ\Helpers\Request;
+use CQ\Response\Json;
 
 class RateLimit extends Middleware
 {
@@ -17,11 +18,9 @@ class RateLimit extends Middleware
     /**
      * Ratelimit API.
      *
-     * @param Closure $next
-     *
      * @return Closure|Json
      */
-    public function handleChild(Closure $next) : Closure|Json
+    public function handleChild(Closure $next): Closure | Json
     {
         $this->loadConfig();
 
@@ -48,23 +47,20 @@ class RateLimit extends Middleware
 
     /**
      * Get config for specific path.
-     *
-     * @return void
      */
-    private function loadConfig() : void
+    private function loadConfig(): void
     {
-        $path = Request::path(request: $this->request); // TODO: add path based config support
+        // TODO: add path based config support
+        // $path = Request::path(request: $this->request);
 
-        $this->max_requests = (int) Config::get(key: 'ratelimit.max_requests') ?: 60;
-        $this->reset_time = (int) Config::get(key: 'ratelimit.reset_time') ?: 60;
+        $this->max_requests = (int) Config::get(key: 'ratelimit.max_requests', fallback: 60);
+        $this->reset_time = (int) Config::get(key: 'ratelimit.reset_time', fallback: 60);
     }
 
     /**
      * Resolve request fingerprint.
-     *
-     * @return string
      */
-    private function fingerprintRequest() : string
+    private function fingerprintRequest(): string
     {
         return sha1(
             str: $this->request->getMethod().
@@ -76,12 +72,9 @@ class RateLimit extends Middleware
     /**
      * Add one or reset request counter.
      *
-     * @param string $fingerprint
      * @param array $request_db
-     *
-     * @return int
      */
-    private function remainingRequests(string $fingerprint, array $request_db) : int
+    private function remainingRequests(string $fingerprint, array $request_db): int
     {
         // Reset counter if reset_time is in past
         if (time() > $request_db['reset_time']) {
@@ -116,13 +109,11 @@ class RateLimit extends Middleware
     }
 
     /**
-    * Calculate the number of remaining requests.
-    *
-    * @param string $fingerprint
-    *
-    * @return array
-    */
-    private function validateRequest(string $fingerprint) : array
+     * Calculate the number of remaining requests.
+     *
+     * @return array
+     */
+    private function validateRequest(string $fingerprint): array
     {
         $request_db = DB::get(
             table: 'cq_ratelimit',
@@ -165,7 +156,7 @@ class RateLimit extends Middleware
      *
      * @return array
      */
-    private function genHeaders(array $validated_request) : array
+    private function genHeaders(array $validated_request): array
     {
         return [
             'X-RateLimit-Limit' => $this->max_requests,

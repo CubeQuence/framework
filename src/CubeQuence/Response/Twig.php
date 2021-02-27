@@ -1,13 +1,14 @@
 <?php
 
-namespace CQ\Response;
+declare(strict_types=1);
 
-use Twig\Environment;
-use Twig\Loader\ArrayLoader;
-use Twig\Loader\FilesystemLoader;
+namespace CQ\Response;
 
 use CQ\Config\Config;
 use CQ\Helpers\App;
+use Twig\Environment;
+use Twig\Loader\ArrayLoader;
+use Twig\Loader\FilesystemLoader;
 
 class Twig
 {
@@ -32,36 +33,11 @@ class Twig
     }
 
     /**
-     * Add global parameters to twig
-     *
-     * @param Environment $twig
-     *
-     * @return Environment
-     */
-    private static function addGlobals(Environment $twig) : Environment
-    {
-        $twig->addGlobal(
-            name: 'app',
-            value: Config::get(key: 'app')
-        );
-
-        $twig->addGlobal(
-            name: 'analytics',
-            value: Config::get(key: 'analytics')
-        );
-
-        return $twig;
-    }
-
-    /**
      * Render twig template
      *
-     * @param string $view
      * @param array $parameters
-     *
-     * @return string
      */
-    public function render(string $view, array $parameters) : string
+    public function render(string $view, array $parameters): string
     {
         return $this->twig->render(
             name: $view,
@@ -72,12 +48,9 @@ class Twig
     /**
      * Render template in string form.
      *
-     * @param string $template
      * @param array  $parameters
-     *
-     * @return string
      */
-    public static function renderFromText(string $template, array $parameters = []) : string
+    public static function renderFromText(string $template, array $parameters = []): string
     {
         $loader = new ArrayLoader(
             templates: ['base.html' => $template]
@@ -90,5 +63,23 @@ class Twig
             name: 'base.html',
             context: $parameters
         );
+    }
+
+    /**
+     * Add global parameters to twig
+     */
+    private static function addGlobals(Environment $twig): Environment
+    {
+        $twig->addGlobal(
+            name: 'app',
+            value: Config::get(key: 'app')
+        );
+
+        $twig->addGlobal(
+            name: 'analytics',
+            value: Config::get(key: 'analytics')
+        );
+
+        return $twig;
     }
 }

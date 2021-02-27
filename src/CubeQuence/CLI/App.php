@@ -1,28 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\CLI;
 
+use CQ\Crypto\Password;
+use CQ\Crypto\Symmetric;
+use CQ\Helpers\App as AppHelper;
+use CQ\Helpers\File;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-
-use CQ\Helpers\App as AppHelper;
-use CQ\Helpers\File;
-use CQ\Crypto\Password;
-use CQ\Crypto\Symmetric;
 
 class App extends Template
 {
     /**
      * Generate key command.
-     *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @param SymfonyStyle    $io
-     *
-     * @return void
      */
-    public function key(InputInterface $input, OutputInterface $output, SymfonyStyle $io) : void
+    public function key(InputInterface $input, OutputInterface $output, SymfonyStyle $io): void
     {
         if (!self::envCheck(input: $input, output: $output, io: $io)) {
             return;
@@ -39,7 +34,7 @@ class App extends Template
                 return;
             }
 
-            $env_file = new File(path: $path);
+            $env_file = new File(file_path: $path);
             $env_file->write(
                 data: str_replace(
                     search: 'APP_KEY="' . env(key: 'APP_KEY') . '"',
@@ -58,14 +53,8 @@ class App extends Template
 
     /**
      * Generate derived key command.
-     *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @param SymfonyStyle    $io
-     *
-     * @return void
      */
-    public function contextKey(InputInterface $input, OutputInterface $output, SymfonyStyle $io) : void
+    public function contextKey(InputInterface $input, OutputInterface $output, SymfonyStyle $io): void
     {
         try {
             $plaintext_key = Symmetric::getKey(type: 'encryption');

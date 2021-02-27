@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Helpers;
 
 use GuzzleHttp\Client;
@@ -10,14 +12,11 @@ class Guzzle
     /**
      * Make guzzle http request
      *
-     * @param string $method
-     * @param string $url
      * @param array $data optional
      *
-     * @return object
      * @throws \Exception
      */
-    public static function request(string $method, string $url, array $data = []) : object
+    public static function request(string $method, string $url, array $data = []): object
     {
         $guzzle = new Client();
 

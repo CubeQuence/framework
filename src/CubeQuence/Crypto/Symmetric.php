@@ -1,42 +1,40 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Crypto;
 
+use CQ\Config\Config;
 use ParagonIE\Halite\KeyFactory;
-use ParagonIE\HiddenString\HiddenString;
+use ParagonIE\Halite\Symmetric\AuthenticationKey;
 use ParagonIE\Halite\Symmetric\Crypto;
 use ParagonIE\Halite\Symmetric\EncryptionKey;
-use ParagonIE\Halite\Symmetric\AuthenticationKey;
-
-use CQ\Config\Config;
+use ParagonIE\HiddenString\HiddenString;
 
 class Symmetric
 {
     /**
      * Generate encryption key
-     *
-     * @return string
      */
-    public static function genKey() : string
+    public static function genKey(): string
     {
         $key = KeyFactory::generateEncryptionKey();
-        $key_hex = KeyFactory::export(key: $key)->getString();
 
-        return $key_hex;
+        return KeyFactory::export(key: $key)->getString();
     }
 
     /**
      * Get encryption key
      *
-     * @param string $type
      * @param string $key optional
      *
      * @return EncryptionKey|AuthenticationKey
+     *
      * @throws \Exception
      */
-    public static function getKey(string $type, ?string $key = null) : EncryptionKey|AuthenticationKey
+    public static function getKey(string $type, ?string $key = null): EncryptionKey | AuthenticationKey
     {
-        $key = $key ?: Config::get(key: 'app.key');
+        $key = $key ? $key : Config::get(key: 'app.key');
 
         if (!$key) {
             throw new \Exception(message: 'No key found!');
@@ -60,12 +58,9 @@ class Symmetric
     /**
      * Encrypt string
      *
-     * @param string $string
      * @param string $key optional
-     *
-     * @return string
      */
-    public static function encrypt(string $string, ?string $key = null) : string
+    public static function encrypt(string $string, ?string $key = null): string
     {
         $key = self::getKey(
             type: 'encryption',
@@ -81,12 +76,9 @@ class Symmetric
     /**
      * Decrypt string
      *
-     * @param string $enc_string
      * @param string $key optional
-     *
-     * @return string
      */
-    public static function decrypt(string $enc_string, ?string $key = null) : string
+    public static function decrypt(string $enc_string, ?string $key = null): string
     {
         $key = self::getKey(
             type: 'encryption',
@@ -102,12 +94,9 @@ class Symmetric
     /**
      * Sign string
      *
-     * @param string $message
      * @param string $key optional
-     *
-     * @return string
      */
-    public static function sign(string $message, ?string $key = null) : string
+    public static function sign(string $message, ?string $key = null): string
     {
         $key = self::getKey(
             type: 'authentication',
@@ -123,13 +112,9 @@ class Symmetric
     /**
      * Verify string
      *
-     * @param string $message
-     * @param string $signature
      * @param string $key optional
-     *
-     * @return bool
      */
-    public static function verify(string $message, string $signature, ?string $key = null) : bool
+    public static function verify(string $message, string $signature, ?string $key = null): bool
     {
         $key = self::getKey(
             type: 'authentication',

@@ -1,18 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Helpers;
 
 class IP
 {
     /**
      * Check if IP is in range (only supports IPv4)
-     *
-     * @param string $range
-     * @param string $ip
-     *
-     * @return bool
      */
-    public static function inRange(string $range, string $ip) : bool
+    public static function inRange(string $range, string $ip): bool
     {
         if (!str_contains(
             haystack: $range,
@@ -21,7 +18,7 @@ class IP
             $range .= '/32';
         }
 
-        list($range, $netmask) = explode(
+        [$range, $netmask] = explode(
             delimiter: '/',
             string: $range,
             limit: 2
@@ -32,7 +29,7 @@ class IP
 
         $wildcard_decimal = pow(
             base: 2,
-            exp: (32 - $netmask)
+            exp: 32 - $netmask
         ) - 1;
         $netmask_decimal = ~$wildcard_decimal;
 

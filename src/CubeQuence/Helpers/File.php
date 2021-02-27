@@ -1,36 +1,272 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Helpers;
 
-use ParagonIE\Halite\File as FileLib;
-use CQ\Crypto\Symmetric;
 use CQ\Crypto\Asymmetric;
+use CQ\Crypto\Symmetric;
+use ParagonIE\Halite\File as FileCrypto;
 
 class File
 {
     private $file;
-    private $file_path;
 
     /**
      * Set path
      *
-     * @param string $path
-     * @param bool $new
+     * @param string $file_path
      */
-    public function __construct($path)
+    public function __construct(
+        private string $file_path
+    ) {
+    }
+
+    /**
+     * Create file
+     */
+    public function create(): void
     {
-        $this->file_path = $path;
+        $this->open(mode: 'c');
+        $this->close();
+    }
+
+    /**
+     * Read and return file contents
+     */
+    public function read(): string
+    {
+        $this->open(mode: 'r');
+
+        try {
+            $data = fread(
+                handle: $this->file,
+                length: filesize(filename: $this->file_path)
+            );
+
+            $this->close();
+        } catch (\Throwable) {
+            // TODO: maybe throw exception
+
+            return '';
+        }
+
+        return $data;
+    }
+
+    /**
+     * Write data to file
+     *
+     * @throws \Exception
+     */
+    public function write(string $data): void
+    {
+        $this->open(mode: 'w');
+
+        if (!fwrite(handle: $this->file, string: $data)) {
+            throw new \Exception(message: 'Cannot write to file');
+        }
+
+        $this->close();
+    }
+
+    /**
+     * Append data to file
+     *
+     * @throws \Exception
+     */
+    // TODO: maybe also return new file content
+    public function append(string $data): void
+    {
+        $this->open(mode: 'a');
+
+        if (!fwrite(handle: $this->file, string: $data)) {
+            throw new \Exception(message: 'Cannot append to file');
+        }
+
+        $this->close();
+    }
+
+    /**
+     * Delete file
+     *
+     * @throws \Exception
+     */
+    public function delete(): void
+    {
+        if (!unlink(filename: $this->file_path)) {
+            throw new \Exception(message: 'Cannot delete file');
+        }
+    }
+
+    /**
+     * Copy original file to opened file
+     *
+     * @throws \Exception
+     */
+    // TODO: rename to createFromOriginal
+    public function copy(string $original_file): void
+    {
+        if (!copy(source: $original_file, dest: $this->file_path)) {
+            throw new \Exception(message: 'Cannot copy file');
+        }
+    }
+
+    /**
+     * Get mime type
+     */
+    public function getMimeType(): string
+    {
+        $finfo = finfo_open(options: FILEINFO_MIME_TYPE);
+        $mime_type = finfo_file(finfo: $finfo, file_name: $this->file_path);
+        finfo_close(finfo: $finfo);
+
+        return $mime_type;
+    }
+
+    /**
+     * Get path info
+     *
+     * @return array
+     */
+    public function getPathInfo(): array
+    {
+        return pathinfo(path: $this->file_path);
+    }
+
+    /**
+     * Get checksum
+     */
+    public function getChecksum(): string
+    {
+        return FileCrypto::checksum(filePath: $this->file_path);
+    }
+
+    /**
+     * Encrypt file to output
+     *
+     * @param string $key optional
+     *
+     * @throws \Exception
+     */
+    public function encrypt(string $outputLocation, string $mode, ?string $key = null): int
+    {
+        if ($mode === 'symmetric') {
+            $key = Symmetric::getKey(type: 'encryption', key: $key);
+
+            return FileCrypto::encrypt(
+                input: $this->file_path,
+                output: $outputLocation,
+                key: $key
+            );
+        }
+
+        if ($mode === 'asymmetric') {
+            $enc_public_key = Asymmetric::getKey(
+                key: $key,
+                type: 'encryption',
+                scope: 'public'
+            );
+
+            return FileCrypto::seal(
+                input: $this->file_path,
+                output: $outputLocation,
+                publicKey: $enc_public_key
+            );
+        }
+
+        throw new \Exception(message: 'Invalid key type!');
+    }
+
+    /**
+     * Decrypt file to output
+     *
+     * @param string $key optional
+     *
+     * @throws \Exception
+     */
+    public function decrypt(string $outputLocation, string $mode, ?string $key = null): bool
+    {
+        if ($mode === 'symmetric') {
+            $key = Symmetric::getKey(
+                type:'encryption',
+                key: $key
+            );
+
+            return FileCrypto::decrypt(
+                input: $this->file_path,
+                output: $outputLocation,
+                key: $key
+            );
+        }
+
+        if ($mode === 'asymmetric') {
+            $enc_private_key = Asymmetric::getKey(
+                key: $key,
+                type: 'encryption',
+                scope: 'private'
+            );
+
+            return FileCrypto::unseal(
+                input: $this->file_path,
+                output: $outputLocation,
+                secretKey: $enc_private_key
+            );
+        }
+
+        throw new \Exception(message: 'Invalid key type!');
+    }
+
+    /**
+     * Sign file using private key
+     *
+     * @param string $private_key
+     */
+    public function sign(string $auth_private_key): string
+    {
+        $auth_private_key = Asymmetric::getKey(
+            key: $auth_private_key,
+            type: 'authentication',
+            scope: 'private'
+        );
+
+        return FileCrypto::sign(
+            filename: $this->file_path,
+            secretKey: $auth_private_key
+        );
+    }
+
+    /**
+     * Verify file signature using public key
+     *
+     * @param string $public_key
+     */
+    public function verify(string $signature, string $auth_public_key): bool
+    {
+        $auth_public_key = Asymmetric::getKey(
+            key: $auth_public_key,
+            type: 'authentication',
+            scope: 'public'
+        );
+
+        return FileCrypto::verify(
+            filename: $this->file_path,
+            publicKey: $auth_public_key,
+            signature: $signature
+        );
     }
 
     /**
      * Open file with specific mode
      *
-     * @param string $mode
      * @throws \Exception
      */
-    private function open($mode)
+    private function open(string $mode): void
     {
-        $handle = fopen($this->file_path, $mode);
+        $handle = fopen(
+            filename: $this->file_path,
+            mode: $mode
+        );
 
         if (!$handle) {
             throw new \Exception(message: 'Cannot open file');
@@ -42,253 +278,12 @@ class File
     /**
      * Close file
      *
-     * @return void
      * @throws \Exception
      */
-    private function close()
+    private function close(): void
     {
-        if (!fclose($this->file)) {
+        if (!fclose(handle: $this->file)) {
             throw new \Exception(message: 'Cannot close file');
         }
-    }
-
-    /**
-     * Create file
-     *
-     * @return void
-     */
-    public function create()
-    {
-        $this->open('c');
-        $this->close();
-    }
-
-    /**
-     * Read and return file contents
-     *
-     * @return string
-     */
-    public function read()
-    {
-        $this->open('r');
-
-        try {
-            $data = fread(
-                $this->file,
-                filesize($this->file_path)
-            );
-
-            $this->close();
-        } catch (\Throwable $e) {
-            return "";
-        }
-
-        return $data;
-    }
-
-    /**
-     * Write data to file
-     *
-     * @param string $data
-     *
-     * @return void
-     * @throws \Exception
-     */
-    public function write($data)
-    {
-        $this->open('w');
-
-        if (!fwrite($this->file, $data)) {
-            throw new \Exception(message: 'Cannot write to file');
-        }
-
-        $this->close();
-    }
-
-    /**
-     * Append data to file
-     *
-     * @param string $data
-     *
-     * @return void
-     * @throws \Exception
-     */
-    public function append($data)
-    {
-        $this->open('a');
-
-        if (!fwrite($this->file, $data)) {
-            throw new \Exception(message: 'Cannot append to file');
-        }
-
-        $this->close();
-    }
-
-    /**
-     * Delete file
-     *
-     * @return void
-     * @throws \Exception
-     */
-    public function delete()
-    {
-        if (!unlink($this->file_path)) {
-            throw new \Exception(message: 'Cannot delete file');
-        }
-    }
-
-    /**
-     * Copy original file to opened file
-     *
-     * @param string $original_file
-     *
-     * @return void
-     * @throws \Exception
-     */
-    public function copy($original_file)
-    {
-        if (!copy($original_file, $this->file_path)) {
-            throw new \Exception(message: 'Cannot copy file');
-        }
-    }
-
-    /**
-     * Get mime type
-     *
-     * @return string
-     */
-    public function getMimeType()
-    {
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mime_type = finfo_file($finfo, $this->file_path);
-        finfo_close($finfo);
-
-        return $mime_type;
-    }
-
-    /**
-     * Get path info
-     *
-     * @return array
-     */
-    public function getPathInfo()
-    {
-        return pathinfo($this->file_path);
-    }
-
-    /**
-     * Get checksum
-     *
-     * @return string
-     */
-    public function getChecksum()
-    {
-        return FileLib::checksum($this->file_path);
-    }
-
-    /**
-     * Encrypt file to output
-     *
-     * @param string $outputLocation
-     * @param string $mode
-     * @param string $key optional
-     *
-     * @return void
-     * @throws \Exception
-     */
-    public function encrypt($outputLocation, $mode, $key = null)
-    {
-        if ($mode === 'symmetric') {
-            $key = Symmetric::getKey($key, 'encryption');
-
-            return FileLib::encrypt(
-                $this->file_path,
-                $outputLocation,
-                $key
-            );
-        }
-
-        if ($mode === 'asymmetric') {
-            $enc_public_key = Asymmetric::getKey($key, 'encryption', 'public');
-
-            return FileLib::seal(
-                $this->file_path,
-                $outputLocation,
-                $enc_public_key
-            );
-        }
-
-        throw new \Exception(message: 'Invalid key type!');
-    }
-
-    /**
-     * Decrypt file to output
-     *
-     * @param string $outputLocation
-     * @param string $mode
-     * @param string $key optional
-     *
-     * @return void
-     * @throws \Exception
-     */
-    public function decrypt($outputLocation, $mode, $key = null)
-    {
-        if ($mode === 'symmetric') {
-            $key = Symmetric::getKey($key, 'encryption');
-
-            return FileLib::decrypt(
-                $this->file_path,
-                $outputLocation,
-                $key
-            );
-        }
-
-        if ($mode === 'asymmetric') {
-            $enc_private_key = Asymmetric::getKey($key, 'encryption', 'private');
-
-            return FileLib::unseal(
-                $this->file_path,
-                $outputLocation,
-                $enc_private_key
-            );
-        }
-
-        throw new \Exception(message: 'Invalid key type!');
-    }
-
-    /**
-     * Sign file using private key
-     *
-     * @param string $private_key
-     *
-     * @return string
-     */
-    public function sign($auth_private_key)
-    {
-        $auth_private_key = Asymmetric::getKey($auth_private_key, 'authentication', 'private');
-
-        return FileLib::sign(
-            $this->file_path,
-            $auth_private_key
-        );
-    }
-
-    /**
-     * Verify file signature using public key
-     *
-     * @param string $signature
-     * @param string $public_key
-     *
-     * @return bool
-     */
-    public function verify($signature, $auth_public_key)
-    {
-        $auth_public_key = Asymmetric::getKey($auth_public_key, 'authentication', 'public');
-
-        return FileLib::verify(
-            $this->file_path,
-            $auth_public_key,
-            $signature
-        );
     }
 }

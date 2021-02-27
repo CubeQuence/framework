@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Helpers;
 
 use CQ\Config\Config;
@@ -8,10 +10,8 @@ class Auth
 {
     /**
      * Check if session active.
-     *
-     * @return bool
      */
-    public static function valid() : bool
+    public static function valid(): bool
     {
         $session = Session::get(name: 'session');
 

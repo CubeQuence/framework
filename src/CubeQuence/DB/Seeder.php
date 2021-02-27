@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\DB;
 
 use Faker\Factory;
@@ -10,10 +12,8 @@ class Seeder extends AbstractSeed
 {
     /**
      * Create faker instance.
-     *
-     * @return Generator
      */
-    public static function faker() : Generator
+    public static function faker(): Generator
     {
         return Factory::create();
     }

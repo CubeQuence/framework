@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\DB;
 
-use Medoo\Medoo;
-
 use CQ\Config\Config;
+use Medoo\Medoo;
 
 class DB
 {
@@ -26,13 +27,12 @@ class DB
     /**
      * Select data from database.
      *
-     * @param string $table
      * @param array  $columns
      * @param array  $where
      *
      * @return array|null
      */
-    public static function select(string $table, array $columns, array $where) : array|null
+    public static function select(string $table, array $columns, array $where): array | null
     {
         return $GLOBALS['cq_database']->select($table, $columns, $where);
     }
@@ -40,13 +40,12 @@ class DB
     /**
      * Get only one record from table.
      *
-     * @param string    $table
      * @param array     $columns
      * @param array|int $where
      *
      * @return array|null
      */
-    public static function get(string $table, array $columns, array|int $where) : array|null
+    public static function get(string $table, array $columns, array | int $where): array | null
     {
         return $GLOBALS['cq_database']->get($table, $columns, $where);
     }
@@ -54,12 +53,11 @@ class DB
     /**
      * Insert new records in table.
      *
-     * @param string $table
      * @param array  $data
      *
      * @return array
      */
-    public static function create(string $table, array $data) : array
+    public static function create(string $table, array $data): array
     {
         $GLOBALS['cq_database']->insert($table, $data);
 
@@ -69,13 +67,12 @@ class DB
     /**
      * Modify data in table.
      *
-     * @param string    $table
      * @param array     $data
      * @param array|int $where
      *
      * @return array|null
      */
-    public static function update(string $table, array $data, array|int $where) : array|null
+    public static function update(string $table, array $data, array | int $where): array | null
     {
         $data = array_merge($data, ['updated_at' => date(format: 'Y-m-d H:i:s')]);
         $GLOBALS['cq_database']->update($table, $data, $where);
@@ -86,12 +83,11 @@ class DB
     /**
      * Delete data from table.
      *
-     * @param string $table
      * @param array  $where
      *
      * @return array|null
      */
-    public static function delete(string $table, array $where) : array|null
+    public static function delete(string $table, array $where): array | null
     {
         return $GLOBALS['cq_database']->delete($table, ['AND' => $where]);
     }
@@ -99,12 +95,11 @@ class DB
     /**
      * Determine whether the target data existed.
      *
-     * @param string $table
      * @param array $where
      *
      * @return array|null
      */
-    public static function has(string $table, array $where) : array|null
+    public static function has(string $table, array $where): array | null
     {
         return $GLOBALS['cq_database']->has($table, $where);
     }
@@ -112,12 +107,11 @@ class DB
     /**
      * Counts the number of rows.
      *
-     * @param string $table
      * @param array $where
      *
      * @return int|null
      */
-    public static function count(string $table, array $where) : int|null
+    public static function count(string $table, array $where): int | null
     {
         return $GLOBALS['cq_database']->count($table, $where);
     }

@@ -1,21 +1,19 @@
 <?php
 
-namespace CQ\Helpers;
+declare(strict_types=1);
 
-use CQ\Helpers\Guzzle;
+namespace CQ\Helpers;
 
 class Mail
 {
     /**
      * Send form.castelnuovo.xyz.
      *
-     * @param string $site_key
      * @param array  $data
      *
-     * @return void
      * @throws \Throwable
      */
-    public static function send(string $site_key, array $data) : void
+    public static function send(string $site_key, array $data): void
     {
         Guzzle::request(
             method: 'POST',

@@ -1,27 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\CLI;
 
+use CQ\Helpers\App;
 use Phinx\Console\PhinxApplication;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-use CQ\Helpers\App;
-
 class DB extends Template
 {
     /**
      * Migrate command.
-     *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @param SymfonyStyle    $io
-     *
-     * @return void
      */
-    public function migrate(InputInterface $input, OutputInterface $output, SymfonyStyle $io) : void
+    public function migrate(InputInterface $input, OutputInterface $output, SymfonyStyle $io): void
     {
         if (!self::envCheck(input: $input, output: $output, io: $io)) {
             return;
@@ -78,14 +73,8 @@ class DB extends Template
 
     /**
      * Seed command.
-     *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @param SymfonyStyle    $io
-     *
-     * @return void
      */
-    public function seed(InputInterface $input, OutputInterface $output, SymfonyStyle $io) : void
+    public function seed(InputInterface $input, OutputInterface $output, SymfonyStyle $io): void
     {
         if (!self::envCheck(input: $input, output: $output, io: $io)) {
             return;

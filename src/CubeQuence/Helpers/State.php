@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Helpers;
 
 class State
@@ -8,12 +10,10 @@ class State
      * Set state.
      *
      * @param string $custom optional
-     *
-     * @return string
      */
-    public static function set(string $custom = '') : string
+    public static function set(string $custom = ''): string
     {
-        $state = $custom ?: Str::random();
+        $state = $custom ? $custom : Str::random();
 
         return Session::set(
             name: 'state',
@@ -24,12 +24,9 @@ class State
     /**
      * Validate $provided_state.
      *
-     * @param string $provided_state
      * @param bool   $unset_state optional
-     *
-     * @return bool
      */
-    public static function valid(string $provided_state, bool $unset_state = true) : bool
+    public static function valid(string $provided_state, bool $unset_state = true): bool
     {
         $known_state = Session::get(name: 'state');
 

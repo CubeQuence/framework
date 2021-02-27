@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Config;
 
 use CQ\Helpers\App;
@@ -41,27 +43,11 @@ class Config
     }
 
     /**
-     * Add config file.
-     *
-     * @param string $config_dir
-     * @param string $name
-     */
-    private function attach(string $config_dir, string $name) : void
-    {
-        $data = require "{$config_dir}/{$name}.php";
-
-        $GLOBALS['cq_config'][$name] = $data;
-    }
-
-    /**
      * Get config entry.
      *
-     * @param string $key
      * @param mixed $fallback
-     *
-     * @return mixed
      */
-    public static function get(string $key, $fallback = null) : mixed
+    public static function get(string $key, $fallback = null): mixed
     {
         $value = Arr::get(
             array: $GLOBALS['cq_config'],
@@ -69,10 +55,20 @@ class Config
             default: $fallback
         );
 
-        if ('true' === $value || 'false' === $value) {
-            return 'true' === $value ? true : false;
+        if ($value === 'true' || $value === 'false') {
+            return $value === 'true';
         }
 
         return $value;
+    }
+
+    /**
+     * Add config file.
+     */
+    private function attach(string $config_dir, string $name): void
+    {
+        $data = require "{$config_dir}/{$name}.php";
+
+        $GLOBALS['cq_config'][$name] = $data;
     }
 }

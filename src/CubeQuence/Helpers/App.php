@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Helpers;
 
 use CQ\Config\Config;
@@ -12,9 +14,10 @@ class App
      * @param string|array $check optional
      *
      * @return string|bool
+     *
      * @throws \Exception
      */
-    public static function environment(string|array|null $check = null) : string|bool// TODO: change to isEnvoirement
+    public static function environment(string | array | null $check = null): string | bool// TODO: change to isEnvoirement
     {
         $env = Config::get(
             key: 'app.env',
@@ -42,10 +45,8 @@ class App
 
     /**
      * Return if debug is enabled.
-     *
-     * @return bool
      */
-    public static function debug() : bool // TODO: change to isDebug
+    public static function debug(): bool // TODO: change to isDebug
     {
         return Config::get(
             key: 'app.debug',
@@ -55,20 +56,17 @@ class App
 
     /**
      * Get project root string
-     *
-     * @return string
      */
-    public static function getRootPath() : string
+    public static function getRootPath(): string
     {
-        list($path) = get_included_files();
+        [$path] = get_included_files();
 
         $path = dirname(path: $path);
-        $path = str_replace(
-            search: "/public",
+
+        return str_replace(
+            search: '/public',
             replace: null,
             subject: $path
         );
-
-        return $path;
     }
 }

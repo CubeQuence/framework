@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Config;
 
 use Dotenv\Dotenv;
@@ -8,8 +10,6 @@ class Env
 {
     /**
      * Create dotenv instance.
-     *
-     * @param string $path
      */
     public function __construct(string $path)
     {

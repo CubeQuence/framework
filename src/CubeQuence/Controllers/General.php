@@ -1,19 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Controllers;
 
 use CQ\Helpers\Auth;
 use CQ\Response\Html;
-use CQ\Controllers\Controller;
 
 class General extends Controller
 {
     /**
      * Index screen.
-     *
-     * @return Html
      */
-    public function index() : Html
+    public function index(): Html
     {
         $msg = $this->request->getQueryParams()['msg'] ?? null;
 
@@ -50,29 +49,25 @@ class General extends Controller
 
     /**
      * Error screen.
-     *
-     * @param string $code
-     *
-     * @return Html
      */
-    public function error(string $code) : Html
+    public function error(string $code): Html
     {
         switch ($code) { // TODO: replace met map
             case '403':
-                $short_message = 'Oops! Access denied';
+                $short_message = 'Oops!Access denied';
                 $message = 'Access to this page is forbidden';
                 break;
             case '404':
-                $short_message = 'Oops! Page not found';
+                $short_message = 'Oops!Page not found';
                 $message = 'We are sorry, but the page you requested was not found';
                 break;
             case '500':
-                $short_message = 'Oops! Server error';
+                $short_message = 'Oops!Server error';
                 $message = 'We are experiencing some technical issues';
                 break;
 
             default:
-                $short_message = 'Oops! Unknown Error';
+                $short_message = 'Oops!Unknown Error';
                 $message = 'Unknown error occured';
                 $code = 400;
                 break;

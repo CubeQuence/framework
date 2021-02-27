@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Helpers;
 
 use ArrayAccess;
@@ -10,10 +12,8 @@ class Arr
      * Determine whether the given value is array accessible.
      *
      * @param mixed $value
-     *
-     * @return bool
      */
-    public static function accessible($value) : bool
+    public static function accessible($value): bool
     {
         return is_array($value) || $value instanceof ArrayAccess;
     }
@@ -23,13 +23,11 @@ class Arr
      *
      * @param ArrayAccess|array $array
      * @param string|int        $key
-     *
-     * @return bool
      */
     public static function exists(
-        ArrayAccess|array $array,
-        string|int $key
-    ) : bool {
+        ArrayAccess | array $array,
+        string | int $key
+    ): bool {
         if ($array instanceof ArrayAccess) {
             return $array->offsetExists(offset: $key);
         }
@@ -43,14 +41,12 @@ class Arr
      * @param ArrayAccess|array $array
      * @param string|int|null   $key
      * @param mixed             $default
-     *
-     * @return mixed
      */
     public static function get(
-        ArrayAccess|array $array,
-        string|int|null $key,
+        ArrayAccess | array $array,
+        string | int | null $key,
         $default = null
-    ) : mixed {
+    ): mixed {
         if (!self::accessible(value: $array)) {
             return $default;
         }
@@ -66,7 +62,7 @@ class Arr
             return $array[$key];
         }
 
-        if (false === strpos(haystack: $key, needle: '.')) {
+        if (strpos(haystack: $key, needle: '.') === false) {
             return $array[$key] ?? $default;
         }
 

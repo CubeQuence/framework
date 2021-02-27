@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Helpers;
 
 use CQ\Config\Config;
-use CQ\Helpers\Session;
 
 class User
 {
@@ -12,7 +13,7 @@ class User
      *
      * @return string|null
      */
-    public static function getId() : string|null
+    public static function getId(): string | null
     {
         return Session::get(name: 'user')['id'] ?? null;
     }
@@ -22,7 +23,7 @@ class User
      *
      * @return string|null
      */
-    public static function getName() : string|null
+    public static function getName(): string | null
     {
         return Session::get('user')['name'] ?? null;
     }
@@ -32,7 +33,7 @@ class User
      *
      * @return string|null
      */
-    public static function getEmail() : string|null
+    public static function getEmail(): string | null
     {
         return Session::get('user')['email'] ?? null;
     }
@@ -42,19 +43,15 @@ class User
      *
      * @return array|null
      */
-    public static function getRoles() : array|null
+    public static function getRoles(): array | null
     {
         return Session::get('user')['roles'] ?? null;
     }
 
     /**
      * Check user role
-     *
-     * @param string $role
-     *
-     * @return bool
      */
-    public static function hasRole(string $role) : bool
+    public static function hasRole(string $role): bool
     {
         $roles = self::getRoles();
 
@@ -66,12 +63,8 @@ class User
 
     /**
      * Check user role
-     *
-     * @param string $key
-     *
-     * @return mixed
      */
-    public static function valueRole(string $key) : mixed
+    public static function valueRole(string $key): mixed
     {
         $userRole = self::getRoles()[0];
 

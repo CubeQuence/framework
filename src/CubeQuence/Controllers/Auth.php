@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Controllers;
 
+use CQ\Config\Config;
 use CQ\Helpers\App as AppHelper;
-use CQ\Helpers\State;
+use CQ\Helpers\Guzzle;
 use CQ\Helpers\Request;
 use CQ\Helpers\Session;
-use CQ\Helpers\Guzzle;
-use CQ\Config\Config;
-use CQ\Response\Json;
+use CQ\Helpers\State;
 use CQ\Response\Html;
+use CQ\Response\Json;
 use CQ\Response\Redirect;
-use CQ\Controllers\Controller;
 
 class Auth extends Controller
 {
@@ -25,33 +26,31 @@ class Auth extends Controller
     public function __construct()
     {
         $this->config = (object) [ // TODO: update varnames to underscore_case and change authorize -> authorize_url
-            'clientId'      => Config::get(key: 'auth.id'),
-            'clientSecret'  => Config::get(key: 'auth.secret'),
+            'clientId' => Config::get(key: 'auth.id'),
+            'clientSecret' => Config::get(key: 'auth.secret'),
 
-            'authorize'     => 'https://auth.castelnuovo.xyz/oauth2/authorize',
-            'authDevice'    => 'https://auth.castelnuovo.xyz/oauth2/device_authorize',
-            'accessToken'   => 'https://auth.castelnuovo.xyz/oauth2/token',
-            'userDetails'   => 'https://auth.castelnuovo.xyz/oauth2/userinfo',
-            'logout'        => 'https://auth.castelnuovo.xyz/oauth2/logout',
+            'authorize' => 'https://auth.castelnuovo.xyz/oauth2/authorize',
+            'authDevice' => 'https://auth.castelnuovo.xyz/oauth2/device_authorize',
+            'accessToken' => 'https://auth.castelnuovo.xyz/oauth2/token',
+            'userDetails' => 'https://auth.castelnuovo.xyz/oauth2/userinfo',
+            'logout' => 'https://auth.castelnuovo.xyz/oauth2/logout',
 
-            'redirect'      => Config::get(key: 'app.url') . '/auth/callback',
-            'qrCode'        => 'https://api.castelnuovo.xyz/qr?data=',
+            'redirect' => Config::get(key: 'app.url') . '/auth/callback',
+            'qrCode' => 'https://api.castelnuovo.xyz/qr?data=',
         ];
     }
 
     /**
      * Redirect to login portal.
-     *
-     * @return Redirect
      */
-    public function request() : Redirect
+    public function request(): Redirect
     {
         $state = State::set();
 
         $auth_url = "{$this->config->authorize}";
         $auth_url .= "?client_id={$this->config->clientId}";
-        $auth_url .= "&response_type=code&approval_prompt=auto";
-        $auth_url .= "&redirect_uri=" . urlencode($this->config->redirect);
+        $auth_url .= '&response_type=code&approval_prompt=auto';
+        $auth_url .= '&redirect_uri=' . urlencode($this->config->redirect);
         $auth_url .= "&state={$state}";
 
         return $this->respond->redirect($auth_url);
@@ -59,10 +58,8 @@ class Auth extends Controller
 
     /**
      * Callback for OAuth.
-     *
-     * @return Redirect
      */
-    public function callback() : Redirect
+    public function callback(): Redirect
     {
         $code = $this->request->getQueryParams()['code']; // TODO: maybe easier getQueryParam('code')
         $state = $this->request->getQueryParams()['state'];
@@ -121,18 +118,16 @@ class Auth extends Controller
     }
 
     /**
-    * Initiate device flow.
-    *
-    * @return Html
-    */
-    public function requestDevice() : Html
+     * Initiate device flow.
+     */
+    public function requestDevice(): Html
     {
         $auth_request = Guzzle::request(
             method: 'POST',
             url: $this->config->authDevice,
             data: [
                 'query' => [
-                    'client_id' =>$this->config->clientId,
+                    'client_id' => $this->config->clientId,
                 ],
             ]
         )->data;
@@ -149,10 +144,8 @@ class Auth extends Controller
 
     /**
      * Callback for OAuth device flow.
-     *
-     * @return Json
      */
-    public function callbackDevice() : Json
+    public function callbackDevice(): Json
     {
         try {
             $authorization = Guzzle::request(
@@ -225,13 +218,8 @@ class Auth extends Controller
 
     /**
      * Create session.
-     *
-     * @param object $user
-     * @param string $expires_at
-     *
-     * @return string
      */
-    public function login(object $user, string $expires_at) : string
+    public function login(object $user, string $expires_at): string
     {
         $return_to = Session::get(name: 'return_to');
 
@@ -270,12 +258,8 @@ class Auth extends Controller
 
     /**
      * Destroy session.
-     *
-     * @param string $msg
-     *
-     * @return Redirect
      */
-    public function destroy(string $msg) : Redirect
+    public function destroy(string $msg): Redirect
     {
         Session::destroy();
 
@@ -284,10 +268,8 @@ class Auth extends Controller
 
     /**
      * Logout session.
-     *
-     * @return Redirect
      */
-    public function logout() : Redirect
+    public function logout(): Redirect
     {
         Session::destroy();
 

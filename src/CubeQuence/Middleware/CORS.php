@@ -1,11 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Middleware;
 
 use Closure;
-
 use CQ\Config\Config;
-use CQ\Response\Json;
 use CQ\Response\NoContent;
 
 class CORS extends Middleware
@@ -13,11 +13,9 @@ class CORS extends Middleware
     /**
      * Add CORS headers to requests.
      *
-     * @param Closure $next
-     *
-     * @return Closure|Json
+     * @return Closure|NoContent
      */
-    public function handleChild(Closure $next) : Closure|Json
+    public function handleChild(Closure $next): Closure | NoContent
     {
         $headers = [
             'Access-Control-Allow-Origin' => implode(

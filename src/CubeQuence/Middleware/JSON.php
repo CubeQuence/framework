@@ -1,22 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Middleware;
 
 use Closure;
-
-use CQ\Response\Json as JsonResponse;
 use CQ\Helpers\Request;
+use CQ\Response\Json as JsonResponse;
 
 class JSON extends Middleware
 {
     /**
      * Interpret JSON and validate that the provided JSON is valid.
      *
-     * @param Closure $next
-     *
      * @return Closure|JsonResponse
      */
-    public function handleChild(Closure $next) : Closure|JsonResponse
+    public function handleChild(Closure $next): Closure | JsonResponse
     {
         if (!Request::isJson(request: $this->request)) {
             return $this->respond->prettyJson(
@@ -32,7 +31,7 @@ class JSON extends Middleware
             json: $this->request->getBody()->getContents()
         );
 
-        if ((JSON_ERROR_NONE !== json_last_error())) {
+        if ((json_last_error() !== JSON_ERROR_NONE)) {
             return $this->respond->prettyJson(
                 message:'Problems parsing provided JSON',
                 code: 415

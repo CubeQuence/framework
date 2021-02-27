@@ -1,12 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Middleware;
 
 use Closure;
-use Psr\Http\Message\ServerRequestInterface;
-use MiladRahimi\PhpRouter\Routing\Route;
-
+use CQ\Response\Json;
+use CQ\Response\Redirect;
 use CQ\Response\Respond;
+use CQ\Response\NoContent;
+use MiladRahimi\PhpRouter\Routing\Route;
+use Psr\Http\Message\ServerRequestInterface;
 
 abstract class Middleware
 {
@@ -16,27 +20,17 @@ abstract class Middleware
 
     /**
      * Interface for middleware classes to tie into
-     *
-     * @param Closure $next
-     *
-     * @return Closure
      */
-    abstract public function handleChild(Closure $next);
+    abstract public function handleChild(Closure $next): Closure | Json | NoContent | Redirect;
 
     /**
      * Execute middleware
-     *
-     * @param ServerRequestInterface $request
-     * @param Route $route
-     * @param Closure $next
-     *
-     * @return Closure
      */
     public function handle(
         ServerRequestInterface $request,
         Route $route,
         Closure $next
-    ) {
+    ): Closure {
         $this->request = $request;
         $this->route = $route;
         $this->respond = new Respond();

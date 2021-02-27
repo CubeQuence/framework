@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Response;
 
 class Redirect extends \Laminas\Diactoros\Response\RedirectResponse
@@ -7,8 +9,6 @@ class Redirect extends \Laminas\Diactoros\Response\RedirectResponse
     /**
      * Redirect response
      *
-     * @param string $url
-     * @param int  $code
      * @param array $headers
      */
     public function __construct(string $url, int $code, array $headers)

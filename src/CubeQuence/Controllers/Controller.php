@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Controllers;
 
+use CQ\Response\Respond;
 use MiladRahimi\PhpRouter\Routing\Route;
 use Psr\Http\Message\ServerRequestInterface;
-
-use CQ\Response\Respond;
 
 class Controller
 {

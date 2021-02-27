@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Helpers;
 
 class Session
@@ -7,12 +9,11 @@ class Session
     /**
      * Set session var.
      *
-     * @param string $name
      * @param mixed  $data
      *
      * @return mixed
      */
-    public static function set($name, $data)
+    public static function set(string $name, $data)
     {
         $_SESSION[$name] = $data;
 
@@ -21,10 +22,8 @@ class Session
 
     /**
      * Unset session var.
-     *
-     * @param string $name
      */
-    public static function unset($name)
+    public static function unset(string $name): void
     {
         unset($_SESSION[$name]);
     }
@@ -32,11 +31,9 @@ class Session
     /**
      * Get session var.
      *
-     * @param string $name
-     *
      * @return mixed
      */
-    public static function get($name)
+    public static function get(string $name)
     {
         return $_SESSION[$name] ?? null;
     }
@@ -44,7 +41,7 @@ class Session
     /**
      * Destroy and restart a session.
      */
-    public static function destroy()
+    public static function destroy(): void
     {
         session_destroy();
         session_start();

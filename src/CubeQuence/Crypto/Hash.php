@@ -1,19 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Crypto;
 
 class Hash
 {
-    private static $hash_cost = 2;
+    private static int $hash_cost = 2;
 
     /**
      * Hash string.
-     *
-     * @param string $string
-     *
-     * @return string
      */
-    public static function make(string $string) : string
+    public static function make(string $string): string
     {
         if (!defined(name: 'PASSWORD_ARGON2ID')) {
             return password_hash(
@@ -37,13 +35,8 @@ class Hash
 
     /**
      * Verify plain-text with hash.
-     *
-     * @param string $check_against
-     * @param string $hash
-     *
-     * @return bool
      */
-    public static function verify(string $check_against, string $hash) : bool
+    public static function verify(string $check_against, string $hash): bool
     {
         return password_verify(
             password: $check_against,

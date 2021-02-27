@@ -1,13 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Middleware;
 
 use Closure;
-
 use CQ\Helpers\Auth;
-use CQ\Response\Json;
 use CQ\Helpers\Request;
 use CQ\Helpers\Session as SessionHelper;
+use CQ\Response\Json;
 use CQ\Response\Redirect;
 
 class Session extends Middleware
@@ -15,11 +16,9 @@ class Session extends Middleware
     /**
      * Validate PHP session.
      *
-     * @param Closure $next
-     *
-     * @return Closure|Json
+     * @return Closure|Json|Redirect
      */
-    public function handleChild(Closure $next) : Closure|Json|Redirect
+    public function handleChild(Closure $next): Closure | Json | Redirect
     {
         if (!Auth::valid()) {
             SessionHelper::destroy();

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Routing;
 
 use Closure;
@@ -21,11 +23,8 @@ class Middleware
      * Create middleware handler
      *
      * @param array $config
-     * @param Closure $routes
-     *
-     * @return void
      */
-    public function create(array $config, Closure $routes) : void
+    public function create(array $config, Closure $routes): void
     {
         $this->router->group(
             attributes: $config,

@@ -1,25 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Crypto;
 
-use ParagonIE\HiddenString\HiddenString;
 use ParagonIE\Halite\Password as PasswordLib;
-
-use CQ\Crypto\Hash;
-use CQ\Crypto\Symmetric;
+use ParagonIE\HiddenString\HiddenString;
 
 class Password
 {
     /**
      * Hash and encrypt password
      *
-     * @param string $plaintext_password
      * @param string $context optional
      * @param string $key optional
-     *
-     * @return string
      */
-    public static function hash(string $plaintext_password, ?string $context = null, ?string $key = null) : string
+    public static function hash(string $plaintext_password, ?string $context = null, ?string $key = null): string
     {
         $plaintext_password_with_context = $plaintext_password . $context;
 
@@ -47,19 +43,15 @@ class Password
     /**
      * Verify password
      *
-     * @param string $plaintext_password
-     * @param string $encrypted_hash
      * @param string $context optional
      * @param string $key optional
-     *
-     * @return bool
      */
     public static function verify(
         string $plaintext_password,
         string $encrypted_hash,
         ?string $context = null,
         ?string $key = null
-    ) : bool {
+    ): bool {
         $plaintext_password_with_context = new HiddenString(value: $plaintext_password . $context);
 
         if (!defined(name: 'PASSWORD_ARGON2ID')) {
@@ -86,7 +78,7 @@ class Password
                     key: $key
                 )
             );
-        } catch (\ParagonIE\Halite\Alerts\InvalidMessage $ex) {
+        } catch (\ParagonIE\Halite\Alerts\InvalidMessage) {
             return false;
         }
     }

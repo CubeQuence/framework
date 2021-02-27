@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Response;
 
 class NoContent extends \Laminas\Diactoros\Response\EmptyResponse
@@ -7,7 +9,6 @@ class NoContent extends \Laminas\Diactoros\Response\EmptyResponse
     /**
      * NoContent response
      *
-     * @param int $code
      * @param array $headers
      */
     public function __construct(int $code, array $headers)

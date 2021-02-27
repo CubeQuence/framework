@@ -15,7 +15,6 @@
     "require": {
         "php": ">=8.0",
         "catfan/medoo": "^1.7",
-        "fzaninotto/faker": "^1.9",
         "guzzlehttp/guzzle": "^7.0",
         "miladrahimi/phprouter": "^5.0",
         "mnapoli/silly": "^1.7",
@@ -25,6 +24,10 @@
         "robmorgan/phinx": "^0.12.1",
         "twig/twig": "^3.0",
         "vlucas/phpdotenv": "^5.0"
+    },
+    "require-dev": {
+        "nunomaduro/phpinsights": "dev-master",
+        "fzaninotto/faker": "^1.9"
     },
     "config": {
         "sort-packages": true
@@ -39,8 +42,5 @@
     "support": {
         "issues": "https://github.com/CubeQuence/CubeQuence/issues",
         "source": "https://github.com/CubeQuence/CubeQuence"
-    },
-    "require-dev": {
-        "nunomaduro/phpinsights": "dev-master"
     }
 }
