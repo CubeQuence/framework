@@ -19,7 +19,7 @@ class App extends Template
      */
     public function key(InputInterface $input, OutputInterface $output, SymfonyStyle $io): void
     {
-        if (!self::envCheck(input: $input, output: $output, io: $io)) {
+        if (! self::envCheck(input: $input, output: $output, io: $io)) {
             return;
         }
 
@@ -27,7 +27,7 @@ class App extends Template
             $key = Symmetric::genKey();
             $path = AppHelper::getRootPath() .'/.env';
 
-            if (!file_exists(filename: $path)) {
+            if (! file_exists(filename: $path)) {
                 $io->warning(message: '.env file not found, please set key manually');
                 $io->text(message: "APP_KEY=\"{$key}\"");
 

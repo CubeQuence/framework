@@ -11,7 +11,7 @@ class IP
      */
     public static function inRange(string $range, string $ip): bool
     {
-        if (!str_contains(
+        if (! str_contains(
             haystack: $range,
             needle: '/'
         )) {

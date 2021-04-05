@@ -5,18 +5,20 @@ declare(strict_types=1);
 namespace CQ\Controllers;
 
 use CQ\Config\Config;
-use CQ\Helpers\App as AppHelper;
-use CQ\Helpers\Guzzle;
 use CQ\Helpers\Request;
 use CQ\Helpers\Session;
-use CQ\Helpers\State;
 use CQ\Response\Html;
 use CQ\Response\Json;
 use CQ\Response\Redirect;
+use OAuth\Client;
+use OAuth\Exceptions\AuthException;
+use OAuth\Flows\Provider\AuthorizationCode;
+use OAuth\Flows\Provider\Device;
 
 class Auth extends Controller
 {
-    private object $config;
+    private Client $client;
+    private Client $deviceClient;
 
     // TODO: make functions for getUser();, getAccessToken(device or normal)
 
@@ -25,19 +27,21 @@ class Auth extends Controller
      */
     public function __construct()
     {
-        $this->config = (object) [ // TODO: update varnames to underscore_case and change authorize -> authorize_url
-            'clientId' => Config::get(key: 'auth.id'),
-            'clientSecret' => Config::get(key: 'auth.secret'),
+        $this->client = new Client(
+            flowProvider: new AuthorizationCode(
+                redirectUri: ''
+            ),
+            authorizationServer: 'https://auth.castelnuovo.xyz',
+            clientId: Config::get(key: 'auth.id'),
+            clientSecret: Config::get(key: 'auth.secret')
+        );
 
-            'authorize' => 'https://auth.castelnuovo.xyz/oauth2/authorize',
-            'authDevice' => 'https://auth.castelnuovo.xyz/oauth2/device_authorize',
-            'accessToken' => 'https://auth.castelnuovo.xyz/oauth2/token',
-            'userDetails' => 'https://auth.castelnuovo.xyz/oauth2/userinfo',
-            'logout' => 'https://auth.castelnuovo.xyz/oauth2/logout',
-
-            'redirect' => Config::get(key: 'app.url') . '/auth/callback',
-            'qrCode' => 'https://api.castelnuovo.xyz/qr?data=',
-        ];
+        $this->deviceClient = new Client(
+            flowProvider: new Device(),
+            authorizationServer: 'https://auth.castelnuovo.xyz',
+            clientId: Config::get(key: 'auth.id'),
+            clientSecret: Config::get(key: 'auth.secret')
+        );
     }
 
     /**
@@ -45,15 +49,11 @@ class Auth extends Controller
      */
     public function request(): Redirect
     {
-        $state = State::set();
+        $startData = $this->client->start();
 
-        $auth_url = "{$this->config->authorize}";
-        $auth_url .= "?client_id={$this->config->clientId}";
-        $auth_url .= '&response_type=code&approval_prompt=auto';
-        $auth_url .= '&redirect_uri=' . urlencode($this->config->redirect);
-        $auth_url .= "&state={$state}";
+        Session::set('state', $startData->state);
 
-        return $this->respond->redirect($auth_url);
+        return $this->respond->redirect($startData->uri);
     }
 
     /**
@@ -61,57 +61,30 @@ class Auth extends Controller
      */
     public function callback(): Redirect
     {
-        $code = $this->request->getQueryParams()['code']; // TODO: maybe easier getQueryParam('code')
-        $state = $this->request->getQueryParams()['state'];
-
-        if (!State::valid(provided_state: $state)) {
-            return $this->destroy(msg: 'state');
-        }
+        $queryParams = $this->request->getQueryParams();
 
         try {
-            $authorization = Guzzle::request(
-                method: 'POST',
-                url: $this->config->accessToken,
-                data: [
-                    'query' => [
-                        'client_id' => $this->config->clientId,
-                        'client_secret' => $this->config->clientSecret,
-                        'code' => $code,
-                        'grant_type' => 'authorization_code',
-                        'redirect_uri' => $this->config->redirect,
-                    ],
-                ]
-            )->data;
+            $tokens = $this->client->callback(
+                queryParams: $queryParams,
+                storedVar: Session::get('state')
+            );
 
-            $user = Guzzle::request(
-                method: 'GET',
-                url: $this->config->userDetails,
-                data: [
-                    'headers' => [
-                        'Authorization' => "Bearer {$authorization->access_token}",
-                    ],
-                ]
-            )->data;
-
-            $expires_at = time() + $authorization->expires_in;
-        } catch (\Throwable $th) {
-            if (AppHelper::debug()) {
-                return $this->respond->prettyJson(
-                    message: $th->getMessage(),
-                    code: 400
-                );
-            }
-
-            return $this->destroy(msg: 'code');
+            $user = $this->client->getUser(
+                accessToken: $tokens->access_token
+            );
+        } catch (AuthException) {
+            return $this->destroy(msg: 'state');
+        } catch (\Throwable) {
+            return $this->destroy(msg: 'unknown_error'); // TODO: update message
         }
 
-        if (!$user->roles) {
-            return $this->destroy(msg: 'not_registered');
+        if (! $user->allowed) {
+            return $this->destroy(msg: 'not_allowed'); // TODO: update message
         }
 
         $url = $this->login(
             user: $user,
-            expires_at: $expires_at
+            expires_at: $tokens->expires_at
         );
 
         return $this->respond->redirect(url: $url);
@@ -122,22 +95,14 @@ class Auth extends Controller
      */
     public function requestDevice(): Html
     {
-        $auth_request = Guzzle::request(
-            method: 'POST',
-            url: $this->config->authDevice,
-            data: [
-                'query' => [
-                    'client_id' => $this->config->clientId,
-                ],
-            ]
-        )->data;
+        $startData = $this->deviceClient->start();
 
-        Session::set(name: 'device_code', data: $auth_request->device_code);
+        Session::set(name: 'device_code', data: $startData->device_code);
 
         return $this->respond->twig(
             view: 'partials/device.twig',
             parameters:[
-                'qr' => $this->config->qrCode . urlencode($auth_request->verification_uri_complete),
+                'qr' => $startData->uri,
             ]
         );
     }
@@ -148,56 +113,31 @@ class Auth extends Controller
     public function callbackDevice(): Json
     {
         try {
-            $authorization = Guzzle::request(
-                method: 'POST',
-                url: $this->config->accessToken,
-                data: [
-                    'query' => [
-                        'client_id' => $this->config->clientId,
-                        'client_secret' => $this->config->clientSecret,
-                        'device_code' => Session::get(name: 'device_code'),
-                        'grant_type' => 'urn:ietf:params:oauth:grant-type:device_code',
-                    ],
-                ]
-            )->data;
+            $tokens = $this->client->callback(
+                queryParams: [],
+                storedVar: Session::get('state')
+            );
 
-            $user = Guzzle::request(
-                method: 'GET',
-                url: $this->config->userDetails,
-                data: [
-                    'headers' => [
-                        'Authorization' => "Bearer {$authorization->access_token}",
-                    ],
-                ]
-            )->data;
-
-            $expires_at = time() + $authorization->expires_in;
-        } catch (\Throwable $th) {
-            $error = json_decode(json: $th->getMessage())->error;
-
-            switch ($error) { // TODO: check if map syntax is better
-                case 'authorization_pending':
-                    return $this->respond->prettyJson(message: '');
-
-                case 'expired_token':
-                    Session::destroy();
-
-                    return $this->respond->prettyJson(
-                        message: 'The request has expired!',
-                        code: 400
-                    );
-
-                default:
-                    Session::destroy();
-
-                    return $this->respond->prettyJson(
-                        message: 'Invalid request!',
-                        code: 400
-                    );
+            $user = $this->client->getUser(
+                accessToken: $tokens->access_token
+            );
+        } catch (AuthException $th) {
+            if (! $th->getMessage()) {
+                return $this->respond->prettyJson(message: '');
             }
+
+            return $this->respond->prettyJson(
+                message: $th->getMessage(),
+                code: 400
+            );
+        } catch (\Throwable $th) {
+            return $this->respond->prettyJson(
+                message: 'Unknown error occured',
+                code: 400
+            );
         }
 
-        if (!$user->roles) {
+        if (! $user->allowed) {
             Session::destroy();
 
             return $this->respond->prettyJson(
@@ -206,7 +146,10 @@ class Auth extends Controller
             );
         }
 
-        $url = $this->login(user: $user, expires_at: $expires_at);
+        $url = $this->login(
+            user: $user,
+            expires_at: $tokens->expires_at
+        );
 
         return $this->respond->prettyJson(
             message: 'You are logged in!',
@@ -229,10 +172,9 @@ class Auth extends Controller
         Session::set(
             name: 'user',
             data: [
-                'id' => $user->sub,
-                'roles' => $user->roles,
+                'id' => $user->id,
                 'email' => $user->email,
-                'name' => $user->preferred_username,
+                'roles' => $user->roles,
             ]
         );
 
@@ -273,8 +215,8 @@ class Auth extends Controller
     {
         Session::destroy();
 
-        return $this->respond->redirect(
-            url: "{$this->config->logout}?client_id=" . Config::get('auth.id')
-        );
+        $logoutUrl = $this->client->logout();
+
+        return $this->respond->redirect(url: $logoutUrl);
     }
 }

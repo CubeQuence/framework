@@ -18,7 +18,7 @@ class DB extends Template
      */
     public function migrate(InputInterface $input, OutputInterface $output, SymfonyStyle $io): void
     {
-        if (!self::envCheck(input: $input, output: $output, io: $io)) {
+        if (! self::envCheck(input: $input, output: $output, io: $io)) {
             return;
         }
 
@@ -76,7 +76,7 @@ class DB extends Template
      */
     public function seed(InputInterface $input, OutputInterface $output, SymfonyStyle $io): void
     {
-        if (!self::envCheck(input: $input, output: $output, io: $io)) {
+        if (! self::envCheck(input: $input, output: $output, io: $io)) {
             return;
         }
 

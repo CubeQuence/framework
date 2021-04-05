@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace CQ\Middleware;
 
 use Closure;
-use CQ\Response\Json;
-use CQ\Response\Redirect;
 use CQ\Response\Respond;
+use CQ\Response\Json;
 use CQ\Response\NoContent;
+use CQ\Response\Redirect;
 use MiladRahimi\PhpRouter\Routing\Route;
 use Psr\Http\Message\ServerRequestInterface;
 

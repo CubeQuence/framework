@@ -18,7 +18,7 @@ class Template
     {
         if (App::environment(check: 'production')) {
             $io->note(message: 'Application In Production!');
-            if (!$io->confirm(question: 'Do you really wish to run this command?', default: false)) {
+            if (! $io->confirm(question: 'Do you really wish to run this command?', default: false)) {
                 $io->note(message: 'Command Canceled!');
 
                 return false;

@@ -47,7 +47,7 @@ class Arr
         string | int | null $key,
         $default = null
     ): mixed {
-        if (!self::accessible(value: $array)) {
+        if (! self::accessible(value: $array)) {
             return $default;
         }
 

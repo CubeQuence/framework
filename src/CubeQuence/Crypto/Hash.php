@@ -13,7 +13,7 @@ class Hash
      */
     public static function make(string $string): string
     {
-        if (!defined(name: 'PASSWORD_ARGON2ID')) {
+        if (! defined(name: 'PASSWORD_ARGON2ID')) {
             return password_hash(
                 password: $string,
                 algo: PASSWORD_BCRYPT

@@ -34,7 +34,7 @@ class State
             Session::unset(name: 'state');
         }
 
-        if (!$provided_state) {
+        if (! $provided_state) {
             return false;
         }
 

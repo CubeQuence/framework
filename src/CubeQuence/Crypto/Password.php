@@ -19,7 +19,7 @@ class Password
     {
         $plaintext_password_with_context = $plaintext_password . $context;
 
-        if (!defined(name: 'PASSWORD_ARGON2ID')) {
+        if (! defined(name: 'PASSWORD_ARGON2ID')) {
             $hash = Hash::make(string: $plaintext_password_with_context);
 
             return Symmetric::encrypt(
@@ -54,7 +54,7 @@ class Password
     ): bool {
         $plaintext_password_with_context = new HiddenString(value: $plaintext_password . $context);
 
-        if (!defined(name: 'PASSWORD_ARGON2ID')) {
+        if (! defined(name: 'PASSWORD_ARGON2ID')) {
             $hash = Symmetric::decrypt(
                 enc_string: $encrypted_hash,
                 key: Symmetric::getKey(

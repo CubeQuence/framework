@@ -15,6 +15,7 @@
     "require": {
         "php": ">=8.0",
         "catfan/medoo": "^1.7",
+        "cubequence/oauth": "dev-main",
         "guzzlehttp/guzzle": "^7.0",
         "miladrahimi/phprouter": "^5.0",
         "mnapoli/silly": "^1.7",

@@ -17,7 +17,7 @@ class JSON extends Middleware
      */
     public function handleChild(Closure $next): Closure | JsonResponse
     {
-        if (!Request::isJson(request: $this->request)) {
+        if (! Request::isJson(request: $this->request)) {
             return $this->respond->prettyJson(
                 message: 'Invalid Content-Type',
                 data: [

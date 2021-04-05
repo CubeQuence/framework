@@ -18,7 +18,7 @@ class Make extends Template
      */
     public function migration(InputInterface $input, OutputInterface $output, SymfonyStyle $io): void
     {
-        if (!self::envCheck(input: $input, output: $output, io: $io)) {
+        if (! self::envCheck(input: $input, output: $output, io: $io)) {
             return;
         }
 
@@ -53,7 +53,7 @@ class Make extends Template
      */
     public function seed(InputInterface $input, OutputInterface $output, SymfonyStyle $io): void
     {
-        if (!self::envCheck(input: $input, output: $output, io: $io)) {
+        if (! self::envCheck(input: $input, output: $output, io: $io)) {
             return;
         }
 

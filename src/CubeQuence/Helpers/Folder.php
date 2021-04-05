@@ -23,7 +23,7 @@ class Folder
             recursive: $recursive
         );
 
-        if (!$mkdir_success) {
+        if (! $mkdir_success) {
             throw new \Exception(message: 'Folder could not be created');
         }
     }
@@ -37,7 +37,7 @@ class Folder
      */
     public static function delete(string $directory, bool $recursive = false): void
     {
-        if (!self::exists(directory: $directory)) {
+        if (! self::exists(directory: $directory)) {
             return;
         }
 
@@ -54,7 +54,7 @@ class Folder
             }
         }
 
-        if (!rmdir(dirname: $directory)) {
+        if (! rmdir(dirname: $directory)) {
             throw new \Exception(message: 'Folder could not be deleted');
         }
     }

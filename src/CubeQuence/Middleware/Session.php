@@ -20,10 +20,10 @@ class Session extends Middleware
      */
     public function handleChild(Closure $next): Closure | Json | Redirect
     {
-        if (!Auth::valid()) {
+        if (! Auth::valid()) {
             SessionHelper::destroy();
 
-            if (!Request::isJson(request: $this->request)) {
+            if (! Request::isJson(request: $this->request)) {
                 SessionHelper::set(
                     name: 'return_to',
                     data: Request::path(request: $this->request)

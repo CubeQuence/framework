@@ -17,7 +17,7 @@ class Form extends Middleware
      */
     public function handleChild(Closure $next): Closure | Json
     {
-        if (!Request::isForm(request: $this->request)) {
+        if (! Request::isForm(request: $this->request)) {
             return $this->respond->prettyJson(
                 message: 'Invalid Content-Type',
                 data: [

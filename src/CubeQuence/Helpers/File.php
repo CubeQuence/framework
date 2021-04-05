@@ -63,7 +63,7 @@ class File
     {
         $this->open(mode: 'w');
 
-        if (!fwrite(handle: $this->file, string: $data)) {
+        if (! fwrite(handle: $this->file, string: $data)) {
             throw new \Exception(message: 'Cannot write to file');
         }
 
@@ -80,7 +80,7 @@ class File
     {
         $this->open(mode: 'a');
 
-        if (!fwrite(handle: $this->file, string: $data)) {
+        if (! fwrite(handle: $this->file, string: $data)) {
             throw new \Exception(message: 'Cannot append to file');
         }
 
@@ -94,7 +94,7 @@ class File
      */
     public function delete(): void
     {
-        if (!unlink(filename: $this->file_path)) {
+        if (! unlink(filename: $this->file_path)) {
             throw new \Exception(message: 'Cannot delete file');
         }
     }
@@ -107,7 +107,7 @@ class File
     // TODO: rename to createFromOriginal
     public function copy(string $original_file): void
     {
-        if (!copy(source: $original_file, dest: $this->file_path)) {
+        if (! copy(source: $original_file, dest: $this->file_path)) {
             throw new \Exception(message: 'Cannot copy file');
         }
     }
@@ -268,7 +268,7 @@ class File
             mode: $mode
         );
 
-        if (!$handle) {
+        if (! $handle) {
             throw new \Exception(message: 'Cannot open file');
         }
 
@@ -282,7 +282,7 @@ class File
      */
     private function close(): void
     {
-        if (!fclose(handle: $this->file)) {
+        if (! fclose(handle: $this->file)) {
             throw new \Exception(message: 'Cannot close file');
         }
     }

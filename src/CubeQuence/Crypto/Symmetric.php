@@ -36,7 +36,7 @@ class Symmetric
     {
         $key = $key ? $key : Config::get(key: 'app.key');
 
-        if (!$key) {
+        if (! $key) {
             throw new \Exception(message: 'No key found!');
         }
 

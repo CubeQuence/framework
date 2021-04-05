@@ -28,7 +28,7 @@ class RateLimit extends Middleware
         $validated_request = $this->validateRequest(fingerprint: $fingerprint);
         $headers = $this->genHeaders(validated_request: $validated_request);
 
-        if (!$validated_request['valid']) {
+        if (! $validated_request['valid']) {
             return $this->respond->prettyJson(
                 message: 'Ratelimit Exceeded',
                 code: 429,
@@ -126,7 +126,7 @@ class RateLimit extends Middleware
             ]
         );
 
-        if (!$request_db) {
+        if (! $request_db) {
             $request_db = DB::create(
                 table: 'cq_ratelimit',
                 data: [

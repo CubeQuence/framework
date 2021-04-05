@@ -15,7 +15,7 @@ class Auth
     {
         $session = Session::get(name: 'session');
 
-        if (!Session::get(name: 'user')) {
+        if (! Session::get(name: 'user')) {
             return false;
         }
 
