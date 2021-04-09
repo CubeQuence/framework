@@ -7,112 +7,124 @@ namespace CQ\DB;
 use CQ\Config\Config;
 use Medoo\Medoo;
 
-class DB
+final class DB
 {
+    private static DB | null $instance = null;
+    private static Medoo $client;
+
     /**
      * Connect to DB.
      */
-    public function __construct()
+    private function __construct()
     {
-        $GLOBALS['cq_database'] = new Medoo([
+        $this->client = new Medoo([
             'database_type' => 'mysql',
-            'server' => Config::get(key: 'database.host'),
-            'port' => Config::get(key: 'database.port'),
-            'database_name' => Config::get(key: 'database.database'),
-            'username' => Config::get(key: 'database.username'),
-            'password' => Config::get(key: 'database.password'),
+            'server' => Config::get(
+                key: 'database.host'
+            ),
+            'port' => Config::get(
+                key: 'database.port'
+            ),
+            'database_name' => Config::get(
+                key: 'database.database'
+            ),
+            'username' => Config::get(
+                key: 'database.username'
+            ),
+            'password' => Config::get(
+                key: 'database.password'
+            ),
         ]);
     }
 
     /**
+     * Get access to the Config singleton
+     */
+    private static function getInstance() : DB
+    {
+        if (self::$instance === null) {
+            self::$instance = new DB();
+        }
+
+        return self::$instance;
+    }
+
+    /**
      * Select data from database.
-     *
-     * @param array  $columns
-     * @param array  $where
-     *
-     * @return array|null
      */
     public static function select(string $table, array $columns, array $where): array | null
     {
-        return $GLOBALS['cq_database']->select($table, $columns, $where);
+        $dbSingleton = self::getInstance();
+
+        return $dbSingleton->client->select($table, $columns, $where);
     }
 
     /**
      * Get only one record from table.
-     *
-     * @param array     $columns
-     * @param array|int $where
-     *
-     * @return array|null
      */
     public static function get(string $table, array $columns, array | int $where): array | null
     {
-        return $GLOBALS['cq_database']->get($table, $columns, $where);
+        $dbSingleton = self::getInstance();
+
+        return $dbSingleton->client->get($table, $columns, $where);
     }
 
     /**
      * Insert new records in table.
-     *
-     * @param array  $data
-     *
-     * @return array
      */
     public static function create(string $table, array $data): array
     {
-        $GLOBALS['cq_database']->insert($table, $data);
+        $dbSingleton = self::getInstance();
+
+        $dbSingleton->client->insert($table, $data);
 
         return $data;
     }
 
     /**
      * Modify data in table.
-     *
-     * @param array     $data
-     * @param array|int $where
-     *
-     * @return array|null
      */
     public static function update(string $table, array $data, array | int $where): array | null
     {
-        $data = array_merge($data, ['updated_at' => date(format: 'Y-m-d H:i:s')]);
-        $GLOBALS['cq_database']->update($table, $data, $where);
+        $dbSingleton = self::getInstance();
+
+        $data = array_merge(
+            $data,
+            ['updated_at' => date(format: 'Y-m-d H:i:s')]
+        );
+
+        $dbSingleton->client->update($table, $data, $where);
 
         return $data;
     }
 
     /**
      * Delete data from table.
-     *
-     * @param array  $where
-     *
-     * @return array|null
      */
-    public static function delete(string $table, array $where): array | null
+    public static function delete(string $table, array $where): bool
     {
-        return $GLOBALS['cq_database']->delete($table, ['AND' => $where]);
+        $dbSingleton = self::getInstance();
+
+        return $dbSingleton->client->delete($table, ['AND' => $where]);
     }
 
     /**
      * Determine whether the target data existed.
-     *
-     * @param array $where
-     *
-     * @return array|null
      */
-    public static function has(string $table, array $where): array | null
+    public static function has(string $table, array $where): bool
     {
-        return $GLOBALS['cq_database']->has($table, $where);
+        $dbSingleton = self::getInstance();
+
+        return $dbSingleton->client->has($table, $where);
     }
 
     /**
      * Counts the number of rows.
-     *
-     * @param array $where
-     *
-     * @return int|null
      */
     public static function count(string $table, array $where): int | null
     {
-        return $GLOBALS['cq_database']->count($table, $where);
+        $dbSingleton = self::getInstance();
+
+        return $dbSingleton->client->count($table, $where);
     }
 }

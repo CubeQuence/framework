@@ -6,12 +6,10 @@ namespace CQ\Routing;
 
 use MiladRahimi\PhpRouter\Router as RouterBase;
 
-class Route
+final class Route
 {
     /**
      * Instantiate class
-     *
-     * @param RouterBase $router
      */
     public function __construct(
         public RouterBase $router,
@@ -20,11 +18,11 @@ class Route
 
     /**
      * Define GET route
-     *
-     * @param array $controller
      */
-    public function get(string $location, array $controller): void
-    {
+    public function get(
+        string $location,
+        array $controller
+    ): void {
         $this->router->get(
             path: $location,
             controller: $controller
@@ -33,11 +31,11 @@ class Route
 
     /**
      * Define POST route
-     *
-     * @param array $controller
      */
-    public function post(string $location, array $controller): void
-    {
+    public function post(
+        string $location,
+        array $controller
+    ): void {
         $this->router->post(
             path: $location,
             controller: $controller
@@ -46,11 +44,11 @@ class Route
 
     /**
      * Define PUT route
-     *
-     * @param array $controller
      */
-    public function put(string $location, array $controller): void
-    {
+    public function put(
+        string $location,
+        array $controller
+    ): void {
         $this->router->put(
             path: $location,
             controller: $controller
@@ -59,11 +57,11 @@ class Route
 
     /**
      * Define PATCH route
-     *
-     * @param array $controller
      */
-    public function patch(string $location, array $controller): void
-    {
+    public function patch(
+        string $location,
+        array $controller
+    ): void {
         $this->router->patch(
             path: $location,
             controller: $controller
@@ -72,11 +70,11 @@ class Route
 
     /**
      * Define OPTIONS route
-     *
-     * @param array $controller
      */
-    public function options(string $location, array $controller): void
-    {
+    public function options(
+        string $location,
+        array $controller
+    ): void {
         $this->router->define(
             method: 'OPTIONS',
             path: $location,
@@ -86,11 +84,11 @@ class Route
 
     /**
      * Define DELETE route
-     *
-     * @param array $controller
      */
-    public function delete(string $location, array $controller): void
-    {
+    public function delete(
+        string $location,
+        array $controller
+    ): void {
         $this->router->delete(
             path: $location,
             controller: $controller
@@ -99,11 +97,11 @@ class Route
 
     /**
      * Define ANY route
-     *
-     * @param array $controller
      */
-    public function any(string $location, array $controller): void
-    {
+    public function any(
+        string $location,
+        array $controller
+    ): void {
         $this->router->any(
             path: $location,
             controller: $controller

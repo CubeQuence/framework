@@ -16,27 +16,13 @@ class General extends Controller
     {
         $msg = $this->request->getQueryParams()['msg'] ?? null;
 
-        switch ($msg) { // TODO: replace with map
-            case 'logout':
-                $msg = 'You have been logged out!';
-                break;
-
-            case 'state':
-                $msg = 'Please try again!';
-                break;
-
-            case 'code':
-                $msg = 'Invalid authentication!';
-                break;
-
-            case 'not_registered':
-                $msg = 'Please register for this application!';
-                break;
-
-            default:
-                $msg = '';
-                break;
-        }
+        $msg = match ($msg) {
+            'state' => 'Please try again!',
+            'error' => 'Unknown error occured!',
+            'logout' => 'You have been logged out!',
+            'not_allowed' => 'Please register for this application!',
+            default => ''
+        };
 
         return $this->respond->twig(
             view: 'index.twig',
@@ -52,22 +38,22 @@ class General extends Controller
      */
     public function error(string $code): Html
     {
-        switch ($code) { // TODO: replace met map
+        switch ($code) {
             case '403':
-                $short_message = 'Oops!Access denied';
+                $short_message = 'Oops! Access denied';
                 $message = 'Access to this page is forbidden';
                 break;
             case '404':
-                $short_message = 'Oops!Page not found';
+                $short_message = 'Oops! Page not found';
                 $message = 'We are sorry, but the page you requested was not found';
                 break;
             case '500':
-                $short_message = 'Oops!Server error';
+                $short_message = 'Oops! Server error';
                 $message = 'We are experiencing some technical issues';
                 break;
 
             default:
-                $short_message = 'Oops!Unknown Error';
+                $short_message = 'Oops! Unknown Error';
                 $message = 'Unknown error occured';
                 $code = 400;
                 break;

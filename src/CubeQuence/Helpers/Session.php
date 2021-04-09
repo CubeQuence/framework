@@ -4,17 +4,16 @@ declare(strict_types=1);
 
 namespace CQ\Helpers;
 
-class Session
+// use CQ\Crypto\Symmetric;
+
+final class Session
 {
     /**
      * Set session var.
-     *
-     * @param mixed  $data
-     *
-     * @return mixed
      */
-    public static function set(string $name, $data)
+    public static function set(string $name, $data) : mixed
     {
+        // TODO: encrypt
         $_SESSION[$name] = $data;
 
         return $data;
@@ -30,16 +29,14 @@ class Session
 
     /**
      * Get session var.
-     *
-     * @return mixed
      */
-    public static function get(string $name)
+    public static function get(string $name) : mixed
     {
         return $_SESSION[$name] ?? null;
     }
 
     /**
-     * Destroy and restart a session.
+     * Destroy and restart session.
      */
     public static function destroy(): void
     {

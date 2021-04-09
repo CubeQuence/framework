@@ -4,23 +4,19 @@ declare(strict_types=1);
 
 namespace CQ\Helpers;
 
+use CQ\Request\Request;
+
 class Mail
 {
     /**
      * Send form.castelnuovo.xyz.
-     *
-     * @param array  $data
-     *
-     * @throws \Throwable
      */
     public static function send(string $site_key, array $data): void
     {
-        Guzzle::request(
+        Request::send(
             method: 'POST',
-            url: "https://form.castelnuovo.xyz/api/{$site_key}",
-            data: [
-                'json' => $data,
-            ]
+            path: "https://form.castelnuovo.xyz/api/{$site_key}",
+            json: $data
         );
     }
 }

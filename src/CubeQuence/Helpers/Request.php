@@ -4,28 +4,15 @@ declare(strict_types=1);
 
 namespace CQ\Helpers;
 
-class Request
+final class Request
 {
-    /**
-     * Check if request is JSON.
-     *
-     * @param object $request // TODO: set correct ServerRequest data type
-     */
-    public static function getHeader(object $request, string $name): string
-    {
-        return $request->getHeaderLine($name);
-    }
-
     /**
      * Check if request is JSON.
      */
     public static function isJSON(object $request): bool
     {
         return str_contains(
-            haystack: self::getHeader(
-                request: $request,
-                name: 'content-type'
-            ),
+            haystack: $request->getHeaderLine('content-type'),
             needle: '/json'
         );
     }
@@ -35,10 +22,7 @@ class Request
      */
     public static function isForm(object $request): bool
     {
-        return self::getHeader(
-            request: $request,
-            name: 'content-type'
-        ) === 'application/x-www-form-urlencoded';
+        return $request->getHeaderLine('content-type') === 'application/x-www-form-urlencoded';
     }
 
     /**
@@ -83,11 +67,35 @@ class Request
         ];
 
         foreach ($cf_ip_ranges as $range) {
-            if (IP::inRange(range: $range, ip: $server_ip)) {
+            if (self::isIpInRange(range: $range, ip: $server_ip)) {
                 return $cloudflare_ip;
 
                 break;
             }
         }
+    }
+
+    /**
+     * Check if IP is in range (only supports IPv4)
+     */
+    private static function isIpInRange(string $range, string $ip): bool
+    {
+        [$range, $netmask] = explode(
+            delimiter: '/',
+            string: $range,
+            limit: 2
+        );
+
+        $range_decimal = ip2long(ip_address: $range);
+        $ip_decimal = ip2long(ip_address: $ip);
+
+        $wildcard_decimal = pow(
+            base: 2,
+            exp: 32 - $netmask
+        ) - 1;
+
+        $netmask_decimal = ~$wildcard_decimal;
+
+        return ($ip_decimal & $netmask_decimal) === ($range_decimal & $netmask_decimal);
     }
 }

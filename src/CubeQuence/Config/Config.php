@@ -6,23 +6,30 @@ namespace CQ\Config;
 
 use CQ\Helpers\App;
 use CQ\Helpers\Arr;
+use Dotenv\Dotenv;
 
 class Config
 {
+    private static Config | null $instance = null;
+    private static array $config = [];
+
     /**
      * Define project dir.
      */
-    public function __construct()
+    private function __construct()
     {
-        new Env(
-            path: App::getRootPath() . '/'
+        $appRootPath = App::getRootPath();
+        $configDir = $appRootPath . '/config';
+
+        // Load .env
+        $dotenv = Dotenv::createImmutable(
+            paths: $appRootPath . '/'
         );
+        $dotenv->load();
 
-        $GLOBALS['cq_config'] = [];
-
-        $config_dir = App::getRootPath() . '/config';
+        // Get all config files
         $config_files = scandir(
-            directory: App::getRootPath() . '/config'
+            directory: $configDir
         );
 
         unset($config_files[0]); // Removes . entry
@@ -31,30 +38,31 @@ class Config
         foreach ($config_files as $config_file) {
             $name = str_replace(
                 search: '.php',
-                replace: null,
+                replace: '',
                 subject: $config_file
             );
 
-            $this->attach(
-                config_dir: $config_dir,
-                name: $name
-            );
+            $configData = require "{$configDir}/{$name}.php";
+
+            self::$config[$name] = $configData;
         }
     }
 
     /**
      * Get config entry.
-     *
-     * @param mixed $fallback
      */
     public static function get(string $key, $fallback = null): mixed
     {
+        $configSingleton = self::getInstance();
+        $config = $configSingleton::$config;
+
         $value = Arr::get(
-            array: $GLOBALS['cq_config'],
+            array: $config,
             key: $key,
             default: $fallback
         );
 
+        // Convert string to boolean
         if ($value === 'true' || $value === 'false') {
             return $value === 'true';
         }
@@ -63,12 +71,14 @@ class Config
     }
 
     /**
-     * Add config file.
+     * Get access to the Config singleton
      */
-    private function attach(string $config_dir, string $name): void
+    private static function getInstance() : Config
     {
-        $data = require "{$config_dir}/{$name}.php";
+        if (self::$instance === null) {
+            self::$instance = new Config();
+        }
 
-        $GLOBALS['cq_config'][$name] = $data;
+        return self::$instance;
     }
 }

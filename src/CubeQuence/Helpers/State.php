@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace CQ\Helpers;
 
-class State
+use CQ\Crypto\Random;
+
+final class State
 {
     /**
      * Set state.
-     *
-     * @param string $custom optional
      */
     public static function set(string $custom = ''): string
     {
-        $state = $custom ? $custom : Str::random();
+        $state = $custom ? $custom : Random::string();
 
         return Session::set(
             name: 'state',
@@ -23,11 +23,11 @@ class State
 
     /**
      * Validate $provided_state.
-     *
-     * @param bool   $unset_state optional
      */
-    public static function valid(string $provided_state, bool $unset_state = true): bool
-    {
+    public static function valid(
+        string $provided_state,
+        bool $unset_state = true
+    ): bool {
         $known_state = Session::get(name: 'state');
 
         if ($unset_state) {

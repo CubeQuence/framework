@@ -8,7 +8,7 @@ use Ramsey\Uuid\Provider\Node\StaticNodeProvider;
 use Ramsey\Uuid\Type\Hexadecimal;
 use Ramsey\Uuid\Uuid as UuidBase;
 
-class UUID
+final class UUID
 {
     private static string $namespace = '4addcce9-7218-4fd4-97c8-28fd71b227dd';
     private static string $hex_namespace = '63756265';

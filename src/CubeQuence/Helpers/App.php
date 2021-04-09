@@ -65,7 +65,7 @@ class App
 
         return str_replace(
             search: '/public',
-            replace: null,
+            replace: '',
             subject: $path
         );
     }

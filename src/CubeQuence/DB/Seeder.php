@@ -8,7 +8,7 @@ use Faker\Factory;
 use Faker\Generator;
 use Phinx\Seed\AbstractSeed;
 
-class Seeder extends AbstractSeed
+abstract class Seeder extends AbstractSeed
 {
     /**
      * Create faker instance.

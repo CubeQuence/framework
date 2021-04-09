@@ -10,8 +10,6 @@ class Arr
 {
     /**
      * Determine whether the given value is array accessible.
-     *
-     * @param mixed $value
      */
     public static function accessible($value): bool
     {
@@ -20,9 +18,6 @@ class Arr
 
     /**
      * Determine if the given key exists in the provided array.
-     *
-     * @param ArrayAccess|array $array
-     * @param string|int        $key
      */
     public static function exists(
         ArrayAccess | array $array,
@@ -37,10 +32,6 @@ class Arr
 
     /**
      * Get an item from an array using "dot" notation.
-     *
-     * @param ArrayAccess|array $array
-     * @param string|int|null   $key
-     * @param mixed             $default
      */
     public static function get(
         ArrayAccess | array $array,

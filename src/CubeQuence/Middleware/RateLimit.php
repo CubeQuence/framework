@@ -10,15 +10,13 @@ use CQ\DB\DB;
 use CQ\Helpers\Request;
 use CQ\Response\Json;
 
-class RateLimit extends Middleware
+final class RateLimit extends Middleware
 {
     private int $max_requests;
     private int $reset_time;
 
     /**
      * Ratelimit API.
-     *
-     * @return Closure|Json
      */
     public function handleChild(Closure $next): Closure | Json
     {
@@ -71,11 +69,11 @@ class RateLimit extends Middleware
 
     /**
      * Add one or reset request counter.
-     *
-     * @param array $request_db
      */
-    private function remainingRequests(string $fingerprint, array $request_db): int
-    {
+    private function remainingRequests(
+        string $fingerprint,
+        array $request_db
+    ): int {
         // Reset counter if reset_time is in past
         if (time() > $request_db['reset_time']) {
             DB::update(
@@ -110,8 +108,6 @@ class RateLimit extends Middleware
 
     /**
      * Calculate the number of remaining requests.
-     *
-     * @return array
      */
     private function validateRequest(string $fingerprint): array
     {
@@ -151,10 +147,6 @@ class RateLimit extends Middleware
 
     /**
      * Add the limit header information to the given response.
-     *
-     * @param array $validated_request // TODO: set correct type
-     *
-     * @return array
      */
     private function genHeaders(array $validated_request): array
     {

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace CQ\Captcha;
 
-use CQ\Helpers\Guzzle;
-use CQ\Helpers\Request;
+use CQ\Helpers\Request as RequestHelper;
+use CQ\Request\Request;
 
 class Captcha
 {
@@ -15,21 +15,19 @@ class Captcha
     protected static function validate(string $url, string $secret, string $response): bool
     {
         try {
-            $guzzle = Guzzle::request(
+            $response = Request::send(
                 method: 'POST',
-                url: $url,
-                data: [
-                    'form_params' => [
-                        'secret' => $secret,
-                        'response' => $response,
-                        'remoteip' => Request::ip(),
-                    ],
+                path: $url,
+                form: [
+                    'secret' => $secret,
+                    'response' => $response,
+                    'remoteip' => RequestHelper::ip(),
                 ]
             );
         } catch (\Throwable) {
             return false;
         }
 
-        return $guzzle?->data?->success ? true : false;
+        return $response?->success ? true : false;
     }
 }

@@ -8,12 +8,10 @@ use Closure;
 use CQ\Helpers\Request;
 use CQ\Response\Json as JsonResponse;
 
-class JSON extends Middleware
+final class JSON extends Middleware
 {
     /**
      * Interpret JSON and validate that the provided JSON is valid.
-     *
-     * @return Closure|JsonResponse
      */
     public function handleChild(Closure $next): Closure | JsonResponse
     {

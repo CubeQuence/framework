@@ -8,17 +8,12 @@ use CQ\Response\Redirect;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
 use MiladRahimi\PhpRouter\Router as RouterBase;
 
-class Router
+final class Router
 {
     private RouterBase $router;
 
     /**
      * Create router instance
-     *
-     * @param string $route_404 optional
-     * @param string $route_500 optional
-     *
-     * @return void
      */
     public function __construct(
         public string $route_404 = '/',

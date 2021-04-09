@@ -8,12 +8,10 @@ use Closure;
 use CQ\Config\Config;
 use CQ\Response\NoContent;
 
-class CORS extends Middleware
+final class CORS extends Middleware
 {
     /**
      * Add CORS headers to requests.
-     *
-     * @return Closure|NoContent
      */
     public function handleChild(Closure $next): Closure | NoContent
     {

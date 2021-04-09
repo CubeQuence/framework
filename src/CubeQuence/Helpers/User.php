@@ -6,12 +6,12 @@ namespace CQ\Helpers;
 
 use CQ\Config\Config;
 
-class User
+// TODO: maybe just use CQ\OAuth\Models\User
+
+final class User
 {
     /**
      * Get user id
-     *
-     * @return string|null
      */
     public static function getId(): string | null
     {
@@ -19,19 +19,7 @@ class User
     }
 
     /**
-     * Get user name
-     *
-     * @return string|null
-     */
-    public static function getName(): string | null
-    {
-        return Session::get('user')['name'] ?? null;
-    }
-
-    /**
      * Get user email
-     *
-     * @return string|null
      */
     public static function getEmail(): string | null
     {
@@ -64,6 +52,7 @@ class User
     /**
      * Check user role
      */
+    // TODO: stupid name, what does this function do?
     public static function valueRole(string $key): mixed
     {
         $userRole = self::getRoles()[0];

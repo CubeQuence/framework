@@ -2,7 +2,7 @@
 
 use CQ\DB\Seeder;
 
-class $className extends Seeder
+final class $className extends Seeder
 {
     /**
      * Run Method.

@@ -10,7 +10,7 @@ use Twig\Environment;
 use Twig\Loader\ArrayLoader;
 use Twig\Loader\FilesystemLoader;
 
-class Twig
+final class Twig
 {
     private Environment $twig;
 
@@ -34,10 +34,11 @@ class Twig
 
     /**
      * Render twig template
-     *
-     * @param array $parameters
      */
-    public function render(string $view, array $parameters): string
+    public function render(
+        string $view,
+        array $parameters
+    ): string
     {
         return $this->twig->render(
             name: $view,
@@ -47,11 +48,11 @@ class Twig
 
     /**
      * Render template in string form.
-     *
-     * @param array  $parameters
      */
-    public static function renderFromText(string $template, array $parameters = []): string
-    {
+    public static function renderFromText(
+        string $template,
+        array $parameters = []
+    ): string {
         $loader = new ArrayLoader(
             templates: ['base.html' => $template]
         );

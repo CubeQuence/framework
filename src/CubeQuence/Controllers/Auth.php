@@ -10,7 +10,7 @@ use CQ\Helpers\Session;
 use CQ\Response\Html;
 use CQ\Response\Json;
 use CQ\Response\Redirect;
-use OAuth\Client;
+use OAuth\Client; // TODO: replace with CQ\OAuth\Client
 use OAuth\Exceptions\AuthException;
 use OAuth\Flows\Provider\AuthorizationCode;
 use OAuth\Flows\Provider\Device;
@@ -19,8 +19,6 @@ class Auth extends Controller
 {
     private Client $client;
     private Client $deviceClient;
-
-    // TODO: make functions for getUser();, getAccessToken(device or normal)
 
     /**
      * Auth provider config
@@ -75,11 +73,11 @@ class Auth extends Controller
         } catch (AuthException) {
             return $this->destroy(msg: 'state');
         } catch (\Throwable) {
-            return $this->destroy(msg: 'unknown_error'); // TODO: update message
+            return $this->destroy(msg: 'error');
         }
 
         if (! $user->allowed) {
-            return $this->destroy(msg: 'not_allowed'); // TODO: update message
+            return $this->destroy(msg: 'not_allowed');
         }
 
         $url = $this->login(
@@ -132,7 +130,7 @@ class Auth extends Controller
             );
         } catch (\Throwable $th) {
             return $this->respond->prettyJson(
-                message: 'Unknown error occured',
+                message: 'Unknown error occured!',
                 code: 400
             );
         }

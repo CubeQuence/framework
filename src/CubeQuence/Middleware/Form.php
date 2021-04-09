@@ -8,12 +8,10 @@ use Closure;
 use CQ\Helpers\Request;
 use CQ\Response\Json;
 
-class Form extends Middleware
+final class Form extends Middleware
 {
     /**
      * Interpret FormData
-     *
-     * @return Closure|Json
      */
     public function handleChild(Closure $next): Closure | Json
     {

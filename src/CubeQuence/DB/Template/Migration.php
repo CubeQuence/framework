@@ -2,7 +2,7 @@
 
 use CQ\DB\Migration;
 
-class $className extends Migration
+final class $className extends Migration
 {
     /**
      * Change Method.
