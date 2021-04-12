@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CQ\Captcha;
 
-class HCaptcha extends Captcha
+final class HCaptcha extends Captcha
 {
     /**
      * Validate reCaptchaV2.

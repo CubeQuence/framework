@@ -5,18 +5,18 @@ declare(strict_types=1);
 namespace CQ\Middleware;
 
 use Closure;
-use CQ\Helpers\Request;
-use CQ\Response\Json;
+use CQ\Response\JsonResponse;
+use CQ\Response\Respond;
 
-final class Form extends Middleware
+final class FormMiddleware extends Middleware
 {
     /**
      * Interpret FormData
      */
-    public function handleChild(Closure $next): Closure | Json
+    public function handleChild(Closure $next): Closure | JsonResponse
     {
-        if (! Request::isForm(request: $this->request)) {
-            return $this->respond->prettyJson(
+        if (! $this->requestHelper->isForm()) {
+            return Respond::prettyJson(
                 message: 'Invalid Content-Type',
                 data: [
                     'details' => "Content-Type should be 'application/x-www-form-urlencoded'",

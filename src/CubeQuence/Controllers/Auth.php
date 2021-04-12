@@ -5,15 +5,16 @@ declare(strict_types=1);
 namespace CQ\Controllers;
 
 use CQ\Config\Config;
-use CQ\Helpers\Request;
-use CQ\Helpers\Session;
-use CQ\Response\Html;
-use CQ\Response\Json;
-use CQ\Response\Redirect;
-use OAuth\Client; // TODO: replace with CQ\OAuth\Client
-use OAuth\Exceptions\AuthException;
-use OAuth\Flows\Provider\AuthorizationCode;
-use OAuth\Flows\Provider\Device;
+use CQ\Helpers\SessionHelper;
+use CQ\Response\Respond;
+use CQ\OAuth\Client;
+use CQ\OAuth\Exceptions\AuthException;
+use CQ\OAuth\Flows\Provider\AuthorizationCode;
+use CQ\OAuth\Flows\Provider\Device;
+use CQ\OAuth\Models\User;
+use CQ\Response\HtmlResponse;
+use CQ\Response\JsonResponse;
+use CQ\Response\RedirectResponse;
 
 class Auth extends Controller
 {
@@ -27,7 +28,7 @@ class Auth extends Controller
     {
         $this->client = new Client(
             flowProvider: new AuthorizationCode(
-                redirectUri: ''
+                redirectUri: Config::get('app.url') . '/auth/callback',
             ),
             authorizationServer: 'https://auth.castelnuovo.xyz',
             clientId: Config::get(key: 'auth.id'),
@@ -45,26 +46,26 @@ class Auth extends Controller
     /**
      * Redirect to login portal.
      */
-    public function request(): Redirect
+    public function request(): RedirectResponse
     {
         $startData = $this->client->start();
 
-        Session::set('state', $startData->state);
+        SessionHelper::set('state', $startData->state);
 
-        return $this->respond->redirect($startData->uri);
+        return Respond::redirect($startData->uri);
     }
 
     /**
      * Callback for OAuth.
      */
-    public function callback(): Redirect
+    public function callback(): RedirectResponse
     {
         $queryParams = $this->request->getQueryParams();
 
         try {
             $tokens = $this->client->callback(
                 queryParams: $queryParams,
-                storedVar: Session::get('state')
+                storedVar: SessionHelper::get('state')
             );
 
             $user = $this->client->getUser(
@@ -85,19 +86,19 @@ class Auth extends Controller
             expires_at: $tokens->expires_at
         );
 
-        return $this->respond->redirect(url: $url);
+        return Respond::redirect(url: $url);
     }
 
     /**
      * Initiate device flow.
      */
-    public function requestDevice(): Html
+    public function requestDevice(): HtmlResponse
     {
         $startData = $this->deviceClient->start();
 
-        Session::set(name: 'device_code', data: $startData->device_code);
+        SessionHelper::set(name: 'device_code', data: $startData->device_code);
 
-        return $this->respond->twig(
+        return Respond::twig(
             view: 'partials/device.twig',
             parameters:[
                 'qr' => $startData->uri,
@@ -108,12 +109,12 @@ class Auth extends Controller
     /**
      * Callback for OAuth device flow.
      */
-    public function callbackDevice(): Json
+    public function callbackDevice(): JsonResponse
     {
         try {
             $tokens = $this->client->callback(
                 queryParams: [],
-                storedVar: Session::get('state')
+                storedVar: SessionHelper::get('state')
             );
 
             $user = $this->client->getUser(
@@ -121,24 +122,24 @@ class Auth extends Controller
             );
         } catch (AuthException $th) {
             if (! $th->getMessage()) {
-                return $this->respond->prettyJson(message: '');
+                return Respond::prettyJson(message: '');
             }
 
-            return $this->respond->prettyJson(
+            return Respond::prettyJson(
                 message: $th->getMessage(),
                 code: 400
             );
         } catch (\Throwable $th) {
-            return $this->respond->prettyJson(
+            return Respond::prettyJson(
                 message: 'Unknown error occured!',
                 code: 400
             );
         }
 
         if (! $user->allowed) {
-            Session::destroy();
+            SessionHelper::destroy();
 
-            return $this->respond->prettyJson(
+            return Respond::prettyJson(
                 message: 'Please register for this application!',
                 code: 400
             );
@@ -149,7 +150,7 @@ class Auth extends Controller
             expires_at: $tokens->expires_at
         );
 
-        return $this->respond->prettyJson(
+        return Respond::prettyJson(
             message: 'You are logged in!',
             data: [
                 'redirect' => $url,
@@ -160,34 +161,30 @@ class Auth extends Controller
     /**
      * Create session.
      */
-    public function login(object $user, string $expires_at): string
+    public function login(User $user, string $expires_at): string
     {
-        $return_to = Session::get(name: 'return_to');
+        $return_to = SessionHelper::get(name: 'return_to');
 
-        Session::destroy();
+        SessionHelper::destroy();
 
-        // User Info
-        Session::set(
+        // CQ\OAuth\Models\User
+        SessionHelper::set(
             name: 'user',
-            data: [
-                'id' => $user->id,
-                'email' => $user->email,
-                'roles' => $user->roles,
-            ]
+            data: $user
         );
 
         // Auth Info
-        Session::set(
+        SessionHelper::set(
             name: 'session',
             data: [
                 'expires_at' => $expires_at,
                 'created_at' => time(),
-                'ip' => Request::ip(),
+                'ip' => $this->requestHelper->ip(),
             ]
         );
 
         // Activity Info
-        Session::set(name: 'last_activity', data: time());
+        SessionHelper::set(name: 'last_activity', data: time());
 
         if ($return_to) {
             return $return_to;
@@ -199,22 +196,22 @@ class Auth extends Controller
     /**
      * Destroy session.
      */
-    public function destroy(string $msg): Redirect
+    public function destroy(string $msg): RedirectResponse
     {
-        Session::destroy();
+        SessionHelper::destroy();
 
-        return $this->respond->redirect(url: "/?msg={$msg}");
+        return Respond::redirect(url: "/?msg={$msg}");
     }
 
     /**
      * Logout session.
      */
-    public function logout(): Redirect
+    public function logout(): RedirectResponse
     {
-        Session::destroy();
+        SessionHelper::destroy();
 
         $logoutUrl = $this->client->logout();
 
-        return $this->respond->redirect(url: $logoutUrl);
+        return Respond::redirect(url: $logoutUrl);
     }
 }

@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace CQ\Helpers;
 
-// TODO: maybe deprecate this function
-final class Str
+final class StrHelper
 {
     /**
      * Escape a string.

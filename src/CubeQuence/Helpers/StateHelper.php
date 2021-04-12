@@ -6,7 +6,7 @@ namespace CQ\Helpers;
 
 use CQ\Crypto\Random;
 
-final class State
+final class StateHelper
 {
     /**
      * Set state.
@@ -15,7 +15,7 @@ final class State
     {
         $state = $custom ? $custom : Random::string();
 
-        return Session::set(
+        return SessionHelper::set(
             name: 'state',
             data: $state
         );
@@ -28,10 +28,10 @@ final class State
         string $provided_state,
         bool $unset_state = true
     ): bool {
-        $known_state = Session::get(name: 'state');
+        $known_state = SessionHelper::get(name: 'state');
 
         if ($unset_state) {
-            Session::unset(name: 'state');
+            SessionHelper::unset(name: 'state');
         }
 
         if (! $provided_state) {

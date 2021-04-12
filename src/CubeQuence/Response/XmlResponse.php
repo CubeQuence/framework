@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace CQ\Response;
 
-use Laminas\Diactoros\Response\XmlResponse;
+use Laminas\Diactoros\Response\XmlResponse as XmlResponseDiactoros;
 
-final class Xml extends XmlResponse
+final class XmlResponse extends XmlResponseDiactoros
 {
     /**
      * XML response

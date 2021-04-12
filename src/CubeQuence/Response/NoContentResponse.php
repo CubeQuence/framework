@@ -4,20 +4,18 @@ declare(strict_types=1);
 
 namespace CQ\Response;
 
-use Laminas\Diactoros\Response\JsonResponse;
+use Laminas\Diactoros\Response\EmptyResponse;
 
-final class Json extends JsonResponse
+final class NoContentResponse extends EmptyResponse
 {
     /**
-     * JSON response
+     * NoContent response
      */
     public function __construct(
-        $data,
         int $code,
         array $headers
     ) {
         parent::__construct(
-            data: $data,
             status: $code,
             headers: $headers
         );

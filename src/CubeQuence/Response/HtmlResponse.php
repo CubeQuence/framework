@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace CQ\Response;
 
-use Laminas\Diactoros\Response\RedirectResponse;
+use Laminas\Diactoros\Response\HtmlResponse as HtmlResponseDiactoros;
 
-final class Redirect extends RedirectResponse
+final class HtmlResponse extends HtmlResponseDiactoros
 {
     /**
-     * Redirect response
+     * HTML response
      */
     public function __construct(
-        string $url,
+        string $data,
         int $code,
         array $headers
     ) {
         parent::__construct(
-            uri: $url,
+            html: $data,
             status: $code,
             headers: $headers
         );

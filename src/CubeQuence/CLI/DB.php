@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CQ\CLI;
 
-use CQ\Helpers\App;
+use CQ\Helpers\AppHelper;
 use Phinx\Console\PhinxApplication;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
@@ -30,7 +30,7 @@ class DB extends Template
 
             $arguments = [
                 'command' => 'rollback',
-                '--environment' => App::environment(),
+                '--environment' => AppHelper::getEnvoironment(),
                 '--target' => '0',
                 '--force',
             ];
@@ -54,8 +54,8 @@ class DB extends Template
 
             $arguments = [
                 'command' => 'migrate',
-                '--environment' => App::environment(),
-                '--configuration' => App::getRootPath() . '/phinx.php',
+                '--environment' => AppHelper::getEnvoironment(),
+                '--configuration' => AppHelper::getRootPath() . '/phinx.php',
             ];
 
             $command->run(
@@ -87,8 +87,8 @@ class DB extends Template
 
             $arguments = [
                 'command' => 'seed:run',
-                '--environment' => App::environment(),
-                '--configuration' => App::getRootPath() . '/phinx.php',
+                '--environment' => AppHelper::getEnvoironment(),
+                '--configuration' => AppHelper::getRootPath() . '/phinx.php',
             ];
 
             $command->run(

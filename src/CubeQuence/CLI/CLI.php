@@ -6,6 +6,6 @@ namespace CQ\CLI;
 
 use Silly\Application;
 
-class CLI extends Application
+abstract class CLI extends Application
 {
 }

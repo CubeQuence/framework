@@ -12,11 +12,18 @@
             "email": "luca@castelnuovo.xyz"
         }
     ],
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../ratelimit"
+        }
+    ],
     "require": {
         "php": ">=8.0",
         "catfan/medoo": "^1.7",
         "cubequence/crypto": "^1.1",
         "cubequence/oauth": "^1.0",
+        "cubequence/ratelimit": "dev-main",
         "cubequence/request": "^1.0",
         "miladrahimi/phprouter": "^5.0",
         "mnapoli/silly": "^1.7",

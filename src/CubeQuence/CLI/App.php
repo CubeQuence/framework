@@ -6,8 +6,8 @@ namespace CQ\CLI;
 
 use CQ\Crypto\Password;
 use CQ\Crypto\Symmetric;
-use CQ\Helpers\App as AppHelper;
-use CQ\Helpers\File;
+use CQ\Helpers\AppHelper;
+use CQ\Helpers\File; // TODO: fix
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;

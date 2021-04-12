@@ -5,18 +5,18 @@ declare(strict_types=1);
 namespace CQ\Middleware;
 
 use Closure;
-use CQ\Helpers\Request;
-use CQ\Response\Json as JsonResponse;
+use CQ\Response\Respond;
+use CQ\Response\JsonResponse;
 
-final class JSON extends Middleware
+final class JsonMiddleware extends Middleware
 {
     /**
      * Interpret JSON and validate that the provided JSON is valid.
      */
     public function handleChild(Closure $next): Closure | JsonResponse
     {
-        if (! Request::isJson(request: $this->request)) {
-            return $this->respond->prettyJson(
+        if (! $this->requestHelper->isJSON()) {
+            return Respond::prettyJson(
                 message: 'Invalid Content-Type',
                 data: [
                     'details' => "Content-Type should be 'application/json'",
@@ -30,7 +30,7 @@ final class JSON extends Middleware
         );
 
         if ((json_last_error() !== JSON_ERROR_NONE)) {
-            return $this->respond->prettyJson(
+            return Respond::prettyJson(
                 message:'Problems parsing provided JSON',
                 code: 415
             );

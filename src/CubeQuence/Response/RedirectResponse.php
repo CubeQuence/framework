@@ -4,18 +4,20 @@ declare(strict_types=1);
 
 namespace CQ\Response;
 
-use Laminas\Diactoros\Response\EmptyResponse;
+use Laminas\Diactoros\Response\RedirectResponse as RedirectResponseDiactoros;
 
-final class NoContent extends EmptyResponse
+final class RedirectResponse extends RedirectResponseDiactoros
 {
     /**
-     * NoContent response
+     * Redirect response
      */
     public function __construct(
+        string $url,
         int $code,
         array $headers
     ) {
         parent::__construct(
+            uri: $url,
             status: $code,
             headers: $headers
         );

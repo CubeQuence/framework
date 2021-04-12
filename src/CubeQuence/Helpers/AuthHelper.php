@@ -6,20 +6,20 @@ namespace CQ\Helpers;
 
 use CQ\Config\Config;
 
-class Auth
+final class AuthHelper // TODO: move authlogic to seperate folder
 {
     /**
      * Check if session active.
      */
     public static function valid(): bool
     {
-        $session = Session::get(name: 'session');
+        $session = SessionHelper::get(name: 'session');
 
-        if (! Session::get(name: 'user')) {
+        if (! SessionHelper::get(name: 'user')) {
             return false;
         }
 
-        if (time() - Session::get(name: 'last_activity') > Config::get(key: 'auth.session_timeout')) {
+        if (time() - SessionHelper::get(name: 'last_activity') > Config::get(key: 'auth.session_timeout')) {
             return false;
         }
 
@@ -35,7 +35,7 @@ class Auth
             return false;
         }
 
-        Session::set(
+        SessionHelper::set(
             name: 'last_activity',
             data: time()
         );

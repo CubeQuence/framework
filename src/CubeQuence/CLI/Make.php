@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CQ\CLI;
 
-use CQ\Helpers\App;
+use CQ\Helpers\AppHelper;
 use Phinx\Console\PhinxApplication;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
@@ -32,7 +32,7 @@ class Make extends Template
                 'command' => 'create',
                 'name' => $name,
                 '--template' => __DIR__ . '/../DB/Template/Migration.php',
-                '--configuration' => App::getRootPath() . '/phinx.php',
+                '--configuration' => AppHelper::getRootPath() . '/phinx.php',
             ];
 
             $command->run(
@@ -66,7 +66,7 @@ class Make extends Template
             $arguments = [
                 'command' => "seed:create {$name}",
                 'name' => $name,
-                '--configuration' => App::getRootPath() . '/phinx.php',
+                '--configuration' => AppHelper::getRootPath() . '/phinx.php',
             ];
 
             $command->run(

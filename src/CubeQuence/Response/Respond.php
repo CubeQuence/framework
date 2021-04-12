@@ -9,12 +9,12 @@ final class Respond
     /**
      * Html response
      */
-    public function html(
+    public static function html(
         string $data,
         int $code = 200,
         array $headers = []
-    ): Html {
-        return new Html(
+    ): HtmlResponse {
+        return new HtmlResponse(
             data: $data,
             code: $code,
             headers: $headers
@@ -24,12 +24,12 @@ final class Respond
     /**
      * JSON response
      */
-    public function json(
+    public static function json(
         $data,
         int $code = 200,
         array $headers = []
-    ): Json {
-        return new Json(
+    ): JsonResponse {
+        return new JsonResponse(
             data: $data,
             code: $code,
             headers: $headers
@@ -39,13 +39,13 @@ final class Respond
     /**
      * JSON response
      */
-    public function prettyJson(
+    public static function prettyJson(
         string $message,
         $data = [],
         int $code = 200,
         array $headers = []
-    ): Json {
-        return $this->json([
+    ): JsonResponse {
+        return self::json([
             'success' => $code === 200,
             'message' => $message,
             'data' => $data,
@@ -55,11 +55,11 @@ final class Respond
     /**
      * NoContent response
      */
-    public function noContent(
+    public static function noContent(
         int $code = 204,
         array $headers = []
-    ): NoContent {
-        return new NoContent(
+    ): NoContentResponse {
+        return new NoContentResponse(
             code: $code,
             headers: $headers
         );
@@ -68,12 +68,12 @@ final class Respond
     /**
      * Redirect response
      */
-    public function redirect(
+    public static function redirect(
         string $url,
         int $code = 302,
         array $headers = []
-    ): Redirect {
-        return new Redirect(
+    ): RedirectResponse {
+        return new RedirectResponse(
             url: $url,
             code: $code,
             headers: $headers
@@ -83,15 +83,15 @@ final class Respond
     /**
      * Twig response
      */
-    public function twig(
+    public static function twig(
         string $view,
         array $parameters = [],
         int $code = 200,
         array $headers = []
-    ): Html {
+    ): HtmlResponse {
         $twig = new Twig();
 
-        return new Html(
+        return new HtmlResponse(
             data: $twig->render(view: $view, parameters: $parameters),
             code: $code,
             headers: $headers
@@ -101,12 +101,12 @@ final class Respond
     /**
      * XML response
      */
-    public function xml(
+    public static function xml(
         $data,
         int $code = 200,
         array $headers = []
-    ): Xml {
-        return new Xml(
+    ): XmlResponse {
+        return new XmlResponse(
             data: $data,
             code: $code,
             headers: $headers

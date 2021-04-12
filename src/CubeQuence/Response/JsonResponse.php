@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace CQ\Response;
 
-use Laminas\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\JsonResponse as JsonResponseDiactoros;
 
-final class Html extends HtmlResponse
+final class JsonResponse extends JsonResponseDiactoros
 {
     /**
-     * HTML response
+     * JSON response
      */
     public function __construct(
-        string $data,
+        $data,
         int $code,
         array $headers
     ) {
         parent::__construct(
-            html: $data,
+            data: $data,
             status: $code,
             headers: $headers
         );

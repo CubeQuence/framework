@@ -43,7 +43,7 @@ final class DB
     private static function getInstance() : DB
     {
         if (self::$instance === null) {
-            self::$instance = new DB();
+            self::$instance = new self;
         }
 
         return self::$instance;

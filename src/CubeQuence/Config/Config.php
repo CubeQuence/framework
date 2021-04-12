@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace CQ\Config;
 
-use CQ\Helpers\App;
-use CQ\Helpers\Arr;
+use CQ\Helpers\AppHelper;
+use CQ\Helpers\ArrHelper;
 use Dotenv\Dotenv;
 
-class Config
+final class Config
 {
     private static Config | null $instance = null;
     private static array $config = [];
@@ -18,7 +18,7 @@ class Config
      */
     private function __construct()
     {
-        $appRootPath = App::getRootPath();
+        $appRootPath = AppHelper::getRootPath();
         $configDir = $appRootPath . '/config';
 
         // Load .env
@@ -49,6 +49,18 @@ class Config
     }
 
     /**
+     * Get access to the Config singleton
+     */
+    private static function getInstance() : Config
+    {
+        if (self::$instance === null) {
+            self::$instance = new self;
+        }
+
+        return self::$instance;
+    }
+
+    /**
      * Get config entry.
      */
     public static function get(string $key, $fallback = null): mixed
@@ -56,7 +68,7 @@ class Config
         $configSingleton = self::getInstance();
         $config = $configSingleton::$config;
 
-        $value = Arr::get(
+        $value = ArrHelper::get(
             array: $config,
             key: $key,
             default: $fallback
@@ -68,17 +80,5 @@ class Config
         }
 
         return $value;
-    }
-
-    /**
-     * Get access to the Config singleton
-     */
-    private static function getInstance() : Config
-    {
-        if (self::$instance === null) {
-            self::$instance = new Config();
-        }
-
-        return self::$instance;
     }
 }

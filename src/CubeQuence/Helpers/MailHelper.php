@@ -6,16 +6,16 @@ namespace CQ\Helpers;
 
 use CQ\Request\Request;
 
-class Mail
+final class MailHelper
 {
     /**
-     * Send form.castelnuovo.xyz.
+     * Send form.castelnuovo.xyz
      */
-    public static function send(string $site_key, array $data): void
+    public static function send(string $siteKey, array $data): void
     {
         Request::send(
             method: 'POST',
-            path: "https://form.castelnuovo.xyz/api/{$site_key}",
+            path: "https://form.castelnuovo.xyz/api/{$siteKey}",
             json: $data
         );
     }

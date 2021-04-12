@@ -6,14 +6,15 @@ namespace CQ\Middleware;
 
 use Closure;
 use CQ\Config\Config;
-use CQ\Response\NoContent;
+use CQ\Response\NoContentResponse;
+use CQ\Response\Respond;
 
-final class CORS extends Middleware
+final class CorsMiddleware extends Middleware
 {
     /**
      * Add CORS headers to requests.
      */
-    public function handleChild(Closure $next): Closure | NoContent
+    public function handleChild(Closure $next): Closure | NoContentResponse
     {
         $headers = [
             'Access-Control-Allow-Origin' => implode(
@@ -37,8 +38,7 @@ final class CORS extends Middleware
         }
 
         if ($this->request->getMethod() === 'OPTIONS') {
-            return new NoContent(
-                code: 204,
+            Respond::noContent(
                 headers: $headers
             );
         }

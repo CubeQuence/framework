@@ -6,7 +6,7 @@ namespace CQ\Helpers;
 
 // use CQ\Crypto\Symmetric;
 
-final class Session
+final class SessionHelper
 {
     /**
      * Set session var.
@@ -32,6 +32,7 @@ final class Session
      */
     public static function get(string $name) : mixed
     {
+        // TODO: decrypt
         return $_SESSION[$name] ?? null;
     }
 

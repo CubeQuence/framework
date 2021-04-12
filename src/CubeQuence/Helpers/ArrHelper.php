@@ -6,7 +6,7 @@ namespace CQ\Helpers;
 
 use ArrayAccess;
 
-class Arr
+final class ArrHelper
 {
     /**
      * Determine whether the given value is array accessible.

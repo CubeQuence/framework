@@ -4,21 +4,23 @@ declare(strict_types=1);
 
 namespace CQ\Controllers;
 
-use CQ\Response\Respond;
+use CQ\Helpers\RequestHelper;
 use MiladRahimi\PhpRouter\Routing\Route;
 use Psr\Http\Message\ServerRequestInterface;
 
-class Controller
+abstract class Controller
 {
-    protected Respond $respond;
+    protected RequestHelper $requestHelper;
 
     /**
      * Provide access for child classes.
      */
     public function __construct(
         protected ServerRequestInterface $request,
-        protected Route $route
+        protected Route $route,
     ) {
-        $this->respond = new Respond();
+        $this->requestHelper = new RequestHelper(
+            request: $request
+        );
     }
 }

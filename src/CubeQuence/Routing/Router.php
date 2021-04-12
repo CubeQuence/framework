@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CQ\Routing;
 
-use CQ\Response\Redirect;
+use CQ\Response\Respond;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
 use MiladRahimi\PhpRouter\Router as RouterBase;
 
@@ -27,7 +27,7 @@ final class Router
      */
     public function getRoute(): Route
     {
-        return new Route($this->router);
+        return new Route(router: $this->router);
     }
 
     /**
@@ -35,7 +35,7 @@ final class Router
      */
     public function getMiddleware(): Middleware
     {
-        return new Middleware($this->router);
+        return new Middleware(router: $this->router);
     }
 
     /**
@@ -47,19 +47,21 @@ final class Router
             $this->router->dispatch();
         } catch (RouteNotFoundException) {
             $this->router->getPublisher()->publish(
-                new Redirect(
+                Respond::redirect(
                     url: $this->route_404,
-                    code: 404,
-                    headers: []
+                    code: 404
                 )
             );
         } /*catch (\Throwable $e) { // TODO: if you enable this route the debug window doesn't work
-            if (App::debug()) {
+            if (App::isDebug()) {
                 return throw new \Exception($e);
             }
 
             $this->router->getPublisher()->publish(
-                new Redirect($this->route_500, 500, [])
+                Respond::redirect(
+                    url: $this->route_500,
+                    code: 500
+                )
             );
         }*/
     }
