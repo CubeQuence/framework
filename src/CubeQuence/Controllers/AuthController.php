@@ -16,7 +16,7 @@ use CQ\Response\HtmlResponse;
 use CQ\Response\JsonResponse;
 use CQ\Response\RedirectResponse;
 
-class Auth extends Controller
+class AuthController extends Controller
 {
     private Client $client;
     private Client $deviceClient;

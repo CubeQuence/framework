@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CQ\Middleware;
 
 use Closure;
+use CQ\Config\Config;
 use CQ\DB\DB;
 use CQ\Response\JsonResponse;
 use CQ\Response\Respond;
@@ -17,10 +18,8 @@ final class RatelimitMiddleware extends Middleware
     /**
      * Ratelimit routes
      */
-    public function handleChild(Closure $next): Closure | JsonResponse // TODO: doesn't work
+    public function handleChild(Closure $next): Closure | JsonResponse
     {
-        $test = RateModel::perMinute(100); // TODO: remove this after it works
-
         $databaseProvider = new DatabaseProvider(
             db: DB::class
         );
@@ -30,7 +29,7 @@ final class RatelimitMiddleware extends Middleware
         );
 
         $identifier = $this->requestHelper->ip();
-        $rate = $this->getConfig(
+        $rate = $this->getRate(
             path: $this->route->getPath()
         );
 
@@ -45,9 +44,11 @@ final class RatelimitMiddleware extends Middleware
             'X-RateLimit-Reset' => $status->getResetAt(),
         ];
 
+
         if ($status->limitExceeded()) {
             return Respond::prettyJson(
                 message: 'Ratelimit Exceeded',
+                data: $headers,
                 code: 429,
                 headers: $headers
             );
@@ -62,11 +63,26 @@ final class RatelimitMiddleware extends Middleware
         return $response;
     }
 
-    private function getConfig(string $path) : RateModel
+    private function getRate(string $path) : RateModel
     {
-        // TODO: Get from config
-        // $path = $this->route->getPath();
+        $path = $this->route->getPath();
+        $pathConfig = Config::get(key: "ratelimit.{$path}");
+        $defaultConfig = Config::get(
+            key: 'ratelimit.default',
+            fallback: '60:60'
+        );
 
-        return RateModel::perMinute(100);
+        $config = $pathConfig ?: $defaultConfig;
+
+        [$operations, $interval] = explode(
+            ':',
+            string: $config,
+            limit: 2
+        );
+
+        return RateModel::custom(
+            operations: (int) $operations,
+            interval: (int) $interval
+        );
     }
 }

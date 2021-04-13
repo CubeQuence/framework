@@ -17,7 +17,7 @@ final class DB
      */
     private function __construct()
     {
-        $this->client = new Medoo([
+        self::$client = new Medoo([
             'database_type' => 'mysql',
             'server' => Config::get(
                 key: 'database.host'
@@ -56,7 +56,7 @@ final class DB
     {
         $dbSingleton = self::getInstance();
 
-        return $dbSingleton->client->select($table, $columns, $where);
+        return $dbSingleton::$client->select($table, $columns, $where);
     }
 
     /**
@@ -66,7 +66,7 @@ final class DB
     {
         $dbSingleton = self::getInstance();
 
-        return $dbSingleton->client->get($table, $columns, $where);
+        return $dbSingleton::$client->get($table, $columns, $where);
     }
 
     /**
@@ -76,7 +76,7 @@ final class DB
     {
         $dbSingleton = self::getInstance();
 
-        $dbSingleton->client->insert($table, $data);
+        $dbSingleton::$client->insert($table, $data);
 
         return $data;
     }
@@ -93,7 +93,7 @@ final class DB
             ['updated_at' => date(format: 'Y-m-d H:i:s')]
         );
 
-        $dbSingleton->client->update($table, $data, $where);
+        $dbSingleton::$client->update($table, $data, $where);
 
         return $data;
     }
@@ -105,7 +105,7 @@ final class DB
     {
         $dbSingleton = self::getInstance();
 
-        return $dbSingleton->client->delete($table, ['AND' => $where]);
+        return (bool) $dbSingleton::$client->delete($table, ['AND' => $where]);
     }
 
     /**
@@ -115,7 +115,7 @@ final class DB
     {
         $dbSingleton = self::getInstance();
 
-        return $dbSingleton->client->has($table, $where);
+        return $dbSingleton::$client->has($table, $where);
     }
 
     /**
@@ -125,6 +125,6 @@ final class DB
     {
         $dbSingleton = self::getInstance();
 
-        return $dbSingleton->client->count($table, $where);
+        return $dbSingleton::$client->count($table, $where);
     }
 }

@@ -22,6 +22,7 @@
         "php": ">=8.0",
         "catfan/medoo": "^1.7",
         "cubequence/crypto": "^1.1",
+        "cubequence/file": "^1.0",
         "cubequence/oauth": "^1.0",
         "cubequence/ratelimit": "dev-main",
         "cubequence/request": "^1.0",
@@ -34,8 +35,8 @@
         "vlucas/phpdotenv": "^5.0"
     },
     "require-dev": {
-        "nunomaduro/phpinsights": "dev-master",
-        "fzaninotto/faker": "^1.9"
+        "fakerphp/faker": "^1.14",
+        "nunomaduro/phpinsights": "dev-master"
     },
     "config": {
         "sort-packages": true

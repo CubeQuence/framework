@@ -78,7 +78,7 @@ final class RequestHelper
     private function isIpInRange(string $range, string $ip): bool
     {
         [$range, $netmask] = explode(
-            delimiter: '/',
+            '/',
             string: $range,
             limit: 2
         );

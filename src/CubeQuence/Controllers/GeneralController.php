@@ -8,7 +8,7 @@ use CQ\Helpers\AuthHelper;
 use CQ\Response\HtmlResponse;
 use CQ\Response\Respond;
 
-class General extends Controller
+class GeneralController extends Controller
 {
     /**
      * Index screen.
