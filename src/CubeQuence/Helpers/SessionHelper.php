@@ -9,7 +9,7 @@ final class SessionHelper
     /**
      * Set session var.
      */
-    public static function set(string $name, $data) : mixed
+    public static function set(string $name, $data): mixed
     {
         $_SESSION[$name] = $data;
 
@@ -27,7 +27,7 @@ final class SessionHelper
     /**
      * Get session var.
      */
-    public static function get(string $name) : mixed
+    public static function get(string $name): mixed
     {
         return $_SESSION[$name] ?? null;
     }

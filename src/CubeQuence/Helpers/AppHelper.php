@@ -58,7 +58,7 @@ class AppHelper
     /**
      * Encrypt with appKey
      */
-    public static function encrypt(string $string) : string
+    public static function encrypt(string $string): string
     {
         $appKey = new SymmetricKey(
             encodedKey: Config::get('app.key')
@@ -74,7 +74,7 @@ class AppHelper
     /**
      * Decrypt with appKey
      */
-    public static function decrypt(string $encryptedString) : string
+    public static function decrypt(string $encryptedString): string
     {
         $appKey = new SymmetricKey(
             encodedKey: Config::get('app.key')

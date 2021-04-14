@@ -7,11 +7,11 @@ namespace CQ\Middleware;
 use Closure;
 use CQ\Config\Config;
 use CQ\DB\DB;
-use CQ\Response\JsonResponse;
-use CQ\Response\Respond;
 use CQ\Ratelimit\Models\RateModel;
 use CQ\Ratelimit\Ratelimit;
 use CQ\Ratelimit\Storage\Providers\DatabaseProvider;
+use CQ\Response\JsonResponse;
+use CQ\Response\Respond;
 
 final class RatelimitMiddleware extends Middleware
 {
@@ -44,7 +44,6 @@ final class RatelimitMiddleware extends Middleware
             'X-RateLimit-Reset' => $status->getResetAt(),
         ];
 
-
         if ($status->limitExceeded()) {
             return Respond::prettyJson(
                 message: 'Ratelimit Exceeded',
@@ -63,7 +62,7 @@ final class RatelimitMiddleware extends Middleware
         return $response;
     }
 
-    private function getRate(string $path) : RateModel
+    private function getRate(string $path): RateModel
     {
         $path = $this->route->getPath();
         $pathConfig = Config::get(key: "ratelimit.{$path}");
@@ -72,7 +71,7 @@ final class RatelimitMiddleware extends Middleware
             fallback: '60:60'
         );
 
-        $config = $pathConfig ?: $defaultConfig;
+        $config = $pathConfig ? $pathConfig : $defaultConfig;
 
         [$operations, $interval] = explode(
             ':',

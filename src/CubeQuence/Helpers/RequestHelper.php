@@ -31,12 +31,12 @@ final class RequestHelper
     ) {
     }
 
-    public function getHeader(string $headerName) : string
+    public function getHeader(string $headerName): string
     {
         return $this->request->getHeaderLine($headerName);
     }
 
-    public function getQueryParam(string $paramName) : string | null
+    public function getQueryParam(string $paramName): string | null
     {
         return $this->request->getQueryParams()[$paramName] ?? null;
     }
@@ -56,7 +56,7 @@ final class RequestHelper
      */
     public function ip(array $proxyRanges = []): string
     {
-        $allowedRanges = $proxyRanges ?: $this->cloudflareRanges;
+        $allowedRanges = $proxyRanges ? $proxyRanges : $this->cloudflareRanges;
 
         $remoteIp = $_SERVER['REMOTE_ADDR'];
         $proxyIp = $this->getHeader('X-Forwarded-For');

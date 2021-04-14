@@ -6,10 +6,10 @@ namespace CQ\Middleware;
 
 use Closure;
 use CQ\Helpers\RequestHelper;
-use CQ\Response\Respond;
 use CQ\Response\JsonResponse;
 use CQ\Response\NoContentResponse;
 use CQ\Response\RedirectResponse;
+use CQ\Response\Respond;
 use MiladRahimi\PhpRouter\Routing\Route;
 use Psr\Http\Message\ServerRequestInterface;
 

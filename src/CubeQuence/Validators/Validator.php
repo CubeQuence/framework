@@ -14,8 +14,7 @@ abstract class Validator
     protected static function validate(
         ValidatorBase $validator,
         object $data
-    ): void
-    {
+    ): void {
         $validator->assert(input: $data);
     }
 }

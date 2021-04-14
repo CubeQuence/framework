@@ -37,19 +37,17 @@ class GeneralController extends Controller
      */
     public function error(string $code): HtmlResponse
     {
-        $error = match($code) {
+        $error = match ($code) {
             '403' => 'Oops! Access denied',
             '404' => 'Oops! Page not found',
             '500' => 'Oops! Server error',
-
             default => 'Oops! Unknown Error'
         };
 
-        $description = match($code) {
+        $description = match ($code) {
             '403' => 'Access to this page is forbidden',
             '404' => 'The page you requested could not be found',
             '500' => 'We are experiencing some technical issues',
-            // no break
             default => 'Unknown error occured'
         };
 

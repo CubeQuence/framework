@@ -6,7 +6,6 @@ namespace CQ\Controllers;
 
 use CQ\Config\Config;
 use CQ\Helpers\SessionHelper;
-use CQ\Response\Respond;
 use CQ\OAuth\Client;
 use CQ\OAuth\Exceptions\AuthException;
 use CQ\OAuth\Flows\Provider\AuthorizationCode;
@@ -15,6 +14,7 @@ use CQ\OAuth\Models\User;
 use CQ\Response\HtmlResponse;
 use CQ\Response\JsonResponse;
 use CQ\Response\RedirectResponse;
+use CQ\Response\Respond;
 
 class AuthController extends Controller
 {
@@ -100,7 +100,7 @@ class AuthController extends Controller
 
         return Respond::twig(
             view: 'partials/device.twig',
-            parameters:[
+            parameters: [
                 'qr' => $startData->uri,
             ]
         );

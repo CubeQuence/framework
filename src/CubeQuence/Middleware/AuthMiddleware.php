@@ -11,7 +11,7 @@ use CQ\Response\JsonResponse;
 use CQ\Response\RedirectResponse;
 use CQ\Response\Respond;
 
-final class SessionMiddleware extends Middleware
+final class AuthMiddleware extends Middleware
 {
     /**
      * Validate PHP session.
@@ -21,7 +21,7 @@ final class SessionMiddleware extends Middleware
         if (AuthHelper::valid()) {
             SessionHelper::set(
                 name: 'last_activity',
-                data:time()
+                data: time()
             );
 
             return $next($this->request);
@@ -29,7 +29,7 @@ final class SessionMiddleware extends Middleware
 
         SessionHelper::destroy();
 
-        if (! $this->requestHelper->isJson()) {
+        if (!$this->requestHelper->isJson()) {
             SessionHelper::set(
                 name: 'return_to',
                 data: $this->route->getUri()
