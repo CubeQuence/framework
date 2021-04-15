@@ -24,28 +24,31 @@ final class AuthMiddleware extends Middleware
                 data: time()
             );
 
+            $user = SessionHelper::get(name: 'user');
+            $this->request->user = $user;
+
             return $next($this->request);
         }
 
-        SessionHelper::destroy();
+        SessionHelper::reset();
 
-        if (!$this->requestHelper->isJson()) {
-            SessionHelper::set(
-                name: 'return_to',
-                data: $this->route->getUri()
-            );
-
-            return Respond::redirect(
-                url: '/?msg=logout',
+        if ($this->requestHelper->isJson()) {
+            return Respond::prettyJson(
+                message: 'You have been logged out!',
+                data: [
+                    'redirect' => '/?msg=logout',
+                ],
                 code: 403
             );
         }
 
-        return Respond::prettyJson(
-            message: 'You have been logged out!',
-            data: [
-                'redirect' => '/?msg=logout',
-            ],
+        SessionHelper::set(
+            name: 'return_to',
+            data: $this->route->getUri()
+        );
+
+        return Respond::redirect(
+            url: '/?msg=logout',
             code: 403
         );
     }

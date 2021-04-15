@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace CQ\Middleware;
 
 use Closure;
-use CQ\Config\Config;
+use CQ\Helpers\ConfigHelper;
 use CQ\DB\DB;
 use CQ\Ratelimit\Models\RateModel;
 use CQ\Ratelimit\Ratelimit;
@@ -65,8 +65,8 @@ final class RatelimitMiddleware extends Middleware
     private function getRate(string $path): RateModel
     {
         $path = $this->route->getPath();
-        $pathConfig = Config::get(key: "ratelimit.{$path}");
-        $defaultConfig = Config::get(
+        $pathConfig = ConfigHelper::get(key: "ratelimit.{$path}");
+        $defaultConfig = ConfigHelper::get(
             key: 'ratelimit.default',
             fallback: '60:60'
         );

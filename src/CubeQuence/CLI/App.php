@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CQ\CLI;
 
-use CQ\Config\Config;
+use CQ\Helpers\ConfigHelper;
 use CQ\Crypto\Models\SymmetricKey;
 use CQ\Crypto\Password;
 use CQ\File\Adapters\Providers\Local;
@@ -21,7 +21,7 @@ final class App extends Template
      */
     public function key(InputInterface $input, OutputInterface $output, SymfonyStyle $io): void
     {
-        if (! self::envCheck(input: $input, output: $output, io: $io)) {
+        if (!self::envCheck(input: $input, output: $output, io: $io)) {
             return;
         }
 
@@ -38,7 +38,7 @@ final class App extends Template
             $envKey = new SymmetricKey();
             $exportedEnvKey = $envKey->export();
 
-            if (! $fileHandler->exists($envPath)) {
+            if (!$fileHandler->exists($envPath)) {
                 $io->warning(message: '.env file not found, please set key manually');
                 $io->text(message: "APP_KEY=\"{$exportedEnvKey}\"");
 
@@ -47,7 +47,7 @@ final class App extends Template
 
             $envContent = $fileHandler->read(path: $envPath);
             $envUpdatedContent = str_replace(
-                search: 'APP_KEY="' . Config::get('app.key') . '"',
+                search: 'APP_KEY="' . ConfigHelper::get('app.key') . '"',
                 replace: 'APP_KEY="' . $exportedEnvKey . '"',
                 subject: $envContent
             );
@@ -72,7 +72,7 @@ final class App extends Template
     {
         try {
             $appKey = new SymmetricKey(
-                encodedKey: Config::get('app.key')
+                encodedKey: ConfigHelper::get('app.key')
             );
 
             $password = new Password(
@@ -80,7 +80,7 @@ final class App extends Template
             );
 
             $envKeyContext = $password->hash(
-                plaintextPassword: Config::get('app.key'),
+                plaintextPassword: ConfigHelper::get('app.key'),
                 context: $input->getArgument(name: 'context')
             );
         } catch (\Throwable $th) {

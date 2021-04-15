@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CQ\Response;
 
-use CQ\Config\Config;
+use CQ\Helpers\ConfigHelper;
 use CQ\Helpers\AppHelper;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
@@ -19,7 +19,7 @@ final class Twig
      */
     public function __construct()
     {
-        $cacheEnabled = Config::get(key: 'cache.views') && ! AppHelper::isDebug();
+        $cacheEnabled = ConfigHelper::get(key: 'cache.views') && !AppHelper::isDebug();
         $loader = new FilesystemLoader(paths: '../views');
 
         $twig = new Environment(
@@ -73,12 +73,12 @@ final class Twig
         // TODO: Security vulnerability, possible to get access to appKey from twig
         $twig->addGlobal(
             name: 'app',
-            value: Config::get(key: 'app')
+            value: ConfigHelper::get(key: 'app')
         );
 
         $twig->addGlobal(
             name: 'analytics',
-            value: Config::get(key: 'analytics')
+            value: ConfigHelper::get(key: 'analytics')
         );
 
         return $twig;

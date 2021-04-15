@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CQ\DB;
 
-use CQ\Config\Config;
+use CQ\Helpers\ConfigHelper;
 use Medoo\Medoo;
 
 final class DB
@@ -19,19 +19,19 @@ final class DB
     {
         self::$client = new Medoo([
             'database_type' => 'mysql',
-            'server' => Config::get(
+            'server' => ConfigHelper::get(
                 key: 'database.host'
             ),
-            'port' => Config::get(
+            'port' => ConfigHelper::get(
                 key: 'database.port'
             ),
-            'database_name' => Config::get(
+            'database_name' => ConfigHelper::get(
                 key: 'database.database'
             ),
-            'username' => Config::get(
+            'username' => ConfigHelper::get(
                 key: 'database.username'
             ),
-            'password' => Config::get(
+            'password' => ConfigHelper::get(
                 key: 'database.password'
             ),
         ]);
@@ -40,7 +40,7 @@ final class DB
     /**
      * Get access to the Config singleton
      */
-    private static function getInstance() : DB
+    private static function getInstance(): DB
     {
         if (self::$instance === null) {
             self::$instance = new self;
