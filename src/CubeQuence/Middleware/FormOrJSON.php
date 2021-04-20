@@ -17,7 +17,7 @@ final class FormOrJSON extends Middleware
      */
     public function handleChild(Closure $next): Closure | JsonResponse
     {
-        if (! $this->requestHelper->isJSON()) {
+        if (!$this->requestHelper->isJSON()) {
             $jsonMiddleware = new JsonMiddleware();
 
             return $jsonMiddleware->handle(
@@ -27,7 +27,7 @@ final class FormOrJSON extends Middleware
             );
         }
 
-        if (! $this->requestHelper->isForm()) {
+        if (!$this->requestHelper->isForm()) {
             $formMiddleware = new FormMiddleware();
 
             return $formMiddleware->handle(

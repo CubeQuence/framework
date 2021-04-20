@@ -15,7 +15,7 @@ final class JsonMiddleware extends Middleware
      */
     public function handleChild(Closure $next): Closure | JsonResponse
     {
-        if (! $this->requestHelper->isJSON()) {
+        if (!$this->requestHelper->isJSON()) {
             return Respond::prettyJson(
                 message: 'Invalid Content-Type',
                 data: [
@@ -31,7 +31,7 @@ final class JsonMiddleware extends Middleware
 
         if ((json_last_error() !== JSON_ERROR_NONE)) {
             return Respond::prettyJson(
-                message:'Problems parsing provided JSON',
+                message: 'Problems parsing provided JSON',
                 code: 415
             );
         }

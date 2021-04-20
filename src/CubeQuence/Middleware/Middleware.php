@@ -9,16 +9,14 @@ use CQ\Helpers\RequestHelper;
 use CQ\Response\JsonResponse;
 use CQ\Response\NoContentResponse;
 use CQ\Response\RedirectResponse;
-use CQ\Response\Respond;
 use MiladRahimi\PhpRouter\Routing\Route;
 use Psr\Http\Message\ServerRequestInterface;
 
 abstract class Middleware
 {
     protected ServerRequestInterface $request;
-    protected Route $route;
-    protected Respond $respond;
     protected RequestHelper $requestHelper;
+    protected Route $route;
 
     /**
      * Interface for middleware classes to tie into
@@ -35,7 +33,6 @@ abstract class Middleware
     ): Closure | JsonResponse | NoContentResponse | RedirectResponse {
         $this->request = $request;
         $this->route = $route;
-        $this->respond = new Respond();
 
         $this->requestHelper = new RequestHelper(
             request: $request

@@ -18,7 +18,7 @@ final class AuthMiddleware extends Middleware
      */
     public function handleChild(Closure $next): Closure | JsonResponse | RedirectResponse
     {
-        if (AuthHelper::valid()) {
+        if (AuthHelper::isValid()) {
             SessionHelper::set(
                 name: 'last_activity',
                 data: time()

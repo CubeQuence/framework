@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace CQ\Response;
 
-use CQ\Helpers\ConfigHelper;
 use CQ\Helpers\AppHelper;
+use CQ\Helpers\ConfigHelper;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
 use Twig\Loader\FilesystemLoader;

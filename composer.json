@@ -14,20 +14,17 @@
     ],
     "require": {
         "php": ">=8.0",
-        "catfan/medoo": "^1.7",
         "cubequence/crypto": "^1.1",
+        "cubequence/db": "^1.0",
         "cubequence/file": "^1.0",
         "cubequence/helpers": "^1.0",
         "cubequence/oauth": "^1.1",
         "cubequence/ratelimit": "^1.0",
         "cubequence/request": "^1.0",
-        "miladrahimi/phprouter": "^5.0",
+        "miladrahimi/phprouter": "^5.1",
         "mnapoli/silly": "^1.7",
-        "ramsey/uuid": "^4.0",
         "respect/validation": "^2.0",
-        "robmorgan/phinx": "^0.12.1",
-        "twig/twig": "^3.0",
-        "vlucas/phpdotenv": "^5.0"
+        "twig/twig": "^3.3"
     },
     "require-dev": {
         "fakerphp/faker": "^1.14",

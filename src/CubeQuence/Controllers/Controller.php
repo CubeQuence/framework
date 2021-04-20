@@ -10,15 +10,20 @@ use Psr\Http\Message\ServerRequestInterface;
 
 abstract class Controller
 {
+    protected ServerRequestInterface $request;
     protected RequestHelper $requestHelper;
+    protected Route $route;
 
     /**
      * Provide access for child classes.
      */
     public function __construct(
-        protected ServerRequestInterface $request,
-        protected Route $route,
+        ServerRequestInterface $request,
+        Route $route,
     ) {
+        $this->request = $request;
+        $this->route = $route;
+
         $this->requestHelper = new RequestHelper(
             request: $request
         );
