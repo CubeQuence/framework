@@ -1,103 +1,110 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Routing;
 
-class Route
+use MiladRahimi\PhpRouter\Router as RouterBase;
+
+final class Route
 {
-    public static $router;
+    /**
+     * Instantiate class
+     */
+    public function __construct(
+        public RouterBase $router,
+    ) {
+    }
 
     /**
      * Define GET route
-     *
-     * @param string $location
-     * @param string $controller
-     * @param array $middleware optional
-     * 
-     * @return void
      */
-    public static function get($location, $controller, $middleware = [])
-    {
-        self::$router->get($location, $controller, $middleware);
+    public function get(
+        string $location,
+        array $controller
+    ): void {
+        $this->router->get(
+            path: $location,
+            controller: $controller
+        );
     }
 
     /**
      * Define POST route
-     *
-     * @param string $location
-     * @param string $controller
-     * @param array $middleware optional
-     * 
-     * @return void
      */
-    public static function post($location, $controller, $middleware = [])
-    {
-        self::$router->post($location, $controller, $middleware);
+    public function post(
+        string $location,
+        array $controller
+    ): void {
+        $this->router->post(
+            path: $location,
+            controller: $controller
+        );
     }
-    
-     /**
+
+    /**
      * Define PUT route
-     *
-     * @param string $location
-     * @param string $controller
-     * 
-     * @return void
      */
-    public static function put($location, $controller, $middleware = [])
-    {
-        self::$router->put($location, $controller, $middleware);
+    public function put(
+        string $location,
+        array $controller
+    ): void {
+        $this->router->put(
+            path: $location,
+            controller: $controller
+        );
     }
 
     /**
      * Define PATCH route
-     *
-     * @param string $location
-     * @param string $controller
-     * 
-     * @return void
      */
-    public static function patch($location, $controller, $middleware = [])
-    {
-        self::$router->patch($location, $controller, $middleware);
+    public function patch(
+        string $location,
+        array $controller
+    ): void {
+        $this->router->patch(
+            path: $location,
+            controller: $controller
+        );
     }
-    
+
     /**
      * Define OPTIONS route
-     *
-     * @param string $location
-     * @param string $controller
-     * 
-     * @return void
      */
-    public static function options($location, $controller, $middleware = [])
-    {
-        self::$router->map('OPTIONS', $location, $controller, $middleware);
+    public function options(
+        string $location,
+        array $controller
+    ): void {
+        $this->router->define(
+            method: 'OPTIONS',
+            path: $location,
+            controller: $controller
+        );
     }
 
     /**
      * Define DELETE route
-     *
-     * @param string $location
-     * @param string $controller
-     * @param array $middleware optional
-     * 
-     * @return void
      */
-    public static function delete($location, $controller, $middleware = [])
-    {
-        self::$router->delete($location, $controller, $middleware);
+    public function delete(
+        string $location,
+        array $controller
+    ): void {
+        $this->router->delete(
+            path: $location,
+            controller: $controller
+        );
     }
 
     /**
      * Define ANY route
-     *
-     * @param string $location
-     * @param string $controller
-     * @param array $middleware optional
-     * 
-     * @return void
      */
-    public static function any($location, $controller, $middleware = [])
-    {
-        self::$router->any($location, $controller, $middleware);
+    public function any(
+        string $location,
+        array $controller
+    ): void {
+        $this->router->any(
+            path: $location,
+            controller: $controller
+        );
     }
 }

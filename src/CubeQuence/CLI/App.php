@@ -1,74 +1,95 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\CLI;
 
-use CQ\Helpers\File;
+use CQ\Crypto\Models\SymmetricKey;
 use CQ\Crypto\Password;
-use CQ\Crypto\Symmetric;
+use CQ\File\Adapters\Providers\Local;
+use CQ\File\File;
+use CQ\Helpers\AppHelper;
+use CQ\Helpers\ConfigHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class App extends Template
+final class App extends Template
 {
     /**
      * Generate key command.
-     *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @param SymfonyStyle    $io
      */
-    public function key(InputInterface $input, OutputInterface $output, SymfonyStyle $io)
+    public function key(InputInterface $input, OutputInterface $output, SymfonyStyle $io): void
     {
-        if (!self::envCheck($input, $output, $io)) {
+        if (! self::envCheck(input: $input, output: $output, io: $io)) {
             return;
         }
 
         try {
-            $key = Symmetric::genKey();
-            $path = __DIR__.'/../../../../../../.env';
+            $localProvider = new Local(
+                rootPath: AppHelper::getRootPath()
+            );
 
-            if (!file_exists($path)) {
-                $io->warning('.env file not found, please set key manually');
-                $io->text("APP_KEY=\"{$key}\"");
+            $fileHandler = new File(
+                adapterProvider: $localProvider
+            );
+
+            $envPath = '/.env';
+            $envKey = new SymmetricKey();
+            $exportedEnvKey = $envKey->export();
+
+            if (! $fileHandler->exists($envPath)) {
+                $io->warning(message: '.env file not found, please set key manually');
+                $io->text(message: "APP_KEY=\"{$exportedEnvKey}\"");
 
                 return;
             }
 
-            $env_file = new File($path);
-            $env_file->write(str_replace(
-                'APP_KEY="'.env('APP_KEY').'"',
-                'APP_KEY="'.$key.'"',
-                $env_file->read()
-            ));
+            $envContent = $fileHandler->read(path: $envPath);
+            $envUpdatedContent = str_replace(
+                search: 'APP_KEY="' . ConfigHelper::get('app.key') . '"',
+                replace: 'APP_KEY="' . $exportedEnvKey . '"',
+                subject: $envContent
+            );
+
+            $fileHandler->write(
+                path: $envPath,
+                contents: $envUpdatedContent
+            );
         } catch (\Throwable $th) {
-            $io->error($th->getMessage());
+            $io->error(message: $th->getMessage());
 
             return;
         }
 
-        $io->success('Key set successfully');
+        $io->success(message: 'Key set successfully');
     }
 
     /**
      * Generate derived key command.
-     *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @param SymfonyStyle    $io
      */
-    public function contextKey(InputInterface $input, OutputInterface $output, SymfonyStyle $io)
+    public function contextKey(InputInterface $input, OutputInterface $output, SymfonyStyle $io): void
     {
         try {
-            $plaintext_key = Symmetric::getKey(null, 'encryption');
-            $contextKey = Password::hash($plaintext_key, $input->getArgument('context'));
+            $appKey = new SymmetricKey(
+                encodedKey: ConfigHelper::get('app.key')
+            );
+
+            $password = new Password(
+                key: $appKey
+            );
+
+            $envKeyContext = $password->hash(
+                plaintextPassword: ConfigHelper::get('app.key'),
+                context: $input->getArgument(name: 'context')
+            );
         } catch (\Throwable $th) {
-            $io->error($th->getMessage());
+            $io->error(message: $th->getMessage());
 
             return;
         }
 
-        $io->success('Context key created successfully');
-        $io->text($contextKey);
+        $io->success(message: 'Context key created successfully');
+        $io->text(message: $envKeyContext);
     }
 }

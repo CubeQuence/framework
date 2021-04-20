@@ -1,15 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Routing;
 
-class Middleware
+use Closure;
+use MiladRahimi\PhpRouter\Router as RouterBase;
+
+final class Middleware
 {
-    public static $router;
+    /**
+     * Instantiate class
+     */
+    public function __construct(
+        public RouterBase $router,
+    ) {
+    }
 
-    public static function create($config, $routes)
-    {
-        $router = self::$router;
-
-        $router->group($config, $routes);
+    /**
+     * Create middleware handler
+     */
+    public function create(
+        array $config,
+        Closure $routes
+    ): void {
+        $this->router->group(
+            attributes: $config,
+            body: $routes
+        );
     }
 }

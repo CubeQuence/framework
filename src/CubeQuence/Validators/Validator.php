@@ -1,28 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Validators;
 
-use Respect\Validation\Exceptions\NestedValidationException;
 use Respect\Validation\Validator as ValidatorBase;
 
-class Validator
+abstract class Validator
 {
     /**
-     * Execute validation.
-     *
-     * @param ValidatorBase $validator
-     * @param object        $data
-     *
-     * @throws \Throwable
+     * Execute validation
      */
-    protected static function validate(ValidatorBase $validator, $data)
-    {
-        try {
-            $validator->assert($data);
-        } catch (NestedValidationException $e) {
-            throw new \Exception(
-                json_encode($e->getMessages())
-            );
-        }
+    protected static function validate(
+        ValidatorBase $validator,
+        object $data
+    ): void {
+        $validator->assert(input: $data);
     }
 }

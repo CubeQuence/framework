@@ -1,81 +1,84 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\CLI;
 
+use CQ\Helpers\AppHelper;
 use Phinx\Console\PhinxApplication;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class Make extends Template
+final class Make extends Template
 {
     /**
      * Make migration.
-     *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @param SymfonyStyle    $io
      */
-    public function migration(InputInterface $input, OutputInterface $output, SymfonyStyle $io)
+    public function migration(InputInterface $input, OutputInterface $output, SymfonyStyle $io): void
     {
-        if (!self::envCheck($input, $output, $io)) {
+        if (! self::envCheck(input: $input, output: $output, io: $io)) {
             return;
         }
 
+        $phinx = new PhinxApplication();
+
         try {
-            $name = $input->getArgument('name');
-            $phinx = new PhinxApplication();
-            $command = $phinx->find('create');
+            $name = $input->getArgument(name: 'name');
+            $command = $phinx->find(name: 'create');
 
             $arguments = [
                 'command' => 'create',
                 'name' => $name,
-                '--template' => __DIR__.'/../DB/Template/Migration.php',
-                '--configuration' => __DIR__.'/../../../../../../phinx.php',
+                '--template' => __DIR__ . '/../DB/Template/Migration.php',
+                '--configuration' => AppHelper::getRootPath() . '/phinx.php',
             ];
 
-            $command->run(new ArrayInput($arguments), $output);
+            $command->run(
+                input: new ArrayInput(parameters: $arguments),
+                output: $output
+            );
         } catch (\Throwable $th) {
-            $io->error($th->getMessage());
+            $io->error(message: $th->getMessage());
 
             return;
         }
 
-        $io->success('Migration created');
+        $io->success(message: 'Migration created');
     }
 
     /**
      * Make seed.
-     *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @param SymfonyStyle    $io
      */
-    public function seed(InputInterface $input, OutputInterface $output, SymfonyStyle $io)
+    public function seed(InputInterface $input, OutputInterface $output, SymfonyStyle $io): void
     {
-        if (!self::envCheck($input, $output, $io)) {
+        if (! self::envCheck(input: $input, output: $output, io: $io)) {
             return;
         }
 
+        $phinx = new PhinxApplication();
+
         try {
-            $name = $input->getArgument('name');
-            $phinx = new PhinxApplication();
-            $command = $phinx->find('seed:create');
+            $name = $input->getArgument(name: 'name');
+            $command = $phinx->find(name: 'seed:create');
 
             $arguments = [
                 'command' => "seed:create {$name}",
                 'name' => $name,
-                '--configuration' => __DIR__.'/../../../../../../phinx.php',
+                '--configuration' => AppHelper::getRootPath() . '/phinx.php',
             ];
 
-            $command->run(new ArrayInput($arguments), $output);
+            $command->run(
+                input: new ArrayInput(parameters: $arguments),
+                output: $output
+            );
         } catch (\Throwable $th) {
-            $io->error($th->getMessage());
+            $io->error(message: $th->getMessage());
 
             return;
         }
 
-        $io->success('Seed created');
+        $io->success(message: 'Seed created');
     }
 }

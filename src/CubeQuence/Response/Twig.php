@@ -1,56 +1,86 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Response;
 
-use CQ\Helpers\Request;
+use CQ\Helpers\AppHelper;
+use CQ\Helpers\ConfigHelper;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
 use Twig\Loader\FilesystemLoader;
 
-class Twig
+final class Twig
 {
-    private $twig;
+    private Environment $twig;
 
     /**
      * Create twig instance.
-     *
-     * @param bool $cache
      */
-    public function __construct($cache = true)
+    public function __construct()
     {
-        $loader = new FilesystemLoader('../views');
-        if ($cache) {
-            $this->twig = new Environment($loader, ['cache' => '../storage/views']);
-        } else {
-            $this->twig = new Environment($loader);
-        }
+        $cacheEnabled = ConfigHelper::get(key: 'cache.views') && ! AppHelper::isDebug();
+        $loader = new FilesystemLoader(paths: '../views');
+
+        $twig = new Environment(
+            loader: $loader,
+            options: [
+                'cache' => $cacheEnabled ? '../storage/views' : false,
+            ]
+        );
+
+        $this->twig = self::addGlobals($twig);
     }
 
     /**
-     * Return twig instance.
-     *
-     * @return Environment
+     * Render twig template
      */
-    public function get()
-    {
-        return $this->twig;
+    public function render(
+        string $view,
+        array $parameters
+    ): string {
+        return $this->twig->render(
+            name: $view,
+            context: $parameters
+        );
     }
 
     /**
      * Render template in string form.
-     *
-     * @param string $template
-     * @param array  $parameters
-     *
-     * @return string
      */
-    public static function renderFromText($template, $parameters = [])
-    {
-        $loader = new ArrayLoader(['base.html' => $template]);
-        $twig = new Environment($loader);
-        $twig->addGlobal('user_ip', Request::ip());
-        $twig->addGlobal('user_agent', Request::userAgent());
+    public static function renderFromText(
+        string $template,
+        array $parameters = []
+    ): string {
+        $loader = new ArrayLoader(
+            templates: ['base.html' => $template]
+        );
 
-        return $twig->render('base.html', $parameters);
+        $twig = new Environment(loader: $loader);
+        $twig = self::addGlobals(twig: $twig);
+
+        return $twig->render(
+            name: 'base.html',
+            context: $parameters
+        );
+    }
+
+    /**
+     * Add global parameters to twig
+     */
+    private static function addGlobals(Environment $twig): Environment
+    {
+        // TODO: Security vulnerability, possible to get access to appKey from twig
+        $twig->addGlobal(
+            name: 'app',
+            value: ConfigHelper::get(key: 'app')
+        );
+
+        $twig->addGlobal(
+            name: 'analytics',
+            value: ConfigHelper::get(key: 'analytics')
+        );
+
+        return $twig;
     }
 }

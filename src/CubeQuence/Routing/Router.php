@@ -1,54 +1,68 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\Routing;
 
-use CQ\Helpers\App;
+use CQ\Routing\Response\Respond;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
 use MiladRahimi\PhpRouter\Router as RouterBase;
-use Zend\Diactoros\Response\RedirectResponse;
 
-class Router
+final class Router
 {
-    private $router;
-    private $route404;
-    private $route500;
+    private RouterBase $router;
 
     /**
-     * Create router instance.
-     *
-     * @param array  $config
-     * @param string $controllers
+     * Create router instance
      */
-    public function __construct($config = [], $controllers = 'App\Controllers')
-    {
-        $this->router = new RouterBase('', $controllers);
-        $this->route404 = $config['404'] ?: '/';
-        $this->route500 = $config['500'] ?: '/';
+    public function __construct(
+        public string $route_404 = '/',
+        public string $route_500 = '/'
+    ) {
+        $this->router = RouterBase::create();
     }
 
     /**
-     * Return router instance.
-     *
-     * @return RouterBase
+     * Return route instance
      */
-    public function get()
+    public function getRoute(): Route
     {
-        return $this->router;
+        return new Route(router: $this->router);
     }
 
     /**
-     * Start the router.
+     * Return middleware instance
      */
-    public function start()
+    public function getMiddleware(): Middleware
+    {
+        return new Middleware(router: $this->router);
+    }
+
+    /**
+     * Start the router
+     */
+    public function start(): void
     {
         try {
             $this->router->dispatch();
-        } catch (RouteNotFoundException $e) {
-            $this->router->getPublisher()->publish(new RedirectResponse($this->route404, 404));
-        } catch (\Throwable $e) {
-            if (!App::debug()) {
-                $this->router->getPublisher()->publish(new RedirectResponse("{$this->route500}?e={$e}", 500));
+        } catch (RouteNotFoundException) {
+            $this->router->getPublisher()->publish(
+                Respond::redirect(
+                    url: $this->route_404,
+                    code: 404
+                )
+            );
+        } /*catch (\Throwable $e) { // TODO: if you enable this route the debug window doesn't work
+            if (App::isDebug()) {
+                return throw new \Exception($e);
             }
-        }
+
+            $this->router->getPublisher()->publish(
+                Respond::redirect(
+                    url: $this->route_500,
+                    code: 500
+                )
+            );
+        }*/
     }
 }

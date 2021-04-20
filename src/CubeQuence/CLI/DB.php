@@ -1,101 +1,106 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CQ\CLI;
 
-use CQ\Helpers\App;
+use CQ\Helpers\AppHelper;
 use Phinx\Console\PhinxApplication;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class DB extends Template
+final class DB extends Template
 {
     /**
      * Migrate command.
-     *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @param SymfonyStyle    $io
      */
-    public function migrate(InputInterface $input, OutputInterface $output, SymfonyStyle $io)
+    public function migrate(InputInterface $input, OutputInterface $output, SymfonyStyle $io): void
     {
-        if (!self::envCheck($input, $output, $io)) {
+        if (! self::envCheck(input: $input, output: $output, io: $io)) {
             return;
         }
 
+        $phinx = new PhinxApplication();
+
         try {
-            $fresh = $input->getOption('fresh');
-            $phinx = new PhinxApplication();
-            $command = $phinx->find('rollback');
+            $fresh = $input->getOption(name: 'fresh');
+            $command = $phinx->find(name: 'rollback');
 
             $arguments = [
                 'command' => 'rollback',
-                '--environment' => App::environment(),
+                '--environment' => AppHelper::getEnvoironment(),
                 '--target' => '0',
                 '--force',
             ];
 
             if ($fresh) {
-                $command->run(new ArrayInput($arguments), $output);
-                $io->success('Reset successful');
+                $command->run(
+                    input: new ArrayInput(parameters: $arguments),
+                    output: $output
+                );
+
+                $io->success(message: 'Reset successful');
             }
         } catch (\Throwable $th) {
-            $io->error($th->getMessage());
+            $io->error(message: $th->getMessage());
 
             return;
         }
 
         try {
-            $phinx = new PhinxApplication();
-            $command = $phinx->find('migrate');
+            $command = $phinx->find(name: 'migrate');
 
             $arguments = [
                 'command' => 'migrate',
-                '--environment' => App::environment(),
-                '--configuration' => __DIR__.'/../../../../../../phinx.php',
+                '--environment' => AppHelper::getEnvoironment(),
+                '--configuration' => AppHelper::getRootPath() . '/phinx.php',
             ];
 
-            $command->run(new ArrayInput($arguments), $output);
+            $command->run(
+                input: new ArrayInput(parameters: $arguments),
+                output: $output
+            );
         } catch (\Throwable $th) {
-            $io->error($th->getMessage());
+            $io->error(message: $th->getMessage());
 
             return;
         }
 
-        $io->success('Migration successful');
+        $io->success(message: 'Migration successful');
     }
 
     /**
      * Seed command.
-     *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @param SymfonyStyle    $io
      */
-    public function seed(InputInterface $input, OutputInterface $output, SymfonyStyle $io)
+    public function seed(InputInterface $input, OutputInterface $output, SymfonyStyle $io): void
     {
-        if (!self::envCheck($input, $output, $io)) {
+        if (! self::envCheck(input: $input, output: $output, io: $io)) {
             return;
         }
 
+        $phinx = new PhinxApplication();
+
         try {
-            $phinx = new PhinxApplication();
-            $command = $phinx->find('seed:run');
+            $command = $phinx->find(name: 'seed:run');
 
             $arguments = [
                 'command' => 'seed:run',
-                '--environment' => App::environment(),
-                '--configuration' => __DIR__.'/../../../../../../phinx.php',
+                '--environment' => AppHelper::getEnvoironment(),
+                '--configuration' => AppHelper::getRootPath() . '/phinx.php',
             ];
 
-            $command->run(new ArrayInput($arguments), $output);
+            $command->run(
+                input: new ArrayInput(parameters: $arguments),
+                output: $output
+            );
         } catch (\Throwable $th) {
-            $io->error($th->getMessage());
+            $io->error(message: $th->getMessage());
 
             return;
         }
 
-        $io->success('Seeding successful');
+        $io->success(message: 'Seeding successful');
     }
 }
