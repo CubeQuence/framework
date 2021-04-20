@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace CQ\CLI;
 
-use CQ\Helpers\ConfigHelper;
 use CQ\Crypto\Models\SymmetricKey;
 use CQ\Crypto\Password;
 use CQ\File\Adapters\Providers\Local;
 use CQ\File\File;
 use CQ\Helpers\AppHelper;
+use CQ\Helpers\ConfigHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -21,7 +21,7 @@ final class App extends Template
      */
     public function key(InputInterface $input, OutputInterface $output, SymfonyStyle $io): void
     {
-        if (!self::envCheck(input: $input, output: $output, io: $io)) {
+        if (! self::envCheck(input: $input, output: $output, io: $io)) {
             return;
         }
 
@@ -38,7 +38,7 @@ final class App extends Template
             $envKey = new SymmetricKey();
             $exportedEnvKey = $envKey->export();
 
-            if (!$fileHandler->exists($envPath)) {
+            if (! $fileHandler->exists($envPath)) {
                 $io->warning(message: '.env file not found, please set key manually');
                 $io->text(message: "APP_KEY=\"{$exportedEnvKey}\"");
 

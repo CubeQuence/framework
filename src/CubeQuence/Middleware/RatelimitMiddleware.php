@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace CQ\Middleware;
 
 use Closure;
-use CQ\Helpers\ConfigHelper;
 use CQ\DB\DB;
+use CQ\Helpers\ConfigHelper;
 use CQ\Ratelimit\Models\RateModel;
 use CQ\Ratelimit\Ratelimit;
 use CQ\Ratelimit\Storage\Providers\DatabaseProvider;
