@@ -10,7 +10,10 @@ use CQ\Helpers\ConfigHelper;
 use CQ\Ratelimit\Models\RateModel;
 use CQ\Ratelimit\Ratelimit;
 use CQ\Ratelimit\Storage\Providers\DatabaseProvider;
+use CQ\Response\HtmlResponse;
 use CQ\Response\JsonResponse;
+use CQ\Response\NoContentResponse;
+use CQ\Response\RedirectResponse;
 use CQ\Response\Respond;
 
 final class RatelimitMiddleware extends Middleware
@@ -18,7 +21,7 @@ final class RatelimitMiddleware extends Middleware
     /**
      * Ratelimit routes
      */
-    public function handleChild(Closure $next): Closure | JsonResponse
+    public function handleChild(Closure $next): Closure | HtmlResponse | JsonResponse | NoContentResponse | RedirectResponse
     {
         $databaseProvider = new DatabaseProvider(
             db: DB::class

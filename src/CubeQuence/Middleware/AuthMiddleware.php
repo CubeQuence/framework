@@ -7,7 +7,9 @@ namespace CQ\Middleware;
 use Closure;
 use CQ\Helpers\AuthHelper;
 use CQ\Helpers\SessionHelper;
+use CQ\Response\HtmlResponse;
 use CQ\Response\JsonResponse;
+use CQ\Response\NoContentResponse;
 use CQ\Response\RedirectResponse;
 use CQ\Response\Respond;
 
@@ -16,16 +18,11 @@ final class AuthMiddleware extends Middleware
     /**
      * Validate PHP session.
      */
-    public function handleChild(Closure $next): Closure | JsonResponse | RedirectResponse
+    public function handleChild(Closure $next): Closure | HtmlResponse | JsonResponse | NoContentResponse | RedirectResponse
     {
         if (AuthHelper::isValid()) {
-            SessionHelper::set(
-                name: 'last_activity',
-                data: time()
-            );
-
-            $user = SessionHelper::get(name: 'user');
-            $this->request->user = $user;
+            $this->request->user = AuthHelper::getUser();
+            $this->request->session = AuthHelper::getSession();
 
             return $next($this->request);
         }

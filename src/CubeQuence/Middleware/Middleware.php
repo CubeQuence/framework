@@ -6,6 +6,7 @@ namespace CQ\Middleware;
 
 use Closure;
 use CQ\Helpers\RequestHelper;
+use CQ\Response\HtmlResponse;
 use CQ\Response\JsonResponse;
 use CQ\Response\NoContentResponse;
 use CQ\Response\RedirectResponse;
@@ -21,7 +22,7 @@ abstract class Middleware
     /**
      * Interface for middleware classes to tie into
      */
-    abstract public function handleChild(Closure $next): Closure | JsonResponse | NoContentResponse | RedirectResponse;
+    abstract public function handleChild(Closure $next): Closure | HtmlResponse | JsonResponse | NoContentResponse | RedirectResponse;
 
     /**
      * Execute middleware
@@ -30,7 +31,7 @@ abstract class Middleware
         ServerRequestInterface $request,
         Route $route,
         Closure $next
-    ): Closure | JsonResponse | NoContentResponse | RedirectResponse {
+    ): Closure | HtmlResponse | JsonResponse | NoContentResponse | RedirectResponse {
         $this->request = $request;
         $this->route = $route;
 

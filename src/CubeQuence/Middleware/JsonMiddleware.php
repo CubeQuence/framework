@@ -5,15 +5,18 @@ declare(strict_types=1);
 namespace CQ\Middleware;
 
 use Closure;
+use CQ\Response\HtmlResponse;
 use CQ\Response\Respond;
 use CQ\Response\JsonResponse;
+use CQ\Response\NoContentResponse;
+use CQ\Response\RedirectResponse;
 
 final class JsonMiddleware extends Middleware
 {
     /**
      * Interpret JSON and validate that the provided JSON is valid.
      */
-    public function handleChild(Closure $next): Closure | JsonResponse
+    public function handleChild(Closure $next): Closure | HtmlResponse | JsonResponse | NoContentResponse | RedirectResponse
     {
         if (!$this->requestHelper->isJSON()) {
             return Respond::prettyJson(

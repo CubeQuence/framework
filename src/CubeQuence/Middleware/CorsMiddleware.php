@@ -6,7 +6,10 @@ namespace CQ\Middleware;
 
 use Closure;
 use CQ\Helpers\ConfigHelper;
+use CQ\Response\HtmlResponse;
+use CQ\Response\JsonResponse;
 use CQ\Response\NoContentResponse;
+use CQ\Response\RedirectResponse;
 use CQ\Response\Respond;
 
 final class CorsMiddleware extends Middleware
@@ -14,20 +17,20 @@ final class CorsMiddleware extends Middleware
     /**
      * Add CORS headers to requests.
      */
-    public function handleChild(Closure $next): Closure | NoContentResponse
+    public function handleChild(Closure $next): Closure | HtmlResponse | JsonResponse | NoContentResponse | RedirectResponse
     {
         $headers = [
             'Access-Control-Allow-Origin' => implode(
-                glue: ', ',
-                pieces: ConfigHelper::get(key: 'cors.allow_origins', fallback: [])
+                separator: ', ',
+                array: ConfigHelper::get(key: 'cors.allow_origins', fallback: [])
             ),
             'Access-Control-Allow-Headers' => implode(
-                glue: ', ',
-                pieces: ConfigHelper::get(key: 'cors.allow_headers', fallback: [])
+                separator: ', ',
+                array: ConfigHelper::get(key: 'cors.allow_headers', fallback: [])
             ),
             'Access-Control-Allow-Methods' => implode(
-                glue: ', ',
-                pieces: ConfigHelper::get(key: 'cors.allow_methods', fallback: [])
+                separator: ', ',
+                array: ConfigHelper::get(key: 'cors.allow_methods', fallback: [])
             ),
         ];
 

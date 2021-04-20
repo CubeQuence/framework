@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CQ\Routing;
 
-use CQ\Routing\Response\Respond;
+use CQ\Response\Respond;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
 use MiladRahimi\PhpRouter\Router as RouterBase;
 
