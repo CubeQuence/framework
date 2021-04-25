@@ -19,7 +19,7 @@ final class Twig
      */
     public function __construct()
     {
-        $cacheEnabled = ConfigHelper::get(key: 'cache.views') && ! AppHelper::isDebug();
+        $cacheEnabled = ConfigHelper::get(key: 'cache.views') && !AppHelper::isDebug();
         $loader = new FilesystemLoader(paths: '../views');
 
         $twig = new Environment(
@@ -70,10 +70,12 @@ final class Twig
      */
     private static function addGlobals(Environment $twig): Environment
     {
-        // TODO: Security vulnerability, possible to get access to appKey from twig
+        $appConfig = ConfigHelper::get(key: 'app');
+        unset($appConfig['key']);
+
         $twig->addGlobal(
             name: 'app',
-            value: ConfigHelper::get(key: 'app')
+            value: $appConfig
         );
 
         $twig->addGlobal(
