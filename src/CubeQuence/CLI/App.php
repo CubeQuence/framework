@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace CQ\CLI;
 
 use CQ\Crypto\Models\SymmetricKey;
-use CQ\Crypto\Password;
 use CQ\File\Adapters\Providers\Local;
 use CQ\File\File;
 use CQ\Helpers\AppHelper;
@@ -63,33 +62,5 @@ final class App extends Template
         }
 
         $io->success(message: 'Key set successfully');
-    }
-
-    /**
-     * Generate derived key command.
-     */
-    public function contextKey(InputInterface $input, OutputInterface $output, SymfonyStyle $io): void
-    {
-        try {
-            $appKey = new SymmetricKey(
-                encodedKey: ConfigHelper::get('app.key')
-            );
-
-            $password = new Password(
-                key: $appKey
-            );
-
-            $envKeyContext = $password->hash(
-                plaintextPassword: ConfigHelper::get('app.key'),
-                context: $input->getArgument(name: 'context')
-            );
-        } catch (\Throwable $th) {
-            $io->error(message: $th->getMessage());
-
-            return;
-        }
-
-        $io->success(message: 'Context key created successfully');
-        $io->text(message: $envKeyContext);
     }
 }
