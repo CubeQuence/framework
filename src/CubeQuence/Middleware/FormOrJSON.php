@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace CQ\Middleware;
 
 use Closure;
-use CQ\Middleware\JsonMiddleware;
-use CQ\Middleware\FormMiddleware;
 use CQ\Response\HtmlResponse;
 use CQ\Response\JsonResponse;
 use CQ\Response\NoContentResponse;
@@ -20,7 +18,7 @@ final class FormOrJSON extends Middleware
      */
     public function handleChild(Closure $next): Closure | HtmlResponse | JsonResponse | NoContentResponse | RedirectResponse
     {
-        if (!$this->requestHelper->isJSON()) {
+        if (! $this->requestHelper->isJSON()) {
             $jsonMiddleware = new JsonMiddleware();
 
             return $jsonMiddleware->handle(
@@ -30,7 +28,7 @@ final class FormOrJSON extends Middleware
             );
         }
 
-        if (!$this->requestHelper->isForm()) {
+        if (! $this->requestHelper->isForm()) {
             $formMiddleware = new FormMiddleware();
 
             return $formMiddleware->handle(

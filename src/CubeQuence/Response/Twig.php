@@ -19,7 +19,7 @@ final class Twig
      */
     public function __construct()
     {
-        $cacheEnabled = ConfigHelper::get(key: 'cache.views') && !AppHelper::isDebug();
+        $cacheEnabled = ConfigHelper::get(key: 'cache.views') && ! AppHelper::isDebug();
         $loader = new FilesystemLoader(paths: '../views');
 
         $twig = new Environment(

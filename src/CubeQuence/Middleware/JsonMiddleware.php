@@ -6,10 +6,10 @@ namespace CQ\Middleware;
 
 use Closure;
 use CQ\Response\HtmlResponse;
-use CQ\Response\Respond;
 use CQ\Response\JsonResponse;
 use CQ\Response\NoContentResponse;
 use CQ\Response\RedirectResponse;
+use CQ\Response\Respond;
 
 final class JsonMiddleware extends Middleware
 {
@@ -18,7 +18,7 @@ final class JsonMiddleware extends Middleware
      */
     public function handleChild(Closure $next): Closure | HtmlResponse | JsonResponse | NoContentResponse | RedirectResponse
     {
-        if (!$this->requestHelper->isJSON()) {
+        if (! $this->requestHelper->isJSON()) {
             return Respond::prettyJson(
                 message: 'Invalid Content-Type',
                 data: [
