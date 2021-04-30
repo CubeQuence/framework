@@ -40,7 +40,7 @@ final class AuthMiddleware extends Middleware
         }
 
         SessionHelper::set(
-            name: 'return_to',
+            name: 'cq_return_to',
             data: $this->route->getUri()
         );
 
