@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CQ\Routing;
 
+use CQ\Helpers\AppHelper;
 use CQ\Response\Respond;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
 use MiladRahimi\PhpRouter\Router as RouterBase;
@@ -15,10 +16,8 @@ final class Router
     /**
      * Create router instance
      */
-    public function __construct(
-        public string $route_404 = '/',
-        public string $route_500 = '/'
-    ) {
+    public function __construct()
+    {
         $this->router = RouterBase::create();
     }
 
@@ -47,22 +46,24 @@ final class Router
             $this->router->dispatch();
         } catch (RouteNotFoundException) {
             $this->router->getPublisher()->publish(
-                Respond::redirect(
-                    url: $this->route_404,
+                Respond::twig(
+                    view: 'errors/404.twig',
                     code: 404
                 )
             );
-        } /*catch (\Throwable $e) { // TODO: if you enable this route the debug window doesn't work
-            if (App::isDebug()) {
-                return throw new \Exception($e);
+        } catch (\Throwable $e) {
+            if (AppHelper::isDebug()) {
+                throw new \Exception($e);
+
+                return;
             }
 
             $this->router->getPublisher()->publish(
-                Respond::redirect(
-                    url: $this->route_500,
+                Respond::twig(
+                    view: 'errors/500.twig',
                     code: 500
                 )
             );
-        }*/
+        }
     }
 }
