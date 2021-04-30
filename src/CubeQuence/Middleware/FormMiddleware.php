@@ -18,11 +18,11 @@ final class FormMiddleware extends Middleware
      */
     public function handleChild(Closure $next): Closure | HtmlResponse | JsonResponse | NoContentResponse | RedirectResponse
     {
-        if (! $this->requestHelper->isForm()) {
+        if (!$this->requestHelper->isForm()) {
             return Respond::prettyJson(
                 message: 'Invalid Content-Type',
                 data: [
-                    'details' => "Content-Type should be 'application/x-www-form-urlencoded'",
+                    'details' => "Content-Type should be 'application/x-www-form-urlencoded' or 'multipart/form-data'"
                 ],
                 code: 415
             );
