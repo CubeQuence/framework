@@ -53,9 +53,7 @@ final class Router
             );
         } catch (\Throwable $e) {
             if (AppHelper::isDebug()) {
-                throw new \Exception($e);
-
-                return;
+                throw $e;
             }
 
             $this->router->getPublisher()->publish(
