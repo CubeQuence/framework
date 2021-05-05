@@ -18,7 +18,7 @@ final class Make extends Template
      */
     public function migration(InputInterface $input, OutputInterface $output, SymfonyStyle $io): void
     {
-        if (! self::envCheck(input: $input, output: $output, io: $io)) {
+        if (!self::envCheck(input: $input, output: $output, io: $io)) {
             return;
         }
 
@@ -31,7 +31,7 @@ final class Make extends Template
             $arguments = [
                 'command' => 'create',
                 'name' => $name,
-                '--template' => __DIR__ . '/../DB/Template/Migration.php',
+                '--template' => AppHelper::getRootPath() . '/vendor/cubequence/db/src/DB/Template/Migration.php',
                 '--configuration' => AppHelper::getRootPath() . '/phinx.php',
             ];
 
@@ -53,7 +53,7 @@ final class Make extends Template
      */
     public function seed(InputInterface $input, OutputInterface $output, SymfonyStyle $io): void
     {
-        if (! self::envCheck(input: $input, output: $output, io: $io)) {
+        if (!self::envCheck(input: $input, output: $output, io: $io)) {
             return;
         }
 
